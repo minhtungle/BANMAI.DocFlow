@@ -8,30 +8,16 @@
         <EntityTypeShape EntityType="EDM_DBModel.default_tbChucNang" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="EDM_DBModel.default_tbChucNang_ThaoTac" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="EDM_DBModel.default_tbChucVu" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.default_tbLoaiChiDinh" Width="1.5" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="EDM_DBModel.default_tbQuocGia" Width="1.5" PointX="4.75" PointY="4.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.default_tbRang" Width="1.5" PointX="6.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.default_tbTinhTrangRang" Width="1.5" PointX="6.75" PointY="5.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbBacSy" Width="1.5" PointX="8.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbBenhNhan" Width="1.5" PointX="0.75" PointY="8.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbBenhNhanBacSyPhuTrach" Width="1.5" PointX="2.75" PointY="8.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbBenhNhanNguoiThan" Width="1.5" PointX="8.75" PointY="6.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbBenhNhanTienSuBenh" Width="1.5" PointX="4.75" PointY="9.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbCanBenh" Width="1.5" PointX="10.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbCoCauToChuc" Width="1.5" PointX="10.75" PointY="5.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbDonViSuDung" Width="1.5" PointX="10.75" PointY="10.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbKieuNguoiDung" Width="1.5" PointX="12.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbLichDieuTri" Width="1.5" PointX="12.75" PointY="5.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbLichDieuTri_AnhMoTa" Width="1.5" PointX="6.75" PointY="12.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbLichHen" Width="1.5" PointX="12.75" PointY="10.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbLoaiChiDinhTepDinhKem" Width="1.5" PointX="14.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbLoaiThuThuat" Width="1.5" PointX="0.75" PointY="14.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbNguoiDung" Width="1.5" PointX="2.75" PointY="14.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbNguoiDungKieuNguoiDung" Width="1.5" PointX="14.75" PointY="4.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbPhieuKham" Width="1.5" PointX="14.75" PointY="8.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbThanhToan" Width="1.5" PointX="14.75" PointY="12.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbThuThuat" Width="1.5" PointX="16.75" PointY="0.75" />
-        <EntityTypeShape EntityType="EDM_DBModel.tbTienTrinhDieuTri" Width="1.5" PointX="16.75" PointY="5.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbCoCauToChuc" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbDonViSuDung" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbKieuNguoiDung" Width="1.5" PointX="6.75" PointY="6.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbNguoiDung" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbNguoiDungKieuNguoiDung" Width="1.5" PointX="2.75" PointY="8.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbNhaCungCap" Width="1.5" PointX="8.75" PointY="8.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbNhaCungCapTruongHoc" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbTaiLieuNhaCungCap" Width="1.5" PointX="10.75" PointY="4.75" />
+        <EntityTypeShape EntityType="EDM_DBModel.tbTruongHoc" Width="1.5" PointX="10.75" PointY="10.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

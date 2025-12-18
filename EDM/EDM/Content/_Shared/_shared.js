@@ -625,7 +625,8 @@ class System {
             //path: "/Assets/json/loading_yoga.json", // file JSON animation
             //path: "/Assets/json/loading_robot.json" // file JSON animation
             //path: "/Assets/json/loading_gardiant_tooth.json" // file JSON animation
-            path: "/Assets/json/loading_tooth.json" // file JSON animation
+            //path: "/Assets/json/loading_tooth.json" // file JSON animation
+            path: "/Assets/json/loading_file_search.json" // file JSON animation
         });
         // Hiển thị khung chat
         $("#khungchat-active").css({

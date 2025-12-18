@@ -7810,16 +7810,6 @@
     <Content Include="ViewerJS\text_layer_builder.js" />
     <Content Include="ViewerJS\ui_utils.js" />
     <Content Include="ViewerJS\webodf.js" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\baidang-crud\baidang-crud.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\baidang-getList.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\baidang.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\baidang-crud\form-thongtinchung.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\baidang-crud\form-lichdangbai.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\baidang-crud\form-addbaidang.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\baidang-crud\baidang-crud-capnhattruong.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\chiendich\chiendich-crud.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\chiendich\chiendich-getList.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\tab.cshtml" />
     <Content Include="Views\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\benhnhan-crud.cshtml" />
     <Content Include="Views\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\benhnhan-getList.cshtml" />
     <Content Include="Views\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\benhnhan.cshtml" />
@@ -7834,9 +7824,6 @@
     <Content Include="Views\Admin\QuanLyDonVi\donvi-chitiet\quanlyaibot-tab\loaiaibot\loaiaibot-getList.cshtml" />
     <Content Include="Views\Admin\QuanLyDonVi\donvi-chitiet\quanlyaibot-tab\tab.cshtml" />
     <Content Include="Views\Admin\QuanLyDonVi\donvi-chitiet\aibot.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\xemchitiet\xemchitiet.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\xemchitiet\form-thongtinchung.cshtml" />
-    <Content Include="Views\Admin\QuanLyBaiDang\quanlybaidang-tab\baidang\xemchitiet\form-phantichbaidang.cshtml" />
     <Content Include="Views\Admin\_SystemSetting\QuanLyNguoiDung\thongtincanhan\thongtincanhan-crud.cshtml" />
     <Content Include="Views\Admin\_SystemSetting\QuanLyNguoiDung\thongtincanhan\thongtincanhan-getList.cshtml" />
     <Content Include="Views\Admin\_SystemSetting\QuanLyNguoiDung\thongtincanhan\thongtincanhan.cshtml" />
@@ -7865,6 +7852,10 @@
     <Content Include="Views\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\benhnhan-xemchitiet\tab-phieukham\tientrinhdieutri-themdong.cshtml" />
     <Content Include="Views\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\benhnhan-xemchitiet\tab-phieukham\tientrinhdieutri-chonrang.cshtml" />
     <Content Include="Views\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\benhnhan-xemchitiet\tab-phieukham\lichdieutri-anhmota.cshtml" />
+    <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap.cshtml" />
+    <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap-crud.cshtml" />
+    <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap-getList.cshtml" />
+    <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap-timkiem.cshtml" />
     <None Include="Views\User\TrangTaiLieu\404.cshtml" />
     <None Include="Views\User\TrangTaiLieu\about.cshtml" />
     <None Include="Views\User\TrangTaiLieu\checkout.cshtml" />
@@ -8226,10 +8217,6 @@
       <Project>{4cc2c0b9-fb34-429c-a18e-7994e3dcc7b9}</Project>
       <Name>Organization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\modules\Admin\QuanLyBenhNhan\QuanLyBenhNhan.csproj">
-      <Project>{B5EC6699-3A18-4A12-9042-1985935C0E19}</Project>
-      <Name>QuanLyBenhNhan</Name>
-    </ProjectReference>
     <ProjectReference Include="..\modules\Admin\QuanLyCoCauToChuc\QuanLyCoCauToChuc.csproj">
       <Project>{DB8FBCA9-5FA5-409F-AB90-881E8E20C432}</Project>
       <Name>QuanLyCoCauToChuc</Name>
@@ -8242,13 +8229,13 @@
       <Project>{F931AF24-9FA2-44D7-B0D7-6E3C73D0C03F}</Project>
       <Name>QuanLyKieuNguoiDung</Name>
     </ProjectReference>
-    <ProjectReference Include="..\modules\Admin\QuanLyLichHen\QuanLyLichHen.csproj">
-      <Project>{27a62f6c-dd7d-4d5c-bddb-c05e52757d0b}</Project>
-      <Name>QuanLyLichHen</Name>
-    </ProjectReference>
     <ProjectReference Include="..\modules\Admin\QuanLyNguoiDung\QuanLyNguoiDung.csproj">
       <Project>{CD97BDEE-338C-4F28-A1DB-DEDF373E2994}</Project>
       <Name>QuanLyNguoiDung</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\modules\Admin\QuanLyNhaCungCap\QuanLyNhaCungCap.csproj">
+      <Project>{d728375b-7143-4adb-ab5a-81899a9f5914}</Project>
+      <Name>QuanLyNhaCungCap</Name>
     </ProjectReference>
     <ProjectReference Include="..\modules\Admin\UnitManage\UnitManage.csproj">
       <Project>{2946ed6e-1ef8-405d-b7f9-8d14f0ecd06b}</Project>

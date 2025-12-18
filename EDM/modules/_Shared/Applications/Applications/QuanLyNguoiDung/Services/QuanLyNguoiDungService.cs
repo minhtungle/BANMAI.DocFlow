@@ -391,7 +391,7 @@ namespace Applications.QuanLyNguoiDung.Services
                 // Trả về chuỗi đã được tạo ra từ view
                 return Task.FromResult(viewAsString);
             }
-            string tieuDeMail = "[📣 PostPilot] - THÔNG TIN TÀI KHOẢN CRM❗";
+            string tieuDeMail = "[📣 BanMai] - THÔNG TIN TÀI KHOẢN CRM❗";
             string mailBody = await mail();
             // Gửi mail
             Public.Handle.SendEmail(
@@ -403,7 +403,7 @@ namespace Applications.QuanLyNguoiDung.Services
         }
         private string TaoTenDangNhap(string tenDangNhap)
         {
-            return string.Format("{0}@postpilot.com", tenDangNhap.Replace("@postpilot.com", ""));
+            return string.Format("{0}@banmai.com", tenDangNhap.Replace("@banmai.com", ""));
         }
         private void downloadDialog(MemoryStream data, string fileName, string contentType)
         {

@@ -1,19 +1,13 @@
-﻿using Applications.QuanLyBenhNhan.Interfaces;
-using Applications.QuanLyBenhNhan.Services;
-using Applications.QuanLyCoCauToChuc.Interfaces;
+﻿using Applications.QuanLyCoCauToChuc.Interfaces;
 using Applications.QuanLyCoCauToChuc.Services;
 using Applications.QuanLyDonVi.Interfaces;
 using Applications.QuanLyDonVi.Services;
 using Applications.QuanLyKieuNguoiDung.Interfaces;
 using Applications.QuanLyKieuNguoiDung.Services;
-using Applications.QuanLyLichDieuTri.Interfaces;
-using Applications.QuanLyLichDieuTri.Services;
-using Applications.QuanLyLichHen.Interfaces;
-using Applications.QuanLyLichHen.Services;
 using Applications.QuanLyNguoiDung.Interfaces;
 using Applications.QuanLyNguoiDung.Services;
-using Applications.QuanLyPhieuKham.Interfaces;
-using Applications.QuanLyPhieuKham.Services;
+using Applications.QuanLyNhaCungCap.Interfaces;
+using Applications.QuanLyNhaCungCap.Services;
 using Autofac;
 using Autofac.Integration.Mvc;
 using EDM_DB;
@@ -23,12 +17,11 @@ using Infrastructure.Interfaces;
 using Infrastructure.Repositories;
 using Public.AppServices;
 using Public.Interfaces;
-using QuanLyBenhNhan.Controllers;
 using QuanLyCoCauToChuc.Controllers;
 using QuanLyDonVi.Controllers;
 using QuanLyKieuNguoiDung.Controllers;
-using QuanLyLichHen.Controllers;
 using QuanLyNguoiDung.Controllers;
+using QuanLyNhaCungCap.Controllers;
 using System;
 using System.Data.Entity;
 using System.Net.Http;
@@ -48,10 +41,7 @@ namespace EDM.App_Start
             builder.RegisterControllers(typeof(QuanLyKieuNguoiDungController).Assembly);
             builder.RegisterControllers(typeof(QuanLyCoCauToChucController).Assembly);
 
-            builder.RegisterControllers(typeof(QuanLyBenhNhanController).Assembly);
-            builder.RegisterControllers(typeof(QuanLyLichHenController).Assembly);
-            builder.RegisterControllers(typeof(QuanLyPhieuKhamService).Assembly);
-            builder.RegisterControllers(typeof(QuanLyLichDieuTriService).Assembly);
+            builder.RegisterControllers(typeof(QuanLyNhaCungCapController).Assembly);
             #endregion
 
             #region Đăng ký Infrastructure
@@ -107,19 +97,14 @@ namespace EDM.App_Start
             builder.RegisterType<QuanLyCoCauToChucService>()
                    .As<IQuanLyCoCauToChucService>()
                    .InstancePerRequest();
-         
-            builder.RegisterType<QuanLyBenhNhanService>()
-                   .As<IQuanLyBenhNhanService>()
+
+
+            builder.RegisterType<QuanLyNhaCungCapService>()
+                   .As<IQuanLyNhaCungCapService>()
                    .InstancePerRequest();
-            builder.RegisterType<QuanLyLichHenService>()
-                   .As<IQuanLyLichHenService>()
-                   .InstancePerRequest();
-            builder.RegisterType<QuanLyPhieuKhamService>()
-                   .As<IQuanLyPhieuKhamService>()
-                   .InstancePerRequest();
-            builder.RegisterType<QuanLyLichDieuTriService>()
-                   .As<IQuanLyLichDieuTriService>()
-                   .InstancePerRequest();
+            //builder.RegisterType<QuanLyTruongHocService>()
+            //       .As<IQuanLyTruongHocService>()
+            //       .InstancePerRequest();
             #endregion
 
             #region Đăng ký IRepositories
@@ -139,39 +124,19 @@ namespace EDM.App_Start
                    .As<IRepository<tbDonViSuDung, Guid>>()
                    .InstancePerRequest();
 
-            builder.RegisterType<EfRepository<tbBenhNhan, Guid>>()
-                   .As<IRepository<tbBenhNhan, Guid>>()
+            builder.RegisterType<EfRepository<tbNhaCungCap, Guid>>()
+                   .As<IRepository<tbNhaCungCap, Guid>>()
                    .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbBenhNhanNguoiThan, Guid>>()
-                   .As<IRepository<tbBenhNhanNguoiThan, Guid>>()
+            builder.RegisterType<EfRepository<tbNhaCungCapTruongHoc, Guid>>()
+                   .As<IRepository<tbNhaCungCapTruongHoc, Guid>>()
                    .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbLichHen, Guid>>()
-                   .As<IRepository<tbLichHen, Guid>>()
+            builder.RegisterType<EfRepository<tbTruongHoc, Guid>>()
+                   .As<IRepository<tbTruongHoc, Guid>>()
                    .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbPhieuKham, Guid>>()
-                   .As<IRepository<tbPhieuKham, Guid>>()
+            builder.RegisterType<EfRepository<tbTaiLieuNhaCungCap, Guid>>()
+                   .As<IRepository<tbTaiLieuNhaCungCap, Guid>>()
                    .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbLichDieuTri, Guid>>()
-                   .As<IRepository<tbLichDieuTri, Guid>>()
-                   .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbLichDieuTri_AnhMoTa, Guid>>()
-                   .As<IRepository<tbLichDieuTri_AnhMoTa, Guid>>()
-                   .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbTienTrinhDieuTri, Guid>>()
-                   .As<IRepository<tbTienTrinhDieuTri, Guid>>()
-                   .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbThuThuat, Guid>>()
-                   .As<IRepository<tbThuThuat, Guid>>()
-                   .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbLoaiThuThuat, Guid>>()
-                   .As<IRepository<tbLoaiThuThuat, Guid>>()
-                   .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbBacSy, Guid>>()
-                   .As<IRepository<tbBacSy, Guid>>()
-                   .InstancePerRequest();
-            builder.RegisterType<EfRepository<default_tbTinhTrangRang, Guid>>()
-                   .As<IRepository<default_tbTinhTrangRang, Guid>>()
-                   .InstancePerRequest();
+
             #endregion
 
             // 🔨 Build container

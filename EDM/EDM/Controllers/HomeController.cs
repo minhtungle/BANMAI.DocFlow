@@ -92,7 +92,7 @@ namespace EDM.Controllers
         public tbDonViSuDung layDonViSuDung()
         {
             string currentDomain = Request.Url.Host.ToLower();
-            //currentDomain = "vietgenedu.com"; // Dùng để test
+            currentDomain = "banmai.com"; // Dùng để test
             var donViSuDung = db.Database.SqlQuery<tbDonViSuDung>($@"
             select * from tbDonViSuDung
                 where TrangThai = {(int)TrangThaiDuLieuEnum.DangSuDung}

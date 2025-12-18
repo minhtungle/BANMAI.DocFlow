@@ -104,7 +104,7 @@ namespace Auth.Controllers
                 {
                     string currentDomain = Request.Url.Host.ToLower();
                     //tbDonViSuDung donViSuDung = db.tbDonViSuDungs.FirstOrDefault(k => k.TenMien == currentDomain && k.TrangThai == 1) ?? new tbDonViSuDung();
-                    tbDonViSuDung donViSuDung = layDonViSuDung();
+                    var donViSuDung = layDonViSuDung();
                     string matKhau_MD5 = Public.Handle.HashToMD5(loginM.MatKhau);
                     nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap
                     && x.MatKhau == matKhau_MD5
@@ -189,7 +189,7 @@ namespace Auth.Controllers
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
-                            string tieuDeMail = "[📣 PostPilot] - CẢNH BÁO THIẾT BỊ LẠ ĐĂNG NHẬP❗";
+                            string tieuDeMail = "[📣 BanMai] - CẢNH BÁO THIẾT BỊ LẠ ĐĂNG NHẬP❗";
                             string mailBody = mail();
 
                             if (nguoiDung.ThongTinThietBi_TruyCap != null) // Kiểm tra thiết bị mới hay cũ
@@ -328,7 +328,7 @@ namespace Auth.Controllers
             {
                 NGUOIDUNG = nguoiDung;
                 #region Gửi mail
-                string tieuDeMail = "[📣 PostPilot] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
+                string tieuDeMail = "[📣 BanMai] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
                 void guiMail()
                 {
                     Uri uri = new Uri(HttpContext.Request.Url.AbsoluteUri);
@@ -436,7 +436,7 @@ namespace Auth.Controllers
             if (nguoiDung != null)
             {
                 #region Gửi mail
-                string tieuDeMail = "[📣 PostPilot] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
+                string tieuDeMail = "[📣 BanMai] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
                 void guiMail()
                 {
                     Uri uri = new Uri(HttpContext.Request.Url.AbsoluteUri);
@@ -472,7 +472,7 @@ namespace Auth.Controllers
         public tbDonViSuDung layDonViSuDung()
         {
             string currentDomain = Request.Url.Host.ToLower();
-            currentDomain = "dentify.com"; // Dùng để test
+            currentDomain = "banmai.com"; // Dùng để test
             var donViSuDung = db.Database.SqlQuery<tbDonViSuDung>($@"
             select * from tbDonViSuDung
                 where TrangThai = {(int?)TrangThaiDuLieuEnum.DangSuDung}

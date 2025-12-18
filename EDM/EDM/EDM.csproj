@@ -1901,6 +1901,8 @@
     <Content Include="Content\Admin\QuanLyDonVi\quanlydonvi.js" />
     <Content Include="Content\Admin\QuanLyBaiDang\quanlybaidang.css" />
     <Content Include="Content\Admin\QuanLyBaiDang\quanlybaidang.js" />
+    <Content Include="Content\Admin\QuanLyTruongHoc\quanlytruonghoc.js" />
+    <Content Include="Content\Admin\QuanLyNhaCungCap\quanlynhacungcap.js" />
     <Content Include="Content\Admin\UnitManage\unitmanage.js" />
     <Content Include="Content\Admin\_QuanLyHoSoBenhNhan\QuanLyBenhNhan\quanlybenhnhan.css" />
     <Content Include="Content\Admin\_QuanLyHoSoBenhNhan\QuanLyLichHen\quanlylichhen.js" />
@@ -7856,6 +7858,10 @@
     <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap-crud.cshtml" />
     <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap-getList.cshtml" />
     <Content Include="Views\Admin\QuanLyNhaCungCap\nhacungcap-timkiem.cshtml" />
+    <Content Include="Views\Admin\QuanLyTruongHoc\quanlytruonghoc-crud.cshtml" />
+    <Content Include="Views\Admin\QuanLyTruongHoc\quanlytruonghoc-getList.cshtml" />
+    <Content Include="Views\Admin\QuanLyTruongHoc\quanlytruonghoc-timkiem.cshtml" />
+    <Content Include="Views\Admin\QuanLyTruongHoc\quanlytruonghoc.cshtml" />
     <None Include="Views\User\TrangTaiLieu\404.cshtml" />
     <None Include="Views\User\TrangTaiLieu\about.cshtml" />
     <None Include="Views\User\TrangTaiLieu\checkout.cshtml" />
@@ -8236,6 +8242,10 @@
     <ProjectReference Include="..\modules\Admin\QuanLyNhaCungCap\QuanLyNhaCungCap.csproj">
       <Project>{d728375b-7143-4adb-ab5a-81899a9f5914}</Project>
       <Name>QuanLyNhaCungCap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\modules\Admin\QuanLyTruongHoc\QuanLyTruongHoc.csproj">
+      <Project>{7abab452-f2c6-4bec-bddd-f29e0ec60ec1}</Project>
+      <Name>QuanLyTruongHoc</Name>
     </ProjectReference>
     <ProjectReference Include="..\modules\Admin\UnitManage\UnitManage.csproj">
       <Project>{2946ed6e-1ef8-405d-b7f9-8d14f0ecd06b}</Project>

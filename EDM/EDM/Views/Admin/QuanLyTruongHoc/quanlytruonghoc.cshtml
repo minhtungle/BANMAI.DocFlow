@@ -1,30 +1,30 @@
 ﻿@using Public.Models
-@model Applications.QuanLyNhaCungCap.Dtos.Index_Output_Dto
+@model Applications.QuanLyTruongHoc.Dtos.Index_Output_Dto
 @{
-    ViewBag.Title = "Quản lý nhà cung cấp";
+    ViewBag.Title = "Quản lý trường học";
     Layout = "~/Views/_Shared/Admin/admin.cshtml";
 
-    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-themmoi");
-    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-capnhat");
-    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-xoabo");
+    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-themmoi");
+    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-capnhat");
+    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-xoabo");
 }
 @section hTitle {}
 @section hBreadcrumb {
     <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Quản lý nhà cung cấp</li>
+    <li class="breadcrumb-item active" aria-current="page">Quản lý trường học</li>
 }
 @section styles {
-    @*<link href="~/Content/Admin/QuanLyNhaCungCap/quanlynhacungcap.css" rel="stylesheet" />*@
+    @*<link href="~/Content/Admin/QuanLyTruongHoc/quanlytruonghoc.css" rel="stylesheet" />*@
 }
 @section scripts {
-    <script src="~/Content/Admin/QuanLyNhaCungCap/quanlynhacungcap.js"></script>
+    <script src="~/Content/Admin/QuanLyTruongHoc/quanlytruonghoc.js"></script>
     <script>
-        var quanLyNhaCungCap = new QuanLyNhaCungCap();
-        quanLyNhaCungCap.init();
-        quanLyNhaCungCap.nhaCungCap.getList();
+        var quanLyTruongHoc = new QuanLyTruongHoc();
+        quanLyTruongHoc.init();
+        quanLyTruongHoc.truongHoc.getList();
     </script>
 }
-<section class="section" page-group="page-group-quanlynhacungcap" id="page-quanlynhacungcap" data-aos="fade-up">
+<section class="section" page-group="page-group-quanlytruonghoc" id="page-quanlytruonghoc" data-aos="fade-up">
     <div class="card">
         <div class="card-body">
             <div class="btn-group btn-group-sm" role="group">
@@ -41,21 +41,21 @@
                             if (themMoi)
                             {
                                 <a class="dropdown-item c-pointer"
-                                   onclick="quanLyNhaCungCap.nhaCungCap.displayModal_CRUD('create')">
+                                   onclick="quanLyTruongHoc.truongHoc.displayModal_CRUD('create')">
                                     <i class="bi bi-plus-circle-fill"></i> Thêm mới
                                 </a>
                             }
                             if (capNhat)
                             {
                                 <a class="dropdown-item c-pointer"
-                                   onclick="quanLyNhaCungCap.nhaCungCap.displayModal_CRUD('update')">
+                                   onclick="quanLyTruongHoc.truongHoc.displayModal_CRUD('update')">
                                     <i class="bi bi-pencil-square"></i> Cập nhật
                                 </a>
                             }
                             if (xoaBo)
                             {
                                 <a class="dropdown-item c-pointer"
-                                   onclick="quanLyNhaCungCap.nhaCungCap.delete('multiple')">
+                                   onclick="quanLyTruongHoc.truongHoc.delete('multiple')">
                                     <i class="bi bi-trash3-fill"></i> Xóa bỏ
                                 </a>
                             }
@@ -70,25 +70,25 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-12">
-                    <div class="divider divider-right" data-bs-toggle="collapse" href="#nhacungcap-timkiem-collapse">
+                    <div class="divider divider-right" data-bs-toggle="collapse" href="#truonghoc-timkiem-collapse">
                         <div class="divider-text font-bold">
                             <div class="badges">
                                 <span class="badge bg-primary c-pointer">Nhấn xem bộ lọc</span>
                             </div>
                         </div>
                     </div>
-                    <div class="collapse" id="nhacungcap-timkiem-collapse">
-                        @Html.Partial("~/Views/Admin/QuanLyNhaCungCap/nhacungcap-timkiem.cshtml", Model)
+                    <div class="collapse" id="truonghoc-timkiem-collapse">
+                        @Html.Partial("~/Views/Admin/QuanLyTruongHoc/truonghoc-timkiem.cshtml", Model)
                         <hr />
                     </div>
                 </div>
             </div>
             @*<hr />*@
-            <div class="row py-2" id="nhacungcap-getList-container"></div>
+            <div class="row py-2" id="truonghoc-getList-container"></div>
         </div>
     </div>
 
 </section>
-<!--nhacungcap-crud-->
-<div class="modal fade text-left" id="nhacungcap-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+<!--truonghoc-crud-->
+<div class="modal fade text-left" id="truonghoc-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
 </div>

@@ -1,16 +1,16 @@
 ﻿@using EDM_DB
-@model Applications.QuanLyNhaCungCap.Dtos.GetList_NhaCungCap_Output_Dto
+@model Applications.QuanLyTruongHoc.Dtos.GetList_TruongHoc_Output_Dto
 
 @{
-    string tableName = "nhacungcap";
+    string tableName = "truonghoc";
     var columns = new[] {
        "Mã NCC", "Tên NCC", "Tên mặt hàng", "Số điện thoại", "Tài liệu", "Trường học"
     };
 
-    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-themmoi");
-    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-capnhat");
-    bool xemChiTiet = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-xemchitiet");
-    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-xoabo");
+    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-themmoi");
+    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-capnhat");
+    bool xemChiTiet = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-xemchitiet");
+    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytruonghoc-xoabo");
 }
 
 <div class="mb-2 toggle-vis-bar">
@@ -40,14 +40,14 @@
                                 if (themMoi)
                                 {
                                     <a class="dropdown-item c-pointer"
-                                       onclick="quanLyNhaCungCap.nhaCungCap.displayModal_CRUD('create')">
+                                       onclick="quanLyTruongHoc.truonghoc.displayModal_CRUD('create')">
                                         <i class="bi bi-plus-circle-fill"></i> Thêm mới
                                     </a>
                                 }
                                 if (xoaBo)
                                 {
                                     <a class="dropdown-item c-pointer"
-                                       onclick="quanLyNhaCungCap.nhaCungCap.delete('multiple')">
+                                       onclick="quanLyTruongHoc.truonghoc.delete('multiple')">
                                         <i class="bi bi-trash3-fill"></i> Xóa bỏ
                                     </a>
                                 }
@@ -71,34 +71,34 @@
         </tr>
     </tfoot>
     <tbody>
-        @foreach (var nhaCungCap in Model.NhaCungCaps)
+        @foreach (var truonghoc in Model.TruongHocs)
         {
-            <tr id="@nhaCungCap.NhaCungCap.IdNhaCungCap">
+            <tr id="@truonghoc.TruongHoc.IdTruongHoc">
                 <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
 
                 <td class="text-left c-pointer"
                     onclick="sys.copyTextFromElement(this)"
                     title="Click để sao chép"
-                    data-copy="@nhaCungCap.NhaCungCap.Stt.ToString()">
-                    <a href="#"><i class="bi bi-copy"></i> @Public.Handle.TruncateString(maxLength: 10, input: nhaCungCap.NhaCungCap.MaNhaCungCap.ToString())</a>
+                    data-copy="@truonghoc.TruongHoc.Stt.ToString()">
+                    <a href="#"><i class="bi bi-copy"></i> @Public.Handle.TruncateString(maxLength: 10, input: truonghoc.TruongHoc.MaTruongHoc.ToString())</a>
                 </td>
                 <td class="text-left">
                     @if (xemChiTiet)
                     {
                         <a class="c-pointer"
-                           href="/QuanLyNhaCungCap/xemChiTiet_NhaCungCap?idNhaCungCap=@nhaCungCap.NhaCungCap.IdNhaCungCap">
-                            @nhaCungCap.NhaCungCap.TenNhaCungCap
+                           href="/QuanLyTruongHoc/xemChiTiet_TruongHoc?idTruongHoc=@truonghoc.TruongHoc.IdTruongHoc">
+                            @truonghoc.TruongHoc.TenTruongHoc
                         </a>
                     }
                     else
                     {
-                        @nhaCungCap.NhaCungCap.TenNhaCungCap
+                        @truonghoc.TruongHoc.TenTruongHoc
                     }
                 </td>
-                <td class="text-left">@nhaCungCap.NhaCungCap.TenMatHang</td>
-                <td class="text-left">@nhaCungCap.NhaCungCap.SoDienThoai</td>
-                <td class="text-left">@nhaCungCap.SoLuongTaiLieu</td>
-                <td class="text-left">@nhaCungCap.SoLuongTruongHoc</td>
+                <td class="text-left">@truonghoc.TruongHoc.TenMatHang</td>
+                <td class="text-left">@truonghoc.TruongHoc.SoDienThoai</td>
+                <td class="text-left">@truonghoc.SoLuongTaiLieu</td>
+                <td class="text-left">@truonghoc.SoLuongTruongHoc</td>
 
                 <td class="text-center">
                     <div style="white-space: nowrap">
@@ -113,21 +113,21 @@
                                     if (capNhat)
                                     {
                                         <a class="dropdown-item c-pointer"
-                                           onclick="quanLyNhaCungCap.nhaCungCap.displayModalCRUD('update', '@nhaCungCap.NhaCungCap.IdNhaCungCap')">
+                                           onclick="quanLyTruongHoc.truonghoc.displayModalCRUD('update', '@truonghoc.TruongHoc.IdTruongHoc')">
                                             <i class="bi bi-eye"></i> Cập nhật
                                         </a>
                                     }
                                     if (xemChiTiet)
                                     {
                                         <a class="dropdown-item c-pointer"
-                                           href="/QuanLyNhaCungCap/xemChiTiet_NhaCungCap?idNhaCungCap=@nhaCungCap.NhaCungCap.IdNhaCungCap">
+                                           href="/QuanLyTruongHoc/xemChiTiet_TruongHoc?idTruongHoc=@truonghoc.TruongHoc.IdTruongHoc">
                                             <i class="bi bi-eye"></i> Xem chi tiết
                                         </a>
                                     }
                                     if (xoaBo)
                                     {
                                         <a class="dropdown-item c-pointer"
-                                           onclick="quanLyNhaCungCap.nhaCungCap.delete('single', '@nhaCungCap.NhaCungCap.IdNhaCungCap')">
+                                           onclick="quanLyTruongHoc.truonghoc.delete('single', '@truonghoc.TruongHoc.IdTruongHoc')">
                                             <i class="bi bi-trash3-fill"></i> Xóa bỏ
                                         </a>
                                     }

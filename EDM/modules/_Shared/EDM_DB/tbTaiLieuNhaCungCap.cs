@@ -17,6 +17,8 @@ namespace EDM_DB
         public int Stt { get; set; }
         public System.Guid IdFile { get; set; }
         public Nullable<System.Guid> IdNhaCungCap { get; set; }
+        public Nullable<System.DateTimeOffset> NgayDangKy { get; set; }
+        public Nullable<System.DateTimeOffset> NgayHetHan { get; set; }
         public Nullable<System.Guid> FileName { get; set; }
         public string FileNameUpdate { get; set; }
         public string FileExtension { get; set; }
@@ -26,6 +28,7 @@ namespace EDM_DB
         public byte[] ByteData { get; set; }
         public string GhiChu { get; set; }
         public Nullable<int> TrangThai { get; set; }
+        public Nullable<int> TrangThaiBaoQuan { get; set; }
         public Nullable<System.Guid> MaDonViSuDung { get; set; }
         public Nullable<System.DateTime> NgayTao { get; set; }
         public Nullable<System.Guid> IdNguoiTao { get; set; }

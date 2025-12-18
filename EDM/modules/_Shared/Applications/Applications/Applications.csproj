@@ -152,6 +152,16 @@
     <Compile Include="QuanLyNhaCungCap\Interfaces\IQuanLyNhaCungCapService.cs" />
     <Compile Include="QuanLyNhaCungCap\Models\tbNhaCungCapExtend.cs" />
     <Compile Include="QuanLyNhaCungCap\Services\QuanLyNhaCungCapService.cs" />
+    <Compile Include="QuanLyTruongHoc\Dtos\DisplayModal_CRUD_TruongHoc_Input_Dto.cs" />
+    <Compile Include="QuanLyTruongHoc\Dtos\DisplayModal_CRUD_TruongHoc_Output_Dto.cs" />
+    <Compile Include="QuanLyTruongHoc\Dtos\GetList_TruongHoc_Input_Dto.cs" />
+    <Compile Include="QuanLyTruongHoc\Dtos\GetList_TruongHoc_Output_Dto.cs" />
+    <Compile Include="QuanLyTruongHoc\Dtos\Index_Output_Dto.cs" />
+    <Compile Include="QuanLyTruongHoc\Dtos\LocThongTinDto.cs" />
+    <Compile Include="QuanLyTruongHoc\Filters\GetTruongHocFilter.cs" />
+    <Compile Include="QuanLyTruongHoc\Interfaces\IQuanLyTruongHocService.cs" />
+    <Compile Include="QuanLyTruongHoc\Models\tbTruongHocExtend.cs" />
+    <Compile Include="QuanLyTruongHoc\Services\QuanLyTruongHocService.cs" />
     <Compile Include="UserType\AppServices\QuanLyKieuNguoiDungService.cs" />
     <Compile Include="QuanLyNguoiDung\Models\CapNhatTaiKhoanMail.cs" />
     <Compile Include="QuanLyNguoiDung\Models\NoiDungBanQuyen.cs" />

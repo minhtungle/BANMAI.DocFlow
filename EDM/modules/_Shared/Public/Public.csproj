@@ -376,6 +376,7 @@
     <Compile Include="Enums\LichHenTrangThaiKhamEnum.cs" />
     <Compile Include="Enums\LoaiChiDinhEnum.cs" />
     <Compile Include="Enums\LoaiRangEnum.cs" />
+    <Compile Include="Enums\TrangThaiBaoQuanEnum.cs" />
     <Compile Include="Enums\TinhTrangRangEnum.cs" />
     <Compile Include="Enums\TrangThaiDatLichHenEnum.cs" />
     <Compile Include="Enums\TrangThaiDieuTriEnum.cs" />

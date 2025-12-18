@@ -8,6 +8,8 @@ using Applications.QuanLyNguoiDung.Interfaces;
 using Applications.QuanLyNguoiDung.Services;
 using Applications.QuanLyNhaCungCap.Interfaces;
 using Applications.QuanLyNhaCungCap.Services;
+using Applications.QuanLyTruongHoc.Interfaces;
+using Applications.QuanLyTruongHoc.Services;
 using Autofac;
 using Autofac.Integration.Mvc;
 using EDM_DB;
@@ -22,6 +24,7 @@ using QuanLyDonVi.Controllers;
 using QuanLyKieuNguoiDung.Controllers;
 using QuanLyNguoiDung.Controllers;
 using QuanLyNhaCungCap.Controllers;
+using QuanLyTruongHoc.Controllers;
 using System;
 using System.Data.Entity;
 using System.Net.Http;
@@ -42,6 +45,7 @@ namespace EDM.App_Start
             builder.RegisterControllers(typeof(QuanLyCoCauToChucController).Assembly);
 
             builder.RegisterControllers(typeof(QuanLyNhaCungCapController).Assembly);
+            builder.RegisterControllers(typeof(QuanLyTruongHocController).Assembly);
             #endregion
 
             #region Đăng ký Infrastructure
@@ -102,9 +106,9 @@ namespace EDM.App_Start
             builder.RegisterType<QuanLyNhaCungCapService>()
                    .As<IQuanLyNhaCungCapService>()
                    .InstancePerRequest();
-            //builder.RegisterType<QuanLyTruongHocService>()
-            //       .As<IQuanLyTruongHocService>()
-            //       .InstancePerRequest();
+            builder.RegisterType<QuanLyTruongHocService>()
+                   .As<IQuanLyTruongHocService>()
+                   .InstancePerRequest();
             #endregion
 
             #region Đăng ký IRepositories

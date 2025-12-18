@@ -221,6 +221,8 @@
           <Property Name="Stt" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IdFile" Type="uniqueidentifier" Nullable="false" />
           <Property Name="IdNhaCungCap" Type="uniqueidentifier" />
+          <Property Name="NgayDangKy" Type="datetimeoffset" Precision="7" />
+          <Property Name="NgayHetHan" Type="datetimeoffset" Precision="7" />
           <Property Name="FileName" Type="uniqueidentifier" />
           <Property Name="FileNameUpdate" Type="nvarchar(max)" />
           <Property Name="FileExtension" Type="nvarchar(max)" />
@@ -230,6 +232,7 @@
           <Property Name="ByteData" Type="varbinary(max)" />
           <Property Name="GhiChu" Type="nvarchar(max)" />
           <Property Name="TrangThai" Type="int" />
+          <Property Name="TrangThaiBaoQuan" Type="int" />
           <Property Name="MaDonViSuDung" Type="uniqueidentifier" />
           <Property Name="NgayTao" Type="datetime" />
           <Property Name="IdNguoiTao" Type="uniqueidentifier" />
@@ -516,6 +519,8 @@
           <Property Name="Stt" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdFile" Type="Guid" Nullable="false" />
           <Property Name="IdNhaCungCap" Type="Guid" />
+          <Property Name="NgayDangKy" Type="DateTimeOffset" Precision="7" />
+          <Property Name="NgayHetHan" Type="DateTimeOffset" Precision="7" />
           <Property Name="FileName" Type="Guid" />
           <Property Name="FileNameUpdate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FileExtension" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -525,6 +530,7 @@
           <Property Name="ByteData" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="GhiChu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TrangThai" Type="Int32" />
+          <Property Name="TrangThaiBaoQuan" Type="Int32" />
           <Property Name="MaDonViSuDung" Type="Guid" />
           <Property Name="NgayTao" Type="DateTime" Precision="3" />
           <Property Name="IdNguoiTao" Type="Guid" />
@@ -785,6 +791,7 @@
                 <ScalarProperty Name="IdNguoiTao" ColumnName="IdNguoiTao" />
                 <ScalarProperty Name="NgayTao" ColumnName="NgayTao" />
                 <ScalarProperty Name="MaDonViSuDung" ColumnName="MaDonViSuDung" />
+                <ScalarProperty Name="TrangThaiBaoQuan" ColumnName="TrangThaiBaoQuan" />
                 <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
                 <ScalarProperty Name="GhiChu" ColumnName="GhiChu" />
                 <ScalarProperty Name="ByteData" ColumnName="ByteData" />
@@ -794,6 +801,8 @@
                 <ScalarProperty Name="FileExtension" ColumnName="FileExtension" />
                 <ScalarProperty Name="FileNameUpdate" ColumnName="FileNameUpdate" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="NgayHetHan" ColumnName="NgayHetHan" />
+                <ScalarProperty Name="NgayDangKy" ColumnName="NgayDangKy" />
                 <ScalarProperty Name="IdNhaCungCap" ColumnName="IdNhaCungCap" />
                 <ScalarProperty Name="IdFile" ColumnName="IdFile" />
                 <ScalarProperty Name="Stt" ColumnName="Stt" />

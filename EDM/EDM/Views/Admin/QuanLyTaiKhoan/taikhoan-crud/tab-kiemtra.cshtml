@@ -1,0 +1,88 @@
+﻿@using Applications.QuanLyTaiKhoan.Enums
+@using Public.Helpers
+@model Applications.QuanLyTaiKhoan.Dtos.DisplayModel_CRUD_TaiKhoan_Output_Dto
+@{
+    var loaiTaiKhoans = Enum.GetValues(typeof(LoaiTaiKhoanEnum))
+      .Cast<LoaiTaiKhoanEnum>()
+      .Select(e => new SelectListItem
+      {
+          Value = e.ToString(),
+          Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+      })
+      .ToList();
+}
+
+<div class="row">
+    <div class="col-12 col-md-6">
+        <div class="row" intro-container="thongtin-chung">
+            <!--Nền tảng-->
+            <div class="col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="select-nentang">Nền tảng</label>
+                        <select class="form-control form-select2"
+                                id="select-nentang" name="select-nentang"
+                                required>
+                            <option disabled>Chọn thông tin</option>
+                            @foreach (var nenTang in Model.NenTangs)
+                            {
+                                <option value="@nenTang.IdNenTang">
+                                    @nenTang.TenNenTang
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-nentang">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+            <!--Loại tài khoản-->
+            <div class="col-12 col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="select-loaitaikhoan">Loại tài khoản</label>
+                        <select class="form-control" id="select-loaitaikhoan" name="select-loaitaikhoan" required>
+                            <option disabled @(loaiTaiKhoans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                            @foreach (var loaiTaiKhoan in loaiTaiKhoans)
+                            {
+                                <option value="@loaiTaiKhoan.Value">
+                                    @loaiTaiKhoan.Text
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-loaitaikhoan">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+            <!--Access Token-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-accesstoken">Id & AccessToken</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control"
+                                   placeholder="Id"
+                                   id="input-id" required>
+                            <input type="text" class="form-control"
+                                   placeholder="AccessToken"
+                                   id="input-accesstoken" required>
+                            <button class="btn btn-success" type="button"
+                                    id="btn-xacthuctaikhoan"
+                                    title="Xác thực tài khoản"
+                                    onclick="quanLyTaiKhoan.taiKhoan.xacThucTaiKhoan()">
+                                <i class="bi bi-plugin"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback feedback" for="input-accesstoken">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="row" id="thongtinxacthuc-container">
+            <div class="col-12">
+                <p class="text-center text-danger fst-italic">Không có dữ liệu</p>
+            </div>
+        </div>
+    </div>
+</div>

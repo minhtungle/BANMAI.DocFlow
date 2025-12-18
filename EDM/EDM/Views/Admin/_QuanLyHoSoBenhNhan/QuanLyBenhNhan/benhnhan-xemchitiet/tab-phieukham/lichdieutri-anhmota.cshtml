@@ -1,0 +1,37 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyLichDieuTri.Dtos.DisplayModal_CRUD_LichDieuTri_Output_Dto
+
+<!--Ảnh mô tả-->
+<div class="col-12" id="anhmota-container">
+    <label class="form-label d-block">
+        Ảnh mô tả
+        <small class="text-danger fst-italic">(Tối đa 10 ảnh)</small>
+    </label>
+
+    <div class="image-grid" id="anhmota-grid">
+        <!-- Ô thêm ảnh -->
+        <label class="image-item add-image-item" for="image-anhmota">
+            <i class="bi bi-plus-circle-fill"></i>
+        </label>
+        <input type="file" id="image-anhmota" class="form-control"
+               multiple accept=".png, .jpg, .jpeg"
+               onchange="quanLyBenhNhan.lichDieuTri.handleAnhMoTa.add(this, 'anhmota')"
+               hidden />
+
+        <!-- VÙNG ẢNH -->
+        <div id="anhmota-items" style="display: contents;">
+            @foreach (var anh in Model.LichDieuTri.AnhMoTas)
+            {
+                <div class="image-item" data-id="@anh.IdFile" data-idtamthoi="0">
+                    <img src="@anh.DuongDanTepOnline" alt="@anh.FileName" />
+                    <button class="delete-btn"
+                            onclick="quanLyBenhNhan.lichDieuTri.handleAnhMoTa.delete('anhmota', this)">
+                        &times;
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

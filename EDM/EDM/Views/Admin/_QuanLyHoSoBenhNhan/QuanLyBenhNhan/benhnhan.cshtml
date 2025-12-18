@@ -1,0 +1,93 @@
+﻿@using Public.Models
+@model Applications.QuanLyBenhNhan.Dtos.Index_Output_Dto
+@{
+    ViewBag.Title = "Quản lý bệnh nhân";
+    Layout = "~/Views/_Shared/Admin/admin.cshtml";
+}
+@section hTitle {}
+@section hBreadcrumb {
+    <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Quản lý bệnh nhân</li>
+}
+@section styles {
+    <link href="~/Content/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/quanlybenhnhan.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="~/Content/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/quanlybenhnhan.js"></script>
+    <script>
+        var quanLyBenhNhan = new QuanLyBenhNhan();
+        quanLyBenhNhan.init();
+        quanLyBenhNhan.benhNhan.getList();
+    </script>
+}
+<section class="section" page-group="page-group-quanlybenhnhan" id="page-quanlybenhnhan" data-aos="fade-up">
+    <div class="card">
+        <div class="card-body">
+            <div class="btn-group btn-group-sm" role="group">
+                <!--Thao tác-->
+                <a class="btn btn-primary"><i class="bi bi-three-dots-vertical"></i></a>
+                <div class="btn-group btn-group-sm dropdown">
+                    <button type="button" title="Thao tác" class="btn btn-light-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-reference="parent">
+                        Thao tác
+                    </button>
+                    <div class="dropdown-menu">
+                        @{
+                            bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-themmoi");
+                            bool capNhat_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-capnhat");
+                            bool xoaBo_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-xoabo");
+                            if (themMoi)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBenhNhan.benhNhan.displayModal_CRUD('create')">
+                                    <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                </a>
+                            }
+                            if (capNhat_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBenhNhan.benhNhan.displayModal_CRUD('update')">
+                                    <i class="bi bi-pencil-square"></i> Cập nhật
+                                </a>
+                            }
+                            if (xoaBo_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBenhNhan.benhNhan.delete('multiple')">
+                                    <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="divider divider-right" data-bs-toggle="collapse" href="#benhnhan-timkiem-collapse">
+                        <div class="divider-text font-bold">
+                            <div class="badges">
+                                <span class="badge bg-primary c-pointer">Nhấn xem bộ lọc</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse" id="benhnhan-timkiem-collapse">
+                        @Html.Partial("~/Views/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/benhnhan-timkiem.cshtml", Model)
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            @*<hr />*@
+            <div class="row py-2" id="benhnhan-getList-container"></div>
+        </div>
+    </div>
+
+</section>
+<!--benhnhan-crud-->
+<div class="modal fade text-left" id="benhnhan-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>

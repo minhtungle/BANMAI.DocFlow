@@ -1,0 +1,97 @@
+﻿@using EDM_DB
+@model Applications.QuanLyBaiDang.Dtos.XemChiTiet_Output_Dto
+
+@{
+    var baiDang = Model.BaiDang;
+}
+
+<div class="row" intro-container="thongtin-chung">
+    <!--Id-->
+    <input id="input-idbaidang" value="@baiDang.BaiDang.IdBaiDang" hidden />
+    <!--Nội dung-->
+    <div class="col-12 col-sm-12 col-md-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                @{
+                    var thoiGian = baiDang.BaiDang.ThoiGian.HasValue
+                        ? baiDang.BaiDang.ThoiGian.Value
+                        : DateTime.Now.AddHours(1);
+                }
+                <div class="ms-0 mb-3 d-flex flex-row align-items-center">
+                    <div class="avatar avatar-lg bg-body me-2 box-shadow"
+                         style="height: 50px; align-items: center; justify-content: center;">
+                        <i class="bi bi-person-fill fs-2"></i>
+                    </div>
+                    <a class="c-pointer" style="width: fit-content;"
+                       title="Xem bài đăng thực tế"
+                       href="@baiDang.BaiDang.LienKetBaiDang_TrenNenTang"
+                       target="_blank" rel="noopener noreferrer">
+                        <span class="font-bold fs-4">@baiDang.TaiKhoan.Name <i class="bi bi-link-45deg"></i></span><br />
+                        <small>@thoiGian</small>
+                    </a>
+                </div>
+                <textarea class="form-control min-h-100 max-h-300" rows="3"
+                          readonly>@(baiDang.BaiDang.NoiDung ?? "")</textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Ảnh mô tả-->
+<div class="row">
+    <div class="col-12">
+        <div class="image-grid">
+            <!-- VÙNG ẢNH -->
+            <div id="anhmota-items" style="display: contents;">
+                @for (int i = 0; i < baiDang.TepDinhKems.Count; i++)
+                {
+                    var tep = baiDang.TepDinhKems[i];
+                    <div class="image-item" data-id="@tep.IdTep" data-idtamthoi="0">
+                        <img src="@tep.DuongDanTepOnline" alt="@tep.FileName" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!--Bình luận-->
+<div class="divider divider-left" data-bs-toggle="collapse" href="#binhluan-collapse" aria-expanded="true">
+    <div class="divider-text font-bold">
+        <div class="badges">
+            <span class="badge bg-primary c-pointer">
+                <i class="bi bi-chat-dots-fill"></i> Bình luận
+            </span>
+        </div>
+    </div>
+</div>
+@if (Model.BinhLuans != null && Model.BinhLuans.Count > 0)
+{
+    <div class="collapse show" id="binhluan-collapse" style="">
+        <div class="row" style="max-height: 300px; overflow-y: scroll;">
+            @foreach (var binhLuan in Model.BinhLuans)
+            {
+                <div class="col-12">
+                    <div class="ms-0 mb-3 d-flex flex-row align-items-center">
+                        <div class="avatar avatar-lg bg-body me-2 box-shadow"
+                             style="height: 30px; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div>
+                            <span>@binhLuan.Message</span><br />
+                            <small>@binhLuan.CreatedTime</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="collapse show" id="binhluan-collapse" style="">
+        <div class="row" style="max-height: 300px; overflow-y: scroll;">
+            <div class="col-12">
+                <span>Chưa có bình luận</span>
+            </div>
+        </div>
+    </div>
+}

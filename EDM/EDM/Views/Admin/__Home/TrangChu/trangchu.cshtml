@@ -1,0 +1,33 @@
+﻿@using Public.Models
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/_Shared/Admin/admin.cshtml";
+    Permission per = Session["Permission"] as Permission;
+    var CHUCNANGS_HTML = ViewBag.CHUCNANGS_HTML;
+}
+@section hTitle {}
+@section hBreadcrumb {
+    <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+}
+
+@section styles {
+    <link href="~/Assets/templates/Other/firework-animation/firework.css" rel="stylesheet" />
+}
+<section class="section" id="page-home" data-aos="fade-up">
+    <div class="row">
+        @Html.Raw(CHUCNANGS_HTML)
+    </div>
+
+    @*<div class="row">
+            <div class="col-sm-12 col-md-4 animate-hover-container">
+                <a class="card text-center animate-hover" href="~/QuanLyChienDich/Index">
+                    <div class="card-body">
+                        <img src="~/Assets/images/post.png" style="width: 10rem;" />
+                    </div>
+                    <div class="card-footer">
+                        <h4 class="card-title"><i class="bi bi-calendar-range-fill"></i> Quản lý chiến dịch</h4>
+                    </div>
+                </a>
+            </div>
+        </div>*@
+</section>

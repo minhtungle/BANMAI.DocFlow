@@ -1,0 +1,32 @@
+﻿@using Applications.QuanLyBaiDang.Dtos
+@model Applications.QuanLyBaiDang.Dtos.FormAddBaiDangDto
+
+@if (Model.LoaiView == "row")
+{
+    foreach (var baiDang in Model.Data.BaiDangs)
+    {
+        <tr row="@baiDang.RowNumber"
+            onclick="quanLyBaiDang.handleModal_CRUD.readRow(this)">
+            <td class="text-center"><input class="form-check-input checkRow-baidang-getList" type="checkbox" /></td>
+            <td class="w-70" style="vertical-align: top;">
+                <span data-tentruong="IdTamThoi">@Public.Handle.TruncateString(input: baiDang.RowNumber.ToString(), maxLength: 12)</span>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    foreach (var baiDang in Model.Data.BaiDangs)
+    {
+        <div class="row baidang-read p-2" row="@baiDang.RowNumber">
+            <div class="col-sm-12 col-lg-12">
+                @Html.Partial("~/Views/Admin/QuanLyBaiDang/quanlybaidang-tab/baidang/baidang-crud/form-thongtinchung.cshtml",
+               new FormThongTinChung_Dto
+               {
+                   BaiDang = baiDang,
+                   Data = Model,
+               })
+            </div>
+        </div>
+    }
+}

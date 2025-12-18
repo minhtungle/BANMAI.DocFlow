@@ -1,0 +1,271 @@
+﻿@using EDM_DB
+@model Applications.QuanLyBaiDang.Dtos.FormThongTinChung_Dto
+@using TrangThaiDangBai_BaiDang = Applications.QuanLyBaiDang.Enums.TrangThaiDangBaiEnum;
+
+@{
+    var baiDang = Model.BaiDang;
+    var data = Model.Data;
+}
+
+<div class="row" intro-container="thongtin-chung">
+    <!--Id-->
+    <input id="input-idbaidang" value="@baiDang.BaiDang.IdBaiDang" hidden />
+    <!--Chiến dịch-->
+    <div class="col-sm-12 col-md-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="select-chiendich">Chiến dịch</label>
+                <select class="form-control form-select2"
+                        id="select-chiendich" name="select-chiendich">
+                    <option disabled @(data.ChienDichs.Count > 0 ? "" : "")>Chọn thông tin</option>
+                    @foreach (var chienDich in data.ChienDichs)
+                    {
+                        <option value="@chienDich.IdChienDich"
+                                @(chienDich.IdChienDich == baiDang.BaiDang.IdChienDich ? "selected" : "")>
+                            @chienDich.TenChienDich
+                        </option>
+                    }
+                </select>
+                <div class="invalid-feedback feedback" for="select-loaiaitool">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--AI Tool-->
+    <div class="col-sm-12 col-md-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="select-aitool">AI Tool</label>
+                <select class="form-control form-select2"
+                        id="select-aitool" name="select-aitool" required>
+                    <option disabled @(data.AITools.Count > 0 ? "" : "")>Chọn thông tin</option>
+                    @foreach (var aiTool in data.AITools)
+                    {
+                        <option value="@aiTool.IdAITool">
+                            @aiTool.ToolName
+                        </option>
+                    }
+                </select>
+                <div class="invalid-feedback feedback" for="select-loaiaitool">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--AI Bot-->
+    <div class="col-sm-12 col-md-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="select-aibot">AI Bot</label>
+                <select class="form-control form-select2"
+                        id="select-aibot" name="select-aibot"
+                        onchange="quanLyBaiDang.baiDang.handleAI.chonLoaiAIBot('@baiDang.RowNumber')"
+                        required>
+                    <option value="">Chọn thông tin</option>
+                    @foreach (var aiBot in data.AIBots)
+                    {
+                        <option value="@aiBot.IdAIBot">
+                            @aiBot.TenAIBot
+                        </option>
+                    }
+                </select>
+                <div class="invalid-feedback feedback" for="select-aibot">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Keywords-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-keywords">
+                    Keywords <small class="text-danger fst-italic">(Mẫu thông tin )</small>
+                </label>
+                @{
+                    var plh_keywords = $@"Tên sản phẩm
+Số lượng
+Giảm giá
+...
+";
+                }
+                <textarea class="form-control min-h-100 max-h-300" id="input-keywords" rows="5"
+                          placeholder="@plh_keywords" title="@plh_keywords" readonly></textarea>
+                <div class="invalid-feedback feedback" for="input-keywords">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Nhập Keywords-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-keywords-danhap">
+                    Nhập Keywords <small class="text-danger fst-italic">(Nhập theo mẫu)</small>
+                </label>
+                @{
+                    var plh_nhapkeywords = $@"Tên sản phẩm: Quà lưu niệm
+Số lượng: 1000 hộp
+Giảm giá: 50%
+...
+";
+                }
+                <textarea class="form-control min-h-100 max-h-300" id="input-keywords-danhap" rows="5"
+                          placeholder="@plh_nhapkeywords" title="@plh_nhapkeywords"></textarea>
+                <a class="btn btn-sm btn-success" id="btn-taonoidung-ai"
+                   style="position: absolute; z-index: 1; right: .6rem; top: 2rem;"
+                   onclick="quanLyBaiDang.baiDang.handleAI.taoNoiDungAI('@Model.BaiDang.RowNumber')">
+                    <i class="bi bi-fast-forward-fill"></i>
+                </a>
+                <div class="invalid-feedback feedback" for="input-keywords-danhap">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Nội dung-->
+    <div class="col-12 col-sm-12 col-md-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-noidung-ai">Nội dung</label>
+                @{
+                    var plh_noidung = $@"1. Chọn AI Tool
+2. Chọn AI bot
+3. Nhập keywords (nếu có)
+4. Nhấn mũi tên để tạo nội dung
+";
+                }
+                <textarea class="form-control min-h-100 max-h-300" id="input-noidung-ai" rows="10"
+                          placeholder="@plh_noidung" title="@plh_noidung"
+                          value="@(baiDang.BaiDang.NoiDung ?? "")"
+                          onchange="quanLyBaiDang.handleModal_CRUD.updateSingleCell(this)"
+                          required>@(baiDang.BaiDang.NoiDung ?? "")</textarea>
+                <div class="invalid-feedback feedback" for="input-noidung-ai">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Thời gian-->
+    <div class="col-12 col-sm-12 col-md-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-thoigian">Thời gian</label>
+                @{
+                    var minTime = DateTime.Now.AddHours(1).ToString("yyyy-MM-ddTHH:mm");
+                    var thoiGian = baiDang.BaiDang.ThoiGian.HasValue
+                        ? baiDang.BaiDang.ThoiGian.Value
+                        : DateTime.Now.AddHours(1);
+                    var valueTime = thoiGian.ToString("yyyy-MM-ddTHH:mm");
+                }
+                <input type="datetime-local" class="form-control"
+                       id="input-thoigian"
+                       name="input-thoigian"
+                       min="@minTime"
+                       value="@valueTime"
+                       required />
+                <div class="invalid-feedback feedback" for="input-thoigian">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Tài khoản MXH-->
+    <div class="col-sm-12 col-md-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="select-taikhoan-@Model.BaiDang.RowNumber">Tài khoản MXH</label>
+                <select class="form-control form-select2"
+                        id="select-taikhoan-@Model.BaiDang.RowNumber" name="select-taikhoan-@Model.BaiDang.RowNumber"
+                        multiple required>
+                    <option disabled>Chọn thông tin</option>
+                    @foreach (var taiKhoan in data.TaiKhoans)
+                    {
+                        <option value="@taiKhoan.IdTaiKhoan"
+                                @(taiKhoan.IdTaiKhoan == baiDang.BaiDang.IdTaiKhoan ? "selected" : "")>
+                            @taiKhoan.Name
+                        </option>
+                    }
+                </select>
+                <div class="invalid-feedback feedback" for="select-taikhoan-@Model.BaiDang.RowNumber">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!--Tự tạo ảnh bằng AI-->
+    <div class="col-12 col-sm-12 col-md-12">
+        <div class="position-relative mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="checkbox-sudunganh-ai"
+                       id="checkbox-sudunganh-ai"
+                       onchange="quanLyBaiDang.baiDang.handleAI.kichHoatSuDungAnhAI()"
+                       checked="@baiDang.BaiDang.TuTaoAnhAI" />
+                <label class="form-check-label" for="checkbox-sudunganh-ai">
+                    Tự tạo ảnh bằng AI
+                </label>
+            </div>
+        </div>
+    </div>
+    <!--Ảnh mô tả-->
+    <div class="col-12" id="anhmota-container">
+        <label class="form-label d-block">
+            Ảnh mô tả
+            <small class="text-danger fst-italic">(Tối đa 10 ảnh)</small>
+        </label>
+
+        <div class="image-grid" id="anhmota-grid-@Model.BaiDang.RowNumber">
+            <!-- Ô thêm ảnh -->
+            <label class="image-item add-image-item" for="image-anhmota-@Model.BaiDang.RowNumber">
+                <i class="bi bi-plus-circle-fill"></i>
+            </label>
+            <input type="file" id="image-anhmota-@Model.BaiDang.RowNumber" class="form-control"
+                   multiple accept=".png, .jpg, .jpeg"
+                   onchange="quanLyBaiDang.baiDang.handleAnhMoTa.add(this, 'anhmota', '@Model.BaiDang.RowNumber')"
+                   hidden />
+
+            <!-- VÙNG ẢNH -->
+            <div id="anhmota-items" style="display: contents;">
+                @for (int i = 0; i < baiDang.TepDinhKems.Count; i++)
+                {
+                    var tep = baiDang.TepDinhKems[i];
+                    <div class="image-item" data-id="@tep.IdTep" data-idtamthoi="0">
+                        <img src="@tep.DuongDanTepOnline" alt="@tep.FileName" />
+                        <button class="delete-btn"
+                                onclick="quanLyBaiDang.baiDang.handleAnhMoTa.delete('anhmota', this)">
+                            &times;
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @*<div class="col-12" id="anhmota-container">
+            <div class="form-group mb-3">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <td colspan="2" class="w-90 text-center">
+                                Ảnh mô tả
+                                <small class="text-danger fst-italic">(Tối đa 10 ảnh)</small>
+                            </td>
+                            <td class="text-center">
+                                <label class="btn c-pointer" for="image-anhmota-@Model.BaiDang.RowNumber">
+                                    <i class="bi bi-plus-circle-fill"></i>
+                                </label>
+                                <input type="file" id="image-anhmota-@Model.BaiDang.RowNumber" class="form-control"
+                                       multiple accept=".png, .jpg, .jpeg"
+                                       onchange="quanLyBaiDang.baiDang.handleAnhMoTa.add(this, 'anhmota', '@Model.BaiDang.RowNumber')"
+                                       hidden />
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-anhmota-container">
+                        @for (int i = 0; i < baiDang.TepDinhKems.Count; i++)
+                        {
+                            var tep = baiDang.TepDinhKems[i];
+                            <tr data-id="@tep.IdTep" data-idtamthoi="0">
+                                <td class="text-center">@(i+1)</td>
+                                <td class="w-90">@tep.FileName</td>
+                                <td class="text-center">
+                                    <a class="btn c-pointer"
+                                       onclick="quanLyBaiDang.baiDang.handleAnhMoTa.delete('anhmota', this)">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>*@
+</div>

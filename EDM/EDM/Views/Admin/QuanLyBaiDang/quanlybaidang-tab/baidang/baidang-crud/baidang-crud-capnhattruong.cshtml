@@ -1,0 +1,117 @@
+﻿@using EDM_DB
+@model Applications.QuanLyBaiDang.Dtos.Index_OutPut_Dto
+@{ 
+    string endName = "capnhattruong";
+}
+
+<div class="modal fade text-left" id="baidang-crud-@endName" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content" style="border: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập nhật theo trường dữ liệu</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <p class="text-danger">Lưu ý: Tích chọn các trường dữ liệu muốn cập nhật</p>
+                    <!--Chiến dịch-->
+                    <div class="col-sm-12 col-md-12">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="select-chiendich">
+                                    <input class="form-check-input" type="checkbox" name="checkbox-chiendich-@endName" id="checkbox-chiendich-@endName" />
+                                    <label class="form-check-label" for="checkbox-chiendich-@endName">
+                                        Chiến dịch
+                                    </label>
+                                </label>
+                                <select class="form-control form-select2"
+                                        id="select-chiendich-@endName" name="select-chiendich-@endName">
+                                    <option disabled @(Model.ChienDichs.Count > 0 ? "" : "")>Chọn thông tin</option>
+                                    @foreach (var chienDich in Model.ChienDichs)
+                                    {
+                                        <option value="@chienDich.IdChienDich">@chienDich.TenChienDich</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="select-chiendich-@endName">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Loại AI Tool-->
+                    <div class="col-sm-12 col-md-6">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="select-aitool-@endName">
+                                    <input class="form-check-input" type="checkbox" name="checkbox-aitool-@endName" id="checkbox-aitool-@endName" />
+                                    <label class="form-check-label" for="checkbox-aitool-@endName">
+                                        AI Tool
+                                    </label>
+                                </label>
+                                <select class="form-control form-select2"
+                                        id="select-aitool-@endName" name="select-aitool-@endName">
+                                    <option disabled @(Model.AITools.Count > 0 ? "" : "")>Chọn thông tin</option>
+                                    @foreach (var aiTool in Model.AITools)
+                                    {
+                                        <option value="@aiTool.IdAITool">@aiTool.ToolName</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="select-loaiaitool">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Loại AI Bot-->
+                    <div class="col-sm-12 col-md-6">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="select-aibot-@endName">
+                                    <input class="form-check-input" type="checkbox" name="checkbox-aibot-@endName" id="checkbox-aibot-@endName" />
+                                    <label class="form-check-label" for="checkbox-aibot-@endName">
+                                        AI Bot
+                                    </label>
+                                </label>
+                                <select class="form-control form-select2"
+                                        id="select-aibot-@endName" name="select-aibot-@endName">
+                                    <option value="">Chọn thông tin</option>
+                                    @foreach (var aiBot in Model.AIBots)
+                                    {
+                                        <option value="@aiBot.IdAIBot">@aiBot.TenAIBot</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="select-aibot-@endName">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Tài khoản MXH-->
+                    <div class="col-sm-12 col-md-12">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="select-taikhoan-@endName">
+                                    <input class="form-check-input" type="checkbox" name="checkbox-taikhoan-@endName" id="checkbox-taikhoan-@endName" />
+                                    <label class="form-check-label" for="checkbox-taikhoan-@endName">
+                                        Tài khoản MXH
+                                    </label>
+                                </label>
+                                <select class="form-control form-select2"
+                                        id="select-taikhoan-@endName" name="select-taikhoan-@endName"
+                                        multiple>
+                                    <option disabled @(Model.TaiKhoans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                    @foreach (var taiKhoan in Model.TaiKhoans)
+                                    {
+                                        <option value="@taiKhoan.IdTaiKhoan">@taiKhoan.Name</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="select-taikhoan-@endName">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="quanLyBaiDang.handleModal_CRUD.updateMultipleCell()">
+                    <span class="">Cập nhật</span>
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span class="">Đóng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

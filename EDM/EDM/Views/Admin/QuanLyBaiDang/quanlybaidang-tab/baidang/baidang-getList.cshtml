@@ -1,0 +1,226 @@
+﻿@model Applications.QuanLyBaiDang.Dtos.GetList_BaiDang_Output_Dto
+@using Applications.QuanLyBaiDang.Models
+@using Public.Helpers
+@using Public.Models
+@using TrangThaiDangBai_BaiDang = Applications.QuanLyBaiDang.Enums.TrangThaiDangBaiEnum;
+
+@{
+    string tableName = "baidang";
+    var columns = new[] {
+        "Id bài đăng", "Nội dung", "Thời gian đăng", "Nền tảng",
+        "Chiến dịch", "Trạng thái đăng", "Người tạo"
+    };
+
+    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-themmoi");
+    bool xemChiTiet = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-xemchitiet");
+    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-capnhat");
+    bool chuyenDangBai = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-chuyendangbai");
+    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-xoabo");
+}
+
+<div class="mb-2 toggle-vis-bar">
+    Hiển thị:
+    @Public.Helpers.HtmlHelper.RenderToggleLinks($"{tableName}-getList", columns)
+</div>
+<table class="table table-hover table-bordered table-sticky w-100" id="@tableName-getList" data-page-length="10">
+    <thead class="nowrap" style="white-space: nowrap !important">
+        <tr>
+            <th class="text-center" data-orderable="false"></th>
+
+            @foreach (var c in columns)
+            {
+                <th class="text-center">@c</th>
+            }
+
+            <th class="text-center w-5" intro-container="dulieu-tacvu" data-orderable="false">
+                <div style="white-space: nowrap">
+                    <div class="btn-group btn-group-sm dropstart">
+                        <button type="button" title="Thao tác" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                data-reference="parent">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <div class="dropdown-menu me-2" style="border: 1px solid black;">
+                            @{
+                             
+                                if (themMoi)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBaiDang.baiDang.displayModal_CRUD('create')">
+                                        <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                    </a>
+                                }
+                                if (xemChiTiet)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBaiDang.baiDang.xemChiTiet()">
+                                        <i class="bi bi-eye-fill"></i> Xem chi tiết
+                                    </a>
+                                }
+                                if (capNhat)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBaiDang.baiDang.displayModal_CRUD('create')">
+                                        <i class="bi bi-pencil-square"></i> Cập nhật
+                                    </a>
+                                }
+                                if (chuyenDangBai)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBaiDang.baiDang.displayModal_CRUD('draftToSave')">
+                                        <i class="bi bi-plus-circle-fill"></i> Chuyển đăng bài
+                                    </a>
+                                }
+                                if (xoaBo)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBaiDang.baiDang.delete('multiple')">
+                                        <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tfoot class="show-footer-above">
+        <tr>
+            <th class="text-center"><input class="form-check-input checkAll-@tableName-getList" type="checkbox" title="Chọn tất cả" /></th>
+
+            @foreach (var c in columns)
+            {
+                <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+            }
+
+            <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." disabled /></th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var baiDang in Model.BaiDangs)
+        {
+            <tr id="@baiDang.BaiDang.IdBaiDang">
+                <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
+                <td class="text-left c-pointer"
+                    onclick="sys.copyTextFromElement(this)"
+                    title="Click để sao chép"
+                    data-copy="@baiDang.BaiDang.IdBaiDang.ToString()">
+                    <a href="#"><i class="bi bi-copy"></i> @Public.Handle.TruncateString(maxLength: 10, input: baiDang.BaiDang.IdBaiDang.ToString())</a>
+                </td>
+                <td class="text-left" title="@baiDang.BaiDang.NoiDung">
+                    @Public.Handle.TruncateString(maxLength: 28, input: baiDang.BaiDang.NoiDung)
+                </td>
+                <td class="text-left">@baiDang.BaiDang.ThoiGian.Value</td>
+                <td class="text-left">@(baiDang.NenTang?.TenNenTang)</td>
+                <td class="text-left">@(baiDang.ChienDich?.TenChienDich)</td>
+                <td class="text-center">
+                    @{
+                        var value = (TrangThaiDangBai_BaiDang)baiDang.BaiDang.TrangThaiDangBai;
+                        var description = value.GetDescription();
+
+                        string badgeClass = "";
+                        string iconClass = "";
+
+                        if (value == TrangThaiDangBai_BaiDang.Draft)
+                        {
+                            badgeClass = "badge bg-light-secondary";
+                            iconClass = "bi bi-puzzle";
+                        }
+                        else if (value == TrangThaiDangBai_BaiDang.WaitToPost)
+                        {
+                            badgeClass = "badge bg-light-warning";
+                            iconClass = "bi bi-alarm";
+                        }
+                        else if (value == TrangThaiDangBai_BaiDang.Success)
+                        {
+                            badgeClass = "badge bg-light-success";
+                            iconClass = "bi bi-check";
+                        }
+                        else if (value == TrangThaiDangBai_BaiDang.Error)
+                        {
+                            badgeClass = "badge bg-light-danger";
+                            iconClass = "bi bi-bug";
+                        }
+                        else if (value == TrangThaiDangBai_BaiDang.WaitToDelete)
+                        {
+                            badgeClass = "badge bg-light-warning";
+                            iconClass = "bi bi-recycle";
+                        }
+                        else if (value == TrangThaiDangBai_BaiDang.Deleted)
+                        {
+                            badgeClass = "badge bg-light-danger";
+                            iconClass = "bi bi-trash3";
+                        }
+                    }
+                    <span class="@badgeClass"><i class="@iconClass"></i> @description</span>
+                </td>
+                <td class="text-left">@baiDang.NguoiTao.TenNguoiDung</td>
+                <td class="text-center">
+                    <div style="white-space: nowrap">
+                        <div class="btn-group btn-group-sm dropstart">
+                            <button type="button" title="Thao tác" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-reference="parent">
+                                <i class="bi bi-gear-fill"></i>
+                            </button>
+                            <div class="dropdown-menu me-2" style="border: 1px solid black;">
+                                @{
+                                    // Cho phép sửa nếu (nháp, lỗi, chờ đăng) - sau 5 phút
+                                    bool _capNhat = ((baiDang.BaiDang.TrangThaiDangBai.HasValue
+                                        && ((baiDang.BaiDang.TrangThaiDangBai.Value == (int?)TrangThaiDangBai_BaiDang.Draft)
+                                        || (baiDang.BaiDang.TrangThaiDangBai.Value == (int?)TrangThaiDangBai_BaiDang.WaitToPost)
+                                        || (baiDang.BaiDang.TrangThaiDangBai.Value == (int?)TrangThaiDangBai_BaiDang.Error))
+                                        ) && Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-capnhat"));
+                                    // Cho phép chuyển đăng bài (nháp)
+                                    bool _chuyenDangBai = (baiDang.BaiDang.TrangThaiDangBai.HasValue
+                                        && (baiDang.BaiDang.TrangThaiDangBai.Value == (int?)TrangThaiDangBai_BaiDang.Draft)
+                                        && Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-chuyendangbai"));
+                                    bool xemBaiDangThucTe = !string.IsNullOrEmpty(baiDang.BaiDang.LienKetBaiDang_TrenNenTang);
+
+                                    if (xemChiTiet)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="quanLyBaiDang.baiDang.xemChiTiet('@baiDang.BaiDang.IdBaiDang')">
+                                            <i class="bi bi-eye-fill"></i> Xem chi tiết
+                                        </a>
+                                    }
+                                    if (_capNhat)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="quanLyBaiDang.baiDang.displayModal_CRUD('update', '@baiDang.BaiDang.IdBaiDang')">
+                                            <i class="bi bi-pencil-square"></i> Cập nhật
+                                        </a>
+                                    }
+                                    if (_chuyenDangBai)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="quanLyBaiDang.baiDang.displayModal_CRUD('draftToSave', '@baiDang.BaiDang.IdBaiDang')">
+                                            <i class="bi bi-plus-circle-fill"></i> Chuyển đăng bài
+                                        </a>
+                                    }
+                                    if (xoaBo)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="quanLyBaiDang.baiDang.delete('single', '@baiDang.BaiDang.IdBaiDang')">
+                                            <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                        </a>
+                                    }
+                                    if (xemBaiDangThucTe)
+                                    {
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item c-pointer"
+                                           href="@baiDang.BaiDang.LienKetBaiDang_TrenNenTang"
+                                           target="_blank" rel="noopener noreferrer">
+                                            <i class="bi bi-link-45deg"></i> Xem bài đăng thực tế
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

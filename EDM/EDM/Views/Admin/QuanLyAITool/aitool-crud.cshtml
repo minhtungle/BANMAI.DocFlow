@@ -1,0 +1,177 @@
+﻿@using EDM_DB
+@using Applications.QuanLyAITool.Enums
+@using Public.Helpers
+@model Applications.QuanLyAITool.Dtos.DisplayModel_CRUD_AITool_Output_Dto
+@{
+    var aiTool = Model.AITool;
+    var loai = Model.Loai;
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+}
+@{
+    var selectedTool = aiTool.ToolCode;
+    var toolCodes = Enum.GetValues(typeof(AIToolTypeEnum))
+                      .Cast<AIToolTypeEnum>()
+                      .Select(e => new SelectListItem
+                      {
+                          Value = e.ToString(),
+                          Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+                          Selected = selectedTool == e.ToString()
+                      })
+                      .ToList();
+}
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                @(Model.Loai == "create" ? "Thêm mới" : Model.Loai  == "update" ? "Cập nhật" : "Xem chi tiết")
+            </h5>
+            <div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-end justify-content-center" id="" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="thongtin-list"
+                   data-bs-toggle="list" href="#thongtin" role="tab">Thông tin Loại AI Tool</a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    <div class="row" intro-container="thongtin-chung">
+                        <!--Id-->
+                        <input id="input-idaitool" value="@aiTool.IdAITool" hidden />
+
+                        <!--Tool Code-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-toolcode">Tool Code</label>
+                                    <select class="form-control" id="input-toolcode" name="input-toolcode"
+                                            @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                        <option disabled @(toolCodes.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                        @foreach (var toolCode in toolCodes)
+                                        {
+                                            <option value="@toolCode.Value" @(toolCode.Selected ? "selected" : "")>
+                                                @toolCode.Text
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback feedback" for="input-toolcode">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Tool Name-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-toolname">Tool Name</label>
+                                    <input class="form-control" id="input-toolname"
+                                           placeholder="OpenAI - ChatGPT"
+                                           value="@(aiTool.ToolName ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-toolname">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--ApiEndpoint-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-apiendpoint">ApiEndpoint</label>
+                                    <input class="form-control" id="input-apiendpoint"
+                                           placeholder="https://api.openai.com/v1/chat/completions"
+                                           value="@(aiTool.ApiEndpoint ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-apiendpoint">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Model-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-model">Model</label>
+                                    <input class="form-control" id="input-model"
+                                           placeholder="gpt-3.5-turbo"
+                                           value="@(aiTool.Model ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-model">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--APIKey-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-apikey">APIKey</label>
+                                    @{
+                                        var plh_apikey = $@"sk-abc123xyz";
+                                    }
+                                    <textarea class="form-control min-h-100 max-h-300" id="input-apikey" rows="2"
+                                              placeholder="@plh_apikey" title="@plh_apikey"
+                                              value="@(aiTool.APIKey ?? "")"
+                                              required>@(aiTool.APIKey ?? "")</textarea>
+                                    <div class="invalid-feedback feedback" for="input-apikey">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Additional Headers-->
+                        <div class="col-12 col-sm-12 col-md-6" hidden>
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-additionalheaders">Additional Headers</label>
+                                    @{
+                                        var plh_additionalheaders = $@"Nhập Additional Headers ...";
+                                    }
+                                    <textarea class="form-control min-h-100 max-h-300" id="input-additionalheaders" rows="3"
+                                              placeholder="@plh_additionalheaders" title="@plh_additionalheaders"
+                                              value="@(aiTool.AdditionalHeaders ?? "")">@(aiTool.AdditionalHeaders ?? "")</textarea>
+                                    <div class="invalid-feedback feedback" for="input-additionalheaders">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--RequestBody Template-->
+                        <div class="col-12 col-sm-12 col-md-6" hidden>
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-requestbodytemplate">RequestBody Template</label>
+                                    @{
+                                        var plh_requestbodytemplate = @"{
+                              ""model"": ""{{model}}"",
+                              ""temperature"": {{temperature}},
+                              ""messages"": [
+                                { ""role"": ""user"", ""content"": ""{{prompt}}"" }
+                              ]
+}";
+                                    }
+                                    <textarea class="form-control min-h-100 max-h-300" id="input-requestbodytemplate" rows="3"
+                                              placeholder="@plh_requestbodytemplate" title="@plh_requestbodytemplate"
+                                              value="@(aiTool.RequestBodyTemplate ?? "")">@(aiTool.RequestBodyTemplate ?? "")</textarea>
+                                    <div class="invalid-feedback feedback" for="input-requestbodytemplate">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Ghi chú-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label for="input-ghichu">Ghi chú</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(aiTool.GhiChu ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>@(aiTool.GhiChu ?? "")</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary ml-1" onclick="quanLyAITool.aiTool.save('@Model.Loai')">
+                <span class="">Lưu</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

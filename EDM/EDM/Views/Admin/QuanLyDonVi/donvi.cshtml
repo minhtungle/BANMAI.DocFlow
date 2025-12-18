@@ -1,0 +1,72 @@
+﻿@using Public.Models
+@model Applications.QuanLyDonVi.Dtos.Index_OutPut_Dto
+@{
+    ViewBag.Title = "Quản lý đơn vị";
+    Layout = "~/Views/_Shared/Admin/admin.cshtml";
+}
+@section hTitle {}
+@section hBreadcrumb {
+    <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Quản lý đơn vị</li>
+}
+@section styles {
+    <link href="~/Content/Admin/QuanLyDonVi/quanlydonvi.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="~/Content/Admin/QuanLyDonVi/quanlydonvi.js"></script>
+    <script>
+        var quanLyDonVi = new QuanLyDonVi();
+        quanLyDonVi.init();
+    </script>
+}
+<section class="section" page-group="page-group-quanlydonvi" id="page-quanlydonvi" data-aos="fade-up">
+    <div class="card">
+        <div class="card-body">
+            <div class="btn-group btn-group-sm" role="group">
+                <!--Thao tác-->
+                <a class="btn btn-primary"><i class="bi bi-three-dots-vertical"></i></a>
+                <div class="btn-group btn-group-sm dropdown">
+                    <button type="button" title="Thao tác" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-reference="parent">
+                        Thao tác
+                    </button>
+                    <div class="dropdown-menu">
+                        @{
+                            bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlydonvi-themmoi");
+                            bool capNhat_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlydonvi-capnhat");
+                            bool xoaBo_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlydonvi-xoabo");
+                            if (themMoi)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyDonVi.donVi.displayModal_CRUD('create')">
+                                    <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                </a>
+                            }
+                            if (capNhat_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyDonVi.donVi.displayModal_CRUD('update')">
+                                    <i class="bi bi-pencil-square"></i> Cập nhật
+                                </a>
+                            }
+                            if (xoaBo_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyDonVi.donVi.delete('multiple')">
+                                    <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body" id="donvi-getList-container"></div>
+    </div>
+</section>
+<!--donvi-crud-->
+<div class="modal fade text-left" id="donvi-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>

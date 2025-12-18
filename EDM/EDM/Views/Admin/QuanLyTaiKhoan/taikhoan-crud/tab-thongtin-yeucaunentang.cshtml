@@ -1,0 +1,76 @@
+﻿@using EDM_DB
+@model tbNenTang
+@{
+    string tenNenTang = "facebook";
+    if (Model.IdNenTang != null && Model.IdNenTang != Guid.Empty)
+    {
+        tenNenTang = Model.TenNenTang.ToLower();
+    }
+}
+
+
+<div class="row">
+    <!--User_Id-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-user_id">User_Id</label>
+                <input type="text" class="form-control"
+                       placeholder="Nhập thông tin ..."
+                       id="input-user_id" required>
+                <div class="invalid-feedback feedback" for="input-user_id">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--User_Access_Token-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-user_access_token">User_Access_Token</label>
+                <input type="text" class="form-control"
+                       placeholder="Nhập thông tin ..."
+                       id="input-user_access_token" required>
+                <div class="invalid-feedback feedback" for="input-user_access_token">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Page_Id-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-page_id">Page_Id</label>
+                <input type="text" class="form-control"
+                       placeholder="Nhập thông tin ..."
+                       id="input-page_id" required>
+                <div class="invalid-feedback feedback" for="input-page_id">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    <!--Page_Access_Token-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-page_access_token">Page_Access_Token</label>
+                <input type="text" class="form-control"
+                       placeholder="Nhập thông tin ..."
+                       id="input-page_access_token" required>
+                <div class="invalid-feedback feedback" for="input-page_access_token">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+    @if (tenNenTang == "instagram")
+    {
+        <!--Insta Id-->
+        <div class="col-12 col-sm-12 col-md-12">
+            <div class="position-relative">
+                <div class="form-group mb-3">
+                    <label class="required" for="input-instagram_page_id">Instagram_Page_Id</label>
+                    <input type="text" class="form-control"
+                           placeholder="Nhập thông tin ..."
+                           id="input-instagram_page_id" required>
+                    <div class="invalid-feedback feedback" for="input-instagram_page_id">Không được để trống</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,85 @@
+﻿@using Applications.QuanLyTaiKhoan.Enums
+@using Public.Helpers
+@model Applications.QuanLyTaiKhoan.Dtos.DisplayModel_CRUD_TaiKhoan_Output_Dto
+@{
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+    var taiKhoan = Model.TaiKhoan.TaiKhoan;
+    var selectedLoaiTaiKhoan = taiKhoan.LoaiTaiKhoan == null ? "user" : taiKhoan.LoaiTaiKhoan.ToLower();
+    var loaiTaiKhoans = Enum.GetValues(typeof(LoaiTaiKhoanEnum))
+        .Cast<LoaiTaiKhoanEnum>()
+        .Select(e => new SelectListItem
+        {
+            Value = e.ToString().ToLower(),
+            Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+            Selected = selectedLoaiTaiKhoan == e.ToString().ToLower()
+        })
+        .Where(x => x.Value == "page")
+        .ToList();
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="row" intro-container="thongtin-chung">
+            <!--Id-->
+            <input id="input-idtaikhoan" value="@Guid.Empty" hidden />
+
+            <!--Nền tảng-->
+            <div class="col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="select-nentang">Nền tảng</label>
+                        <select class="form-control form-select2"
+                                id="select-nentang" name="select-nentang"
+                                onchange="quanLyTaiKhoan.taiKhoan.chonNenTang()"
+                                required>
+                            <option disabled>Chọn thông tin</option>
+                            @foreach (var nenTang in Model.NenTangs)
+                            {
+                                <option value="@nenTang.IdNenTang"
+                                        @(nenTang.IdNenTang == taiKhoan.IdNenTang ? "selected" : "")>
+                                    @nenTang.TenNenTang
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-nentang">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+            <!--Loại tài khoản-->
+            <div class="col-12 col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="select-loaitaikhoan">Loại tài khoản</label>
+                        <select class="form-control" id="select-loaitaikhoan" name="select-loaitaikhoan"
+                                onchange="quanLyTaiKhoan.taiKhoan.chonLoaiTaiKhoan()"
+                                required>
+                            <option disabled @(loaiTaiKhoans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                            @foreach (var loaiTaiKhoan in loaiTaiKhoans)
+                            {
+                                <option value="@loaiTaiKhoan.Value"
+                                        @(loaiTaiKhoan.Selected ? "selected" : "")>
+                                    @loaiTaiKhoan.Text
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-loaitaikhoan">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-12" id="yeucaunentang-container">
+                @Html.Partial("~/Views/Admin/QuanLyTaiKhoan/taikhoan-crud/tab-thongtin-yeucaunentang.cshtml",
+                    Model.TaiKhoan.NenTang)
+            </div>
+            <!--Ghi chú-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label for="input-ghichu">Ghi chú</label>
+                        <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                  placeholder="Nhập thông tin ..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

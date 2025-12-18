@@ -1,0 +1,195 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyLichHen.Dtos.DisplayModal_CRUD_LichHen_Output_Dto
+@{
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+
+    var loaiDieuTris = Enum.GetValues(typeof(LichHenLoaiDieuTriEnum))
+    .Cast<LichHenLoaiDieuTriEnum>()
+    .Select(e => new SelectListItem
+    {
+        Value = ((int)e).ToString(),
+        Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+        Selected = Model.LichHen?.LichHen?.LoaiDieuTri != null
+                   && (int)Model.LichHen.LichHen.LoaiDieuTri == (int)e
+    })
+    .ToList();
+
+    var loaiThoiGians = Enum.GetValues(typeof(LichHenLoaiThoiGianEnum))
+    .Cast<LichHenLoaiThoiGianEnum>()
+    .Select(e => new SelectListItem
+    {
+        Value = ((int)e).ToString(), // ✅ giá trị số tương ứng enum
+        Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+        Selected = Model.LichHen?.LichHen?.LoaiThoiGian != null
+                   && (int)Model.LichHen.LichHen.LoaiThoiGian == (int)e
+    })
+    .ToList();
+}
+
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                @(Model.Loai == "create" ? "Thêm mới" : Model.Loai  == "update" ? "Cập nhật" : "Xem chi tiết")
+            </h5>
+            <div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-end justify-content-center" id="" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="thongtin-list"
+                   data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    <div class="row" intro-container="thongtin-chung">
+                        <!--Id-->
+                        <input id="input-idbenhnhan" value="@Model.LichHen.LichHen.IdBenhNhan" hidden />
+                        <input id="input-idlichhen" value="@Model.LichHen.LichHen.IdLichHen" hidden />
+
+                        <!--Bác sỹ-->
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="select-bacsy">Bác sỹ</label>
+                                    <select class="form-control" id="select-bacsy" name="select-bacsy"
+                                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                        <option disabled @(Model.BacSys.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                        @foreach (var bacSy in Model.BacSys)
+                                        {
+                                            <option value="@bacSy.IdBacSy" @(bacSy.IdBacSy == Model.LichHen.LichHen.IdBacSy ? "selected" : "")>
+                                                @bacSy.HoTen
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback feedback" for="select-bacsy">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Loại điều trị-->
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="select-loaidieutri">Loại điều trị</label>
+                                    <select class="form-control" id="select-loaidieutri" name="select-loaidieutri"
+                                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                        <option disabled @(loaiDieuTris.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                        @foreach (var data in loaiDieuTris)
+                                        {
+                                            <option value="@data.Value" @(data.Selected ? "selected" : "")>
+                                                @data.Text
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback feedback" for="select-loaidieutri">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Loại thời gian-->
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="select-loaithoigian">Loại thời gian</label>
+                                    <select class="form-control" id="select-loaithoigian" name="select-loaithoigian"
+                                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                        <option disabled @(loaiThoiGians.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                        @foreach (var data in loaiThoiGians)
+                                        {
+                                            <option value="@data.Value" @(data.Selected ? "selected" : "")>
+                                                @data.Text
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback feedback" for="select-loaithoigian">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ngày hẹn-->
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-ngayhen">Ngày hẹn</label>
+                                    <input type="date"
+                                           class="form-control" id="input-ngayhen"
+                                           value="@(Public.Helpers.DateHelper.DateToString(date: Model.LichHen.LichHen.NgayHen, format: "yyyy-MM-dd") ?? "")"
+                                           min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-ngayhen">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Thời gian bắt đầu-->
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-thoigianbatdau">Thời gian bắt đầu</label>
+                                    <input type="time"
+                                           class="form-control" id="input-thoigianbatdau"
+                                           value="@(Public.Helpers.DateHelper.TimeToString(time: Model.LichHen.LichHen.ThoiGianBatDau) ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-thoigianbatdau">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Thời gian kết thúc-->
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-thoigianketthuc">Thời gian kết thúc</label>
+                                    <input type="time"
+                                           class="form-control" id="input-thoigianketthuc"
+                                           value="@(Public.Helpers.DateHelper.TimeToString(time: Model.LichHen.LichHen.ThoiGianKetThuc) ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-thoigianketthuc">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Nội dung khám-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-noidungkham">Nội dung khám</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-noidungkham" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(Model.LichHen.LichHen.NoiDungKham ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")
+                                              required>@(Model.LichHen.LichHen.GhiChu ?? "")</textarea>
+                                    <div class="invalid-feedback feedback" for="input-noidungkham">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ghi chú-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label for="input-ghichu">Ghi chú</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(Model.LichHen.LichHen.GhiChu ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>@(Model.LichHen.LichHen.GhiChu ?? "")</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary ml-1" onclick="quanLyLichHen.lichHen.save('@Model.Loai')">
+                <span class="">Lưu</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

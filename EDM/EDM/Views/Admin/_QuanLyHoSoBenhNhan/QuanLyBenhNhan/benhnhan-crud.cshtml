@@ -1,0 +1,204 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyBenhNhan.Dtos.DisplayModal_CRUD_BenhNhan_Output_Dto
+@{
+    var benhNhan = Model.BenhNhan.BenhNhan;
+    var loai = Model.Loai;
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+
+    var selected_GioiTinh = benhNhan.GioiTinh == true ? 1 : 0;
+    var gioiTinhs = Enum.GetValues(typeof(GioiTinhEnum))
+                      .Cast<GioiTinhEnum>()
+                      .Select(e => new SelectListItem
+                      {
+                          Value = e.ToString(),
+                          Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+                          Selected = selected_GioiTinh.ToString() == e.ToString()
+                      })
+                      .ToList();
+}
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                @(Model.Loai == "create" ? "Thêm mới" : Model.Loai  == "update" ? "Cập nhật" : "Xem chi tiết")
+            </h5>
+            <div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-end justify-content-center" id="" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="thongtin-list"
+                   data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    <div class="row" intro-container="thongtin-chung">
+                        <!--Id-->
+                        <input id="input-idbenhnhan" value="@benhNhan.IdBenhNhan" hidden />
+
+                        <!--Họ tên-->
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-hoten">Họ tên</label>
+                                    <input type="text"
+                                           class="form-control" id="input-hoten"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(benhNhan.HoTen ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-hoten">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Giới tính-->
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="select-gioitinh">Giới tính</label>
+                                    <select class="form-control" id="select-gioitinh" name="select-gioitinh"
+                                            @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                        <option disabled @(gioiTinhs.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                        @foreach (var gioiTinh in gioiTinhs)
+                                        {
+                                            <option value="@gioiTinh.Value" @(gioiTinh.Selected ? "selected" : "")>
+                                                @gioiTinh.Text
+                                            </option>
+                                        }
+                                    </select>
+                                    <div class="invalid-feedback feedback" for="select-gioitinh">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ngày sinh-->
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-ngaysinh">Ngày sinh</label>
+                                    <input type="date"
+                                           class="form-control" id="input-ngaysinh"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(Public.Helpers.DateHelper.DateToString(date: benhNhan.NgaySinh, format: "yyyy-MM-dd") ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-ngaysinh">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Số điện thoại-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-sodienthoai">Số điện thoại</label>
+                                    <input type="tel"
+                                           class="form-control" id="input-sodienthoai"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(benhNhan.SoDienThoai ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-sodienthoai">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Email-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-email">Email</label>
+                                    <input type="email"
+                                           class="form-control" id="input-email"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(benhNhan.Email ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-email">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--CCCD-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-cccd">CCCD</label>
+                                    <input type="number"
+                                           class="form-control" id="input-cccd"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(benhNhan.CCCD ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-cccd">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Nghề nghiệp-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-nghenghiep">Nghề nghiệp</label>
+                                    <input type="text"
+                                           class="form-control" id="input-nghenghiep"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(benhNhan.NgheNghiep ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-nghenghiep">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Địa chỉ-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-diachi">Địa chỉ</label>
+                                    <input type="text"
+                                           class="form-control" id="input-diachi"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(benhNhan.DiaChi ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-diachi">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Tiền sử bệnh-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label for="input-tiensubenh">Tiền sử bệnh</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-tiensubenh" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(benhNhan.GhiChu ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>@(benhNhan.GhiChu ?? "")</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ghi chú-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label for="input-ghichu">Ghi chú</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(benhNhan.GhiChu ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(loai) ? "disabled" : "")>@(benhNhan.GhiChu ?? "")</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary ml-1" onclick="quanLyBenhNhan.benhNhan.save('@Model.Loai')">
+                <span class="">Lưu</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

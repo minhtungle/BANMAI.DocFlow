@@ -1,0 +1,225 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyLichDieuTri.Dtos.DisplayModal_CRUD_LichDieuTri_Output_Dto
+
+@{
+    string tableName = "tientrinhdieutri";
+    var columns = new[] {
+        "Bác sĩ", "Trợ thủ", "Răng số", "Tình trạng răng", "Tên thủ thuật", "Nội dung thủ thuật",
+        "S.L", "Giá tiền", "Giảm giá %", "Tổng chi phí", "Tình trạng", "Ghi chú"
+    };
+
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+
+    var trangThaiDieuTris = Enum.GetValues(typeof(TrangThaiDieuTriEnum))
+    .Cast<TrangThaiDieuTriEnum>()
+    .Select(e => new SelectListItem
+    {
+        Value = ((int)e).ToString(), // ✅ giá trị số tương ứng enum
+        Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+        //Selected = _tienTrinhDieuTri?.TienTrinhDieuTri?.TrangThaiDieuTri != null
+        //           && (int)_tienTrinhDieuTri?.TienTrinhDieuTri?.TrangThaiDieuTri == (int)e
+    })
+    .ToList();
+}
+
+@*<div class="mb-2 toggle-vis-bar">
+        Hiển thị:
+        @Public.Helpers.HtmlHelper.RenderToggleLinks($"{tableName}-getList", columns)
+    </div>*@
+
+<table class="table table-hover table-bordered table-sticky w-100" id="@tableName-getList" data-page-length="-1">
+    <thead class="nowrap" style="white-space: nowrap !important">
+        <tr>
+            <th class="text-center" data-orderable="false"></th>
+
+            @foreach (var c in columns)
+            {
+                <th class="text-center" data-orderable="false">@c</th>
+            }
+
+            <th class="text-center w-5" intro-container="dulieu-tacvu" data-orderable="false">
+                <a class="btn btn-light-secondary"
+                   onclick="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.themDongTienTrinhDieuTri('@Model.Loai' ,'@Model.LichDieuTri.LichDieuTri.IdLichDieuTri')">
+                    <i class="bi bi-plus-circle-fill"></i>
+                </a>
+            </th>
+        </tr>
+    </thead>
+    <tfoot class="show-footer-above">
+        <tr>
+            <th class="text-center"><input class="form-check-input checkAll-@tableName-getList" type="checkbox" title="Chọn tất cả" /></th>
+
+            @foreach (var c in columns)
+            {
+                <th>
+                    <input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." disabled
+                           style="min-width: 10rem;" />
+                </th>
+            }
+
+            <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." disabled /></th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var tienTrinhDieuTri in Model.LichDieuTri.TienTrinhDieuTris)
+        {
+            var id = tienTrinhDieuTri.TienTrinhDieuTri.IdTienTrinhDieuTri;
+            <tr class="tr-tientrinhdieutri" id="@id">
+                <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
+
+                <td>
+                    <select class="form-control form-select2"
+                            id="select-bacsy-@id"
+                            name="select-bacsy-@id"
+                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                        @foreach (var bacSy in Model.BacSys)
+                        {
+                            <option value="@bacSy.IdBacSy"
+                                    @(bacSy.IdBacSy == tienTrinhDieuTri.TienTrinhDieuTri.IdBacSy ? "selected" : "")>
+                                @bacSy.HoTen
+                            </option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control form-select2"
+                            id="select-phuta-@id"
+                            name="select-phuta-@id"
+                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                        <option value="" @(Model.BacSys.Count > 0 ? "" : "selected")>Không có</option>
+                        @foreach (var bacSy in Model.BacSys)
+                        {
+                            <option value="@bacSy.IdBacSy"
+                                    @(bacSy.IdBacSy == tienTrinhDieuTri.TienTrinhDieuTri.IdPhuTa ? "selected" : "")>
+                                @bacSy.HoTen
+                            </option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <div class="input-group">
+                        <input type="text"
+                               class="form-control" id="input-rangso-@id"
+                               value="@(tienTrinhDieuTri.TienTrinhDieuTri.RangSo ?? "")"
+                               placeholder="Nhấn chọn răng"
+                               readonly required
+                               @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                        <a class="btn btn-primary"
+                           onclick="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.displayModal_ChonRang(this)">
+                            <i class="bi bi-hand-index-thumb"></i>
+                        </a>
+                    </div>
+
+                    @*<input type="text"
+                               class="form-control" id="input-rangso-@id"
+                               value="@(tienTrinhDieuTri.TienTrinhDieuTri.RangSo ?? "")"
+                               disabled hidden
+                               @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                        <label class="form-control c-pointer" id="label-rangso-@id"
+                               onclick="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.displayModal_ChonRang(this)">
+                            @(tienTrinhDieuTri.TienTrinhDieuTri.RangSo ?? "Nhấn chọn răng")
+                        </label>*@
+                </td>
+                <td>
+                    <select class="form-control form-select2" id="select-tinhtrangrang-@id" name="select-tinhtrangrang"
+                            onchange="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.chonTinhTrangRang(this)"
+                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                        @foreach (var tinhTrangRang in Model.TinhTrangRangs)
+                        {
+                            <option value="@tinhTrangRang.IdTinhTrangRang"
+                                    @(tinhTrangRang.IdTinhTrangRang == tienTrinhDieuTri.TienTrinhDieuTri.IdTinhTrangRang ? "selected" : "")>
+                                @tinhTrangRang.TenTinhTrangRang
+                            </option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control form-select2" id="select-thuthuat-@id" name="select-thuthuat"
+                            onchange="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.chonThuThuat(this)"
+                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                        @foreach (var loaiThuThuat in Model.LoaiThuThuats)
+                        {
+                            <optgroup label="@loaiThuThuat.LoaiThuThuat.TenLoaiThuThuat">
+                                @foreach (var thuThuat in loaiThuThuat.ThuThuats)
+                                {
+                                    <option value="@thuThuat.IdThuThuat"
+                                            data-giatien="@thuThuat.GiaTien"
+                                            data-noidung="@thuThuat.NoiDung"
+                                            @(thuThuat.IdThuThuat == tienTrinhDieuTri.TienTrinhDieuTri.IdThuThuat ? "selected" : "")>
+                                        @thuThuat.TenThuThuat
+                                    </option>
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <textarea style="min-width: 20rem;" class="form-control min-h-50 max-h-100" id="input-noidungthuthuat-@id" rows="2"
+                              placeholder="Nhập thông tin ..."
+                              value="@(tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat ?? "")"
+                              @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>@(tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat ?? "")</textarea>
+                </td>
+                <td>
+                    <input type="number"
+                           class="form-control" id="input-soluong-@id"
+                           placeholder="0"
+                           value="@(tienTrinhDieuTri.TienTrinhDieuTri.SoLuong ?? 0)"
+                           onchange="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.tinhTongChiPhi(this)"
+                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                </td>
+                <td>
+                    <input type="money"
+                           class="form-control" id="input-giatien-@id"
+                           placeholder="0"
+                           value="@(tienTrinhDieuTri.TienTrinhDieuTri.GiaTien ?? 0)"
+                           onchange="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.tinhTongChiPhi(this)"
+                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                </td>
+                <td>
+                    <input type="number"
+                           class="form-control" id="input-phantramgiamgia-@id"
+                           placeholder="0"
+                           value="@(tienTrinhDieuTri.TienTrinhDieuTri.PhanTramGiamGia ?? 0)"
+                           onchange="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.tinhTongChiPhi(this)"
+                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                </td>
+                <td>
+                    <input type="money" readonly
+                           class="form-control" id="input-tongchiphi-@id"
+                           placeholder="0"
+                           value="@(tienTrinhDieuTri.TienTrinhDieuTri.TongChiPhi ?? 0)"
+                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                </td>
+                <td>
+                    <select class="form-control form-select2" id="select-trangthaidieutri-@id" name="select-trangthaidieutri"
+                            @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                        @foreach (var data in trangThaiDieuTris)
+                        {
+                            var valueTrangThaiDieuTri = int.Parse(data.Value);
+                            var selectedTrangThaiDieuTri = tienTrinhDieuTri?.TienTrinhDieuTri?.TrangThaiDieuTri != null
+                                           && (int)tienTrinhDieuTri?.TienTrinhDieuTri?.TrangThaiDieuTri == valueTrangThaiDieuTri;
+                            <option value="@data.Value"
+                                    @(selectedTrangThaiDieuTri ? "selected" : "")>
+                                @data.Text
+                            </option>
+                        }
+                    </select>
+                </td>
+                <td class="text-left">
+                    <textarea style="min-width: 20rem;" class="form-control min-h-50 max-h-100" id="input-ghichu-@id" rows="2"
+                              placeholder="Nhập thông tin ..."
+                              value="@(tienTrinhDieuTri.TienTrinhDieuTri.GhiChu ?? "")"
+                              @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>@(tienTrinhDieuTri.TienTrinhDieuTri.GhiChu ?? "")</textarea>
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-light-secondary"
+                       onclick="quanLyBenhNhan.benhNhan.lichDieuTri.tienTrinhDieuTri.xoaDongTienTrinhDieuTri(this)">
+                        <i class="bi bi-trash3-fill"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

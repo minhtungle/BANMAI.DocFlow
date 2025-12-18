@@ -1,0 +1,179 @@
+﻿@using EDM_DB
+@using Public.Helpers
+@using Public.Enums
+@model Applications.QuanLyLichHen.Dtos.GetList_LichHen_Output_Dto
+
+@{
+    string tableName = "lichhen";
+    var columns = new[] {
+       "Mã lịch hẹn", "Thời gian", "Nội dung khám", "Loại điều trị", "Loại thời gian", "Trạng thái khám", "Lý do hủy hẹn", "Ghi chú", "Ngày tạo"
+    };
+
+    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-lichhen-themmoi");
+    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-lichhen-capnhat");
+    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-lichhen-xoabo");
+
+    bool capNhat_TrangThaiHen = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-lichhen-capnhattrangthaihen");
+}
+
+<div class="mb-2 toggle-vis-bar">
+    Hiển thị:
+    @Public.Helpers.HtmlHelper.RenderToggleLinks($"{tableName}-getList", columns)
+</div>
+<table class="table table-hover table-bordered table-sticky w-100" id="@tableName-getList" data-page-length="10">
+    <thead class="nowrap" style="white-space: nowrap !important">
+        <tr>
+            <th class="text-center" data-orderable="false"></th>
+
+            @foreach (var c in columns)
+            {
+                <th class="text-center">@c</th>
+            }
+
+            <th class="text-center w-5" intro-container="dulieu-tacvu" data-orderable="false">
+                <div style="white-space: nowrap">
+                    <div class="btn-group btn-group-sm dropstart">
+                        <button type="button" title="Thao tác" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                data-reference="parent">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <div class="dropdown-menu me-2">
+                            @{
+                                if (themMoi)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="">
+                                        <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                    </a>
+                                }
+                                if (xoaBo)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="">
+                                        <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tfoot class="show-footer-above">
+        <tr>
+            <th class="text-center"><input class="form-check-input checkAll-@tableName-getList" type="checkbox" title="Chọn tất cả" /></th>
+
+            @foreach (var c in columns)
+            {
+                <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+            }
+
+            <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." disabled /></th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var lichHen in Model.LichHens)
+        {
+            <tr id="@lichHen.LichHen.IdLichHen">
+                <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
+
+                <td class="text-left c-pointer"
+                    onclick="sys.copyTextFromElement(this)"
+                    title="Click để sao chép"
+                    data-copy="@lichHen.LichHen.Stt.ToString()">
+                    <a class="c-pointer"
+                       onclick="">
+                        <i class="bi bi-copy"></i> @Public.Handle.TruncateString(maxLength: 10, input: lichHen.LichHen.Stt.ToString())
+                    </a>
+                </td>
+                <td class="text-center" style="white-space: normal;">
+                    @{
+                        <span>@Public.Helpers.DateHelper.DateToString(date: lichHen.LichHen.NgayHen)</span><br />
+                        <small class="text-primary">@string.Format("{0} - {1}", lichHen.LichHen.ThoiGianBatDau, lichHen.LichHen.ThoiGianKetThuc)</small>
+                    }
+                </td>
+                <td class="text-left">@lichHen.LichHen.NoiDungKham</td>
+                <td class="text-center">
+                    @{
+                        var loaiDieuTri = (LichHenLoaiDieuTriEnum)lichHen.LichHen.LoaiDieuTri;
+                        var loaiDieuTri_Desc = loaiDieuTri.GetDescription();
+                    }
+                    <span>@loaiDieuTri_Desc</span>
+                </td>
+                <td class="text-center">
+                    @{
+                        var loaiThoiGian = (LichHenLoaiThoiGianEnum)lichHen.LichHen.LoaiThoiGian;
+                        var loaiThoiGian_Desc = loaiThoiGian.GetDescription();
+                    }
+                    <span>@loaiThoiGian_Desc</span>
+                </td>
+                <td class="text-center">
+                    @{
+                        var trangThaiKham = (LichHenTrangThaiKhamEnum)lichHen.LichHen.TrangThaiKham;
+                        var trangThaiKham_Desc = trangThaiKham.GetDescription();
+
+                        string trangThaiKham_badgeClass = "";
+                        string trangThaiKham_iconClass = "";
+
+                        if (trangThaiKham == LichHenTrangThaiKhamEnum.HuyHen)
+                        {
+                            trangThaiKham_badgeClass = "badge bg-light-danger";
+                            trangThaiKham_iconClass = "bi bi-x-circle";
+                        }
+                        else if (trangThaiKham == LichHenTrangThaiKhamEnum.HenLai)
+                        {
+                            trangThaiKham_badgeClass = "badge bg-light-warning";
+                            trangThaiKham_iconClass = "bi bi-arrow-repeat";
+                        }
+                        else if (trangThaiKham == LichHenTrangThaiKhamEnum.DaXong)
+                        {
+                            trangThaiKham_badgeClass = "badge bg-light-success";
+                            trangThaiKham_iconClass = "bi bi-check";
+                        }
+                        else if (trangThaiKham == LichHenTrangThaiKhamEnum.ChuaDenHen)
+                        {
+                            trangThaiKham_badgeClass = "badge bg-light-secondary";
+                            trangThaiKham_iconClass = "bi bi-hourglass-split";
+                        }
+                    }
+                    <span class="@trangThaiKham_badgeClass"><i class="@trangThaiKham_iconClass"></i> @trangThaiKham_Desc</span>
+                </td>
+                <td class="text-left">@lichHen.LichHen.LyDoHuyHen</td>
+                <td class="text-left">@lichHen.LichHen.GhiChu</td>
+                <td class="text-left">@Public.Helpers.DateHelper.DateToString(date: lichHen.LichHen.NgayTao)</td>
+
+                <td class="text-center">
+                    <div style="white-space: nowrap">
+                        <div class="btn-group btn-group-sm dropstart">
+                            <button type="button" title="Thao tác" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-reference="parent">
+                                <i class="bi bi-gear-fill"></i>
+                            </button>
+                            <div class="dropdown-menu me-2" style="border: 1px solid black;">
+                                @{
+                                    if (capNhat)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="">
+                                            <i class="bi bi-eye"></i> Xem chi tiết
+                                        </a>
+                                    }
+                                    if (xoaBo)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="">
+                                            <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

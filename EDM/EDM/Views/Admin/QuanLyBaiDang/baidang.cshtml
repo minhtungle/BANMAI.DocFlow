@@ -1,0 +1,126 @@
+﻿@using Public.Models
+@model Applications.QuanLyBaiDang.Dtos.Index_OutPut_Dto
+@{
+    ViewBag.Title = "Quản lý bài đăng";
+    Layout = "~/Views/_Shared/Admin/admin.cshtml";
+}
+@section hTitle {}
+@section hBreadcrumb {
+    <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Quản lý bài đăng</li>
+}
+@section styles {
+    <link href="~/Content/Admin/QuanLyBaiDang/quanlybaidang.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="~/Content/Admin/QuanLyBaiDang/quanlybaidang.js"></script>
+    <script>
+        var quanLyBaiDang = new QuanLyBaiDang();
+        var quanLyChienDich = new QuanLyChienDich();
+        quanLyBaiDang.init();
+        quanLyChienDich.init();
+        quanLyBaiDang.baiDang.getList();
+    </script>
+}
+<section class="section" page-group="page-group-quanlybaidang" id="page-quanlybaidang" data-aos="fade-up">
+    <div class="card">
+        <div class="card-body">
+            <div class="btn-group btn-group-sm" role="group">
+                <!--Bài đăng-->
+                <a class="btn btn-primary"><i class="bi bi-three-dots-vertical"></i></a>
+                <div class="btn-group btn-group-sm dropdown">
+                    <button type="button" title="Thao tác" class="btn btn-light-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-reference="parent">
+                        Bài đăng
+                    </button>
+                    <div class="dropdown-menu">
+                        @{
+                            bool baiDang_themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-themmoi");
+                            bool baiDang_capNhat_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-capnhat");
+                            bool baiDang_chuyenDangBai_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-chuyendangbai");
+                            bool baiDang_xoaBo_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybaidang-xoabo");
+                            if (baiDang_themMoi)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBaiDang.baiDang.displayModal_CRUD('create')">
+                                    <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                </a>
+                            }
+                            if (baiDang_capNhat_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBaiDang.baiDang.displayModal_CRUD('create')">
+                                    <i class="bi bi-pencil-square"></i> Cập nhật
+                                </a>
+                            }
+                            if (baiDang_chuyenDangBai_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBaiDang.baiDang.displayModal_CRUD('draftToSave')">
+                                    <i class="bi bi-plus-circle-fill"></i> Chuyển đăng bài
+                                </a>
+                            }
+                            if (baiDang_xoaBo_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyBaiDang.baiDang.delete('multiple')">
+                                    <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+                <!--Chiến dịch-->
+                <a class="btn btn-primary"><i class="bi bi-three-dots-vertical"></i></a>
+                <div class="btn-group btn-group-sm dropdown">
+                    <button type="button" title="Thao tác" class="btn btn-light-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-reference="parent">
+                        Chiến dịch
+                    </button>
+                    <div class="dropdown-menu">
+                        @{
+                            bool chienDich_themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlychiendich-themmoi");
+                            bool chienDich_capNhat_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlychiendich-capnhat");
+                            bool chienDich_xoaBo_Multiple = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlychiendich-xoabo");
+                            if (chienDich_themMoi)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyChienDich.chienDich.displayModal_CRUD('create')">
+                                    <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                </a>
+                            }
+                            if (chienDich_capNhat_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyChienDich.chienDich.displayModal_CRUD('update')">
+                                    <i class="bi bi-pencil-square"></i> Cập nhật
+                                </a>
+                            }
+                            if (chienDich_xoaBo_Multiple)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyChienDich.chienDich.delete('multiple')">
+                                    <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            @Html.Partial("~/Views/Admin/QuanLyBaiDang/quanlybaidang-tab/tab.cshtml", Model)
+        </div>
+    </div>
+</section>
+<!--baidang-crud-->
+<div class="modal fade text-left" id="baidang-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>
+<!--chiendich-crud-->
+<div class="modal fade text-left" id="chiendich-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>
+@Html.Partial("~/Views/Admin/QuanLyBaiDang/quanlybaidang-tab/baidang/baidang-crud/baidang-crud-capnhattruong.cshtml", Model)

@@ -1,0 +1,193 @@
+﻿@model Applications.QuanLyBaiDang.Dtos.Index_OutPut_Dto
+
+<div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-start justify-content-center"
+     id="tab-loaithongke" role="tablist">
+    <a class="list-group-item list-group-item-action active" id="baidang-tab-list"
+       data-bs-toggle="list" href="#baidang-tab" role="tab">Bài đăng</a>
+    <a class="list-group-item list-group-item-action" id="chiendich-tab-list"
+       data-bs-toggle="list" href="#chiendich-tab" role="tab">Chiến dịch</a>
+    @*<a class="list-group-item list-group-item-action" id="phantich-tab-list"
+       data-bs-toggle="list" href="#phantich-tab" role="tab">Phân tích</a>*@
+</div>
+<div class="tab-content text-justify mt-2">
+    <div class="tab-pane fade show active py-2" id="baidang-tab" role="tabpanel"
+         aria-labelledby="baidang-tab-list">
+        <div class="row">
+            <div class="col-12">
+                <div class="divider divider-right" data-bs-toggle="collapse" href="#tongquan-collapse">
+                    <div class="divider-text font-bold">
+                        <div class="badges">
+                            <span class="badge bg-primary c-pointer">Nhấn xem bộ lọc</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" id="tongquan-collapse">
+                    <div class="row">
+                        <!--Nội dung-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-noidung-timkiem">Nội dung</label>
+                                    <textarea class="form-control min-h-100 max-h-300" id="input-noidung-timkiem" rows="5"
+                                              placeholder="Nhập thông tin ..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Chiến dịch-->
+                        <div class="col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="select-chiendich-timkiem">Chiến dịch</label>
+                                    <select class="form-control form-select2"
+                                            id="select-chiendich-timkiem" name="select-chiendich-timkiem">
+                                        <option value="" selected>Chọn tất cả</option>
+                                        @foreach (var chienDich in Model.ChienDichs)
+                                        {
+                                            <option value="@chienDich.IdChienDich">@chienDich.TenChienDich</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Trạng thái đăng bài-->
+                        <div class="col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="select-trangthaidangbai-timkiem">Trạng thái đăng bài</label>
+                                    <select class="form-control form-select2"
+                                            id="select-trangthaidangbai-timkiem" name="select-trangthaidangbai-timkiem">
+                                        <option value="" selected>Chọn tất cả</option>
+                                        @foreach (var trangThaiDangBai in Model.TrangThaiDangBais)
+                                        {
+                                            <option value="@trangThaiDangBai.Value">@trangThaiDangBai.Description</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Nền tảng-->
+                        <div class="col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="select-nentang-timkiem">Nền tảng</label>
+                                    <select class="form-control form-select2"
+                                            id="select-nentang-timkiem" name="select-nentang-timkiem">
+                                        <option value="" selected>Chọn tất cả</option>
+                                        @foreach (var nenTang in Model.NenTangs)
+                                        {
+                                            <option value="@nenTang.IdNenTang">@nenTang.TenNenTang</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Người tạo-->
+                        <div class="col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="select-nguoitao-timkiem">Người tạo</label>
+                                    <select class="form-control form-select2"
+                                            id="select-nguoitao-timkiem" name="select-nguoitao-timkiem">
+                                        <option value="" selected>Chọn tất cả</option>
+                                        @foreach (var nguoiTao in Model.NguoiTaos)
+                                        {
+                                            <option value="@nguoiTao.IdNguoiDung">@nguoiTao.TenNguoiDung</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Ngày tạo-->
+                        <div class="col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group">
+                                    <label class="">Ngày tạo</label>
+                                    <input type="text" class="form-control monthformat" placeholder="Nhập thông tin ..."
+                                           id="input-ngaytao-timkiem" name="input-ngaytao-timkiem"
+                                           value="@DateTime.Now.ToString("MM/yyyy")">
+                                </div>
+                            </div>
+                        </div>
+                        <!--Ngày đăng bài-->
+                        <div class="col-sm-12 col-md-4">
+                            <div class="position-relative">
+                                <div class="form-group">
+                                    <label class="">Ngày đăng bài</label>
+                                    <input type="text" class="form-control monthformat" placeholder="Nhập thông tin ..."
+                                           id="input-ngaydangbai-timkiem" name="input-ngaydangbai-timkiem"
+                                           value="@DateTime.Now.ToString("MM/yyyy")">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 py-2 text-center">
+                            <button type="button" class="btn btn-sm btn-primary ml-1 button-timkiem"
+                                    onclick="quanLyBaiDang.baiDang.getList()">
+                                <span class="">Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-12" id="baidang-getList-container"></div>
+        </div>
+    </div>
+    <div class="tab-pane fade py-2" id="chiendich-tab" role="tabpanel"
+         aria-labelledby="chiendich-tab-list">
+        <div class="row">
+            <div class="col-12">
+                <div class="divider divider-right
+             " data-bs-toggle="collapse" href="#chiendich-collapse">
+                    <div class="divider-text font-bold">
+                        <div class="badges">
+                            <span class="badge bg-primary c-pointer">Nhấn xem bộ lọc</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse" id="chiendich-collapse">
+                    <div class="row">
+                        <!--Người tạo-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="select-nguoitao">Người tạo</label>
+                                    <select class="form-control form-select2"
+                                            id="select-nguoitao-timkiem" name="select-nguoitao-timkiem">
+                                        @foreach (var nguoiTao in Model.NguoiTaos)
+                                        {
+                                            <option value="@nguoiTao.IdNguoiDung">@nguoiTao.TenNguoiDung</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Ngày tạo-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group">
+                                    <label class="">Ngày tạo</label>
+                                    <input type="text" class="form-control monthformat" placeholder="Nhập thông tin ..."
+                                           id="input-ngaytao-timkiem" name="input-ngaytao-timkiem"
+                                           value="@DateTime.Now.ToString("MM/yyyy")">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 py-2 text-center">
+                            <button type="button" class="btn btn-sm btn-primary ml-1 button-timkiem">
+                                <span class="">Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="row py-2">
+            <div class="col-12" id="chiendich-getList-container"></div>
+        </div>
+    </div>
+    @*<div class="tab-pane fade py-2" id="phantich-tab" role="tabpanel"
+         aria-labelledby="phantich-tab-list"></div>*@
+</div>

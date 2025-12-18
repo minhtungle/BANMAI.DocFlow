@@ -1,0 +1,28 @@
+﻿using Applications.UserType.Interfaces;
+using EDM_DB;
+using Infrastructure.Interfaces;
+using Newtonsoft.Json;
+using Public.AppServices;
+using Public.Interfaces;
+using Public.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+
+namespace Applications.UserType.AppServices
+{
+    public class QuanLyKieuNguoiDungService : BaseService, IQuanLyKieuNguoiDungAppService
+    {
+        private readonly IRepository<tbKieuNguoiDung, Guid> _kieuNguoiDungRepo;
+        public QuanLyKieuNguoiDungService(
+            IUserContext userContext,
+            IUnitOfWork unitOfWork,
+            IRepository<tbKieuNguoiDung, Guid> kieuNguoiDungRepo)
+          : base(userContext, unitOfWork)
+        {
+            _kieuNguoiDungRepo = kieuNguoiDungRepo;
+        }
+    }
+}

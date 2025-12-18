@@ -1,0 +1,91 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyLichDieuTri.Dtos.DisplayModal_CRUD_LichDieuTri_Output_Dto
+@{
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+    var ngayDieuTri = Model.LichDieuTri.LichDieuTri.NgayDieuTri == null ? ClockHelper.UtcNow : Model.LichDieuTri.LichDieuTri.NgayDieuTri;
+}
+
+<div class="modal-dialog modal-dialog-scrollable modal-full" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                @(Model.Loai == "create" ? "Thêm mới" : Model.Loai  == "update" ? "Cập nhật" : "Xem chi tiết")
+            </h5>
+            <div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-end justify-content-center" id="" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="thongtin-list"
+                   data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
+                <a class="list-group-item list-group-item-action" id="tepdinhkem-list"
+                   data-bs-toggle="list" href="#tepdinhkem" role="tab">Tệp đính kèm</a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    <div class="row" intro-container="thongtin-chung">
+                        <!--Id-->
+                        <input id="input-idlichdieutri" value="@Model.LichDieuTri.LichDieuTri.IdLichDieuTri" hidden />
+
+                        <!--Ngày điều trị-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-ngaydieutri">Ngày điều trị</label>
+                                    <input type="date"
+                                           class="form-control" id="input-ngaydieutri"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(Public.Helpers.DateHelper.DateToString(date: ngayDieuTri, format: "yyyy-MM-dd") ?? "")"
+                                           disabled
+                                           required>
+                                    <div class="invalid-feedback feedback" for="input-ngaydieutri">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ghi chú-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label for="input-ghichu">Ghi chú</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(Model.LichDieuTri.LichDieuTri.GhiChu ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>@(Model.LichDieuTri.LichDieuTri.GhiChu ?? "")</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Lịch hẹn-->
+                        <div class="col-12" id="tientrinhdieutri-getList-container">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="">Tiến trình điều trị</label>
+                                    @Html.Partial("~/Views/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/benhnhan-xemchitiet/tab-phieukham/tientrinhdieutri-getList.cshtml", Model)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade" id="tepdinhkem" role="tabpanel"
+                     aria-labelledby="tepdinhkem-list">
+                    <div class="row">
+                        @Html.Partial("~/Views/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/benhnhan-xemchitiet/tab-phieukham/lichdieutri-anhmota.cshtml", Model)
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary ml-1" onclick="quanLyBenhNhan.benhNhan.lichDieuTri.save('@Model.Loai')">
+                <span class="">Lưu</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

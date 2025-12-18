@@ -1,0 +1,167 @@
+﻿@using EDM_DB
+@model Applications.QuanLyAIBot.Dtos.DisplayModel_Test_AIBot_Output_Dto
+@{
+    var aiBot = Model.AIBot.AIBot;
+}
+
+<div class="modal-dialog modal-dialog-scrollable modal-full" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                Dùng thử AI Bot
+            </h5>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="row" intro-container="thongtin-chung">
+                                <!--Id-->
+                                <input id="input-idaibot" value="@aiBot.IdAIBot" hidden />
+
+                                <!--Tên AI Bot-->
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label class="required" for="input-tenaibot">Tên AI Bot</label>
+                                            <input class="form-control" id="input-tenaibot"
+                                                   placeholder="Nhập nội dung ..."
+                                                   value="@(aiBot.TenAIBot ?? "")" readonly required>
+                                            <div class="invalid-feedback feedback" for="input-tenaibot">Không được để trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--AI Tool-->
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label class="required" for="select-aitool">AI Tool</label>
+                                            <select class="form-control form-select2"
+                                                    id="select-aitool" name="select-aitool"
+                                                    required>
+                                                <option disabled @(Model.AITools.Count > 0 ? "" : "")>Chọn thông tin</option>
+                                                @foreach (var aiTool in Model.AITools)
+                                                {
+                                                    <option value="@aiTool.IdAITool">@aiTool.ToolName</option>
+                                                }
+                                            </select>
+                                            <div class="invalid-feedback feedback" for="select-loaiaitool">Không được để trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Loại AI Bot-->
+                                <div class="col-sm-12 col-md-12">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label class="" for="select-loaiaibot">Phân loại</label>
+                                            <select class="form-control form-select2"
+                                                    id="select-loaiaibot" name="select-loaiaibot"
+                                                    disabled
+                                                    multiple>
+                                                <option disabled @(Model.LoaiAIBot.Count > 0 ? "" : "")>Chọn thông tin</option>
+                                                @foreach (var loaiAIBot in Model.LoaiAIBot)
+                                                {
+                                                    <option value="@loaiAIBot.IdLoaiAIBot"
+                                                            @(Model.AIBot.LoaiAIBots.Any(x => x.IdLoaiAIBot == loaiAIBot.IdLoaiAIBot) ? "selected" : "")>
+                                                        @loaiAIBot.TenLoaiAIBot
+                                                    </option>
+                                                }
+                                            </select>
+                                            <div class="invalid-feedback feedback" for="select-loaiaibot">Không được để trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Keywords-->
+                                <div class="col-12 col-sm-12 col-md-6">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label class="" for="input-keywords">
+                                                Keywords <small class="text-danger fst-italic">(Mẫu thông tin )</small>
+                                            </label>
+                                            @{
+                                                var plh_keywords = $@"Tên sản phẩm
+Số lượng
+Giảm giá
+...
+";
+                                            }
+                                            <textarea class="form-control min-h-100 max-h-300" id="input-keywords"
+                                                      rows="10"
+                                                      placeholder="@plh_keywords" title="@plh_keywords"
+                                                      readonly>@aiBot.Keywords</textarea>
+                                            <div class="invalid-feedback feedback" for="input-keywords">Không được để trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Nhập Keywords-->
+                                <div class="col-12 col-sm-12 col-md-6">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label class="" for="input-keywords-danhap">
+                                                Nhập Keywords <small class="text-danger fst-italic">(Nhập theo mẫu)</small>
+                                            </label>
+                                            @{
+                                                var plh_nhapkeywords = $@"Tên sản phẩm: Quà lưu niệm
+Số lượng: 1000 hộp
+Giảm giá: 50%
+...
+";
+                                            }
+                                            <textarea class="form-control min-h-100 max-h-300" id="input-keywords-danhap"
+                                                      rows="10"
+                                                      placeholder="@plh_nhapkeywords" title="@plh_nhapkeywords"></textarea>
+                                            <a class="btn btn-sm btn-success" id="btn-taonoidung-ai"
+                                               style="position: absolute; z-index: 1; right: .6rem; top: 2rem;"
+                                               onclick="quanLyAIBot.aiBot.handleAI.testNoiDungAI('@aiBot.IdAIBot')">
+                                                <i class="bi bi-fast-forward-fill"></i>
+                                            </a>
+                                            <div class="invalid-feedback feedback" for="input-keywords-danhap">Không được để trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="row">
+                                <!--Nội dung-->
+                                <div class="col-12 col-sm-12 col-md-12">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label class="" for="input-noidung-ai">
+                                                Nội dung <small class="text-danger fst-italic">(Kiểm tra kết quả)</small>
+                                            </label>
+                                            <textarea class="form-control min-h-100 max-h-500" id="input-noidung-ai" rows="15" readonly></textarea>
+                                            <div class="invalid-feedback feedback" for="input-noidung-ai">Không được để trống</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Ghi chú-->
+                                <div class="col-12 col-sm-12 col-md-12">
+                                    <div class="position-relative">
+                                        <div class="form-group mb-3">
+                                            <label for="input-ghichu">Ghi chú</label>
+                                            <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                                      placeholder="Nhập thông tin ..."
+                                                      value="@(aiBot.GhiChu ?? "")"
+                                                      readonly>@(aiBot.GhiChu ?? "")</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,104 @@
+﻿@using Public.Models
+@model Applications.QuanLyBenhNhan.Dtos.XemChiTiet_BenhNhan_Output_Dto
+@{
+    ViewBag.Title = "Quản lý bệnh nhân";
+    Layout = "~/Views/_Shared/Admin/admin.cshtml";
+}
+@section hTitle {}
+@section hBreadcrumb {
+    <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+    <li class="breadcrumb-item"><a href="~/QuanLyBenhNhan">Quản lý bệnh nhân</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Xem chi tiết</li>
+}
+@section styles {
+    <link href="~/Content/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/quanlybenhnhan.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="~/Content/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/quanlybenhnhan.js"></script>
+    <script>
+        var quanLyBenhNhan = new QuanLyBenhNhan();
+        quanLyBenhNhan.init();
+        quanLyBenhNhan.benhNhan.xemChiTiet.init();
+    </script>
+}
+
+<section class="section" page-group="page-group-quanlybenhnhan" id="page-quanlybenhnhan" data-aos="fade-up">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <!--Bệnh nhân-->
+                <div class="col-sm-12 col-md-6">
+                    <div class="position-relative">
+                        <div class="form-group mb-3">
+                            <label class="" for="select-danhsachbenhnhan">Danh sách bệnh nhân</label>
+                            <select class="form-control form-select2"
+                                    id="select-danhsachbenhnhan" name="select-danhsachbenhnhan"
+                                    onchange="quanLyBenhNhan.benhNhan.xemChiTiet.showTab()">
+                                <option disabled @(Model.BenhNhans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                @foreach (var benhNhan in Model.BenhNhans)
+                                {
+                                    <option style="white-space: pre!important"
+                                            value="@benhNhan.BenhNhan.IdBenhNhan"
+                                            @(benhNhan.BenhNhan.IdBenhNhan == Model.BenhNhan.BenhNhan.IdBenhNhan ? "selected" : "")>
+                                        @benhNhan.BenhNhan.HoTen
+                                    </option>
+                                }
+                            </select>
+                            <div class="invalid-feedback feedback" for="select-danhsachbenhnhan">Không được để trống</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    <div class="position-relative">
+                        <div class="form-group mb-3">
+                            <label class="" for="select-loaithongtin">Loại thông tin</label>
+                            <select class="form-control form-select2"
+                                    id="select-loaithongtin" name="select-loaithongtin"
+                                    onchange="quanLyBenhNhan.benhNhan.xemChiTiet.showTab()">
+                                <option disabled>Chọn thông tin</option>
+                                @{
+                                    // Danh sách menu (Tên hiển thị - Hàm/tab tương ứng)
+                                    var menuItems = new List<(string tabFullName, string icon, string tabShortName)>  {
+                                        ("Thông tin cơ bản","bi bi-person", "thongtincoban"),
+                                        ("Lịch hẹn", "bi bi-calendar2-week","lichhen"),
+                                        ("Khám & điều trị", "bi bi-activity","phieukham"),
+                                        ("Lịch chăm sóc","bi bi-file-earmark-medical", "lichchamsoc"),
+                                        ("Đơn thuốc", "bi bi-capsule","donthuoc"),
+                                        ("Thư viện ảnh", "bi bi-card-image","thuvienanh"),
+                                        ("Xưởng/Vật tư", "bi bi-tools","xuongvattu"),
+                                        ("Thanh toán", "bi bi-piggy-bank","thanhtoan"),
+                                        ("Biểu mẫu", "bi bi-file-earmark","bieumau"),
+                                        ("Lịch sử thao tác", "bi bi-clock-history","lichsuthaotac")
+                                    };
+                                    foreach (var item in menuItems)
+                                    {
+                                        <option value="@item.tabShortName">@item.tabFullName</option>
+                                    }
+                                }
+                            </select>
+                            <div class="invalid-feedback feedback" for="select-danhsachbenhnhan">Không được để trống</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body" id="benhnhan-xemchitiet-container">
+        </div>
+    </div>
+
+</section>
+<!--lichhen-crud-->
+<div class="modal fade text-left" id="lichhen-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>
+<!--lichdieutri-crud-->
+<div class="modal fade text-left" id="lichdieutri-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>
+<!--tientrinhdieutri-crud-->
+<div class="modal fade text-left" id="tientrinhdieutri-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>
+<!--tientrinhdieutri-chonrang-->
+<div class="modal fade text-left" id="tientrinhdieutri-chonrang" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>

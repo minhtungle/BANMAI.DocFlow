@@ -1,0 +1,63 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyBenhNhan.Dtos.ShowTab_PhieuKham_Output_Dto
+@{
+    var phieuKham = Model.PhieuKham;
+
+    bool phieuKham_capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-phieukham-capnhat");
+}
+
+<div class="row" id="tab-phieukham" intro-container="thongtin-chung">
+    <!--Id-->
+    <input id="input-idphieukham" value="@phieuKham.IdPhieuKham" hidden />
+    <input id="input-idbenhnhan" value="@phieuKham.IdBenhNhan" hidden />
+
+    <div class="col-12">
+        <div class="divider divider-left" data-bs-toggle="collapse"
+             href="#benhnhan-timkiem-collapse">
+            <div class="divider-text font-bold">
+                <div class="badges">
+                    <span class="badge bg-primary c-pointer">Thông tin phiếu khám</span>
+                </div>
+            </div>
+        </div>
+        <div class="collapse show" id="benhnhan-timkiem-collapse">
+            <div class="row">
+                <!--Ghi chú-->
+                <div class="col-12 col-sm-12 col-md-12">
+                    <div class="position-relative">
+                        <div class="form-group mb-3">
+                            <label for="input-ghichu">Ghi chú</label>
+                            <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                      placeholder="Nhập thông tin ..."
+                                      value="@(phieuKham.GhiChu ?? "")">@(phieuKham.GhiChu ?? "")</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                @if (phieuKham_capNhat)
+                {
+                    <div class="col-12 py-2 text-center">
+                        <button type="button" class="btn btn-sm btn-primary ml-1 button-timkiem"
+                                onclick="quanLyBenhNhan.benhNhan.phieuKham.update_PhieuKham()">
+                            <span class="">Cập nhật</span>
+                        </button>
+                    </div>
+                }
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    @*<div class="col-sm-6 col-md-4 py-2 flex-grow-1" id="lichdieutri-getList-container">
+        @Html.Partial("~/Views/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/benhnhan-xemchitiet/tab-phieukham/lichdieutri-getList.cshtml", Model)
+    </div>
+    <div class="col-sm-6 col-md-8 py-2" id="tientrinhdieutri-getList-container">
+        @Html.Partial("~/Views/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/benhnhan-xemchitiet/tab-phieukham/lichdieutri-getList.cshtml", Model)
+    </div>*@
+
+    <div class="col-12 py-2" id="lichdieutri-getList-container">
+        @Html.Partial("~/Views/Admin/_QuanLyHoSoBenhNhan/QuanLyBenhNhan/benhnhan-xemchitiet/tab-phieukham/lichdieutri-getList.cshtml", Model)
+    </div>
+</div>

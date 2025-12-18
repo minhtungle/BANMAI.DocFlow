@@ -1,0 +1,178 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyBenhNhan.Dtos.ShowTab_PhieuKham_Output_Dto
+
+@{
+    string tableName = "lichdieutri";
+    var columns = new[] {
+        "Răng số", "Tình trạng răng", "Tên thủ thuật", "Nội dung thủ thuật", "Bác sĩ",
+        "Trợ thủ", "S.L", "Giá tiền", "Giảm giá", "Tổng chi phí", "Tình trạng", "Ghi chú"
+    };
+
+    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-tientrinhdieutri-themmoi");
+    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-tientrinhdieutri-capnhat");
+    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlybenhnhan-tientrinhdieutri-capnhat");
+}
+
+<div class="mb-2 toggle-vis-bar">
+    Hiển thị:
+    @Public.Helpers.HtmlHelper.RenderToggleLinks($"{tableName}-getList", columns)
+</div>
+<table class="table table-hover table-bordered table-sticky w-100" id="@tableName-getList" data-page-length="-1">
+    <thead class="nowrap" style="white-space: nowrap !important">
+        <tr>
+            <th class="text-center" data-orderable="false"></th>
+
+            @foreach (var c in columns)
+            {
+                <th class="text-center" data-orderable="false">@c</th>
+            }
+
+            <th class="text-center w-5" intro-container="dulieu-tacvu" data-orderable="false">
+                <div style="white-space: nowrap">
+                    <div class="btn-group btn-group-sm dropstart">
+                        <button type="button" title="Thêm mới" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                data-reference="parent">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <div class="dropdown-menu me-2" style="border: 1px solid black;">
+                            @{
+                                if (themMoi)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBenhNhan.benhNhan.lichDieuTri.displayModal_CRUD('create')">
+                                        <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                    </a>
+                                }
+                                if (xoaBo)
+                                {
+                                    <a class="dropdown-item c-pointer"
+                                       onclick="quanLyBenhNhan.benhNhan.lichDieuTri.delete('multiple')">
+                                        <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tfoot class="show-footer-above">
+        <tr>
+            <th class="text-center"><input class="form-check-input checkAll-@tableName-getList" type="checkbox" title="Chọn tất cả" /></th>
+
+            @foreach (var c in columns)
+            {
+                <th>
+                    <input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." disabled
+                           style="min-width: 10rem;" />
+                </th>
+            }
+
+            <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." disabled /></th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var lichDieuTri in Model.LichDieuTris)
+        {
+            <tr id="@lichDieuTri.LichDieuTri.IdLichDieuTri">
+                <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
+
+                <td colspan="12" class="text-left">
+                    <a class="c-pointer" onclick="quanLyBenhNhan.benhNhan.lichDieuTri.displayModal_CRUD('update', '@lichDieuTri.LichDieuTri.IdLichDieuTri')">
+                        <i class="bi bi-calendar2-date"></i> Ngày điều trị: @Public.Helpers.DateHelper.DateToString(date: lichDieuTri.LichDieuTri.NgayDieuTri)
+                    </a>
+                </td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+                <td hidden></td>
+
+                <td class="text-center">
+                    <div style="white-space: nowrap">
+                        <div class="btn-group btn-group-sm dropstart">
+                            <button type="button" title="Thao tác" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-reference="parent">
+                                <i class="bi bi-gear-fill"></i>
+                            </button>
+                            <div class="dropdown-menu me-2" style="border: 1px solid black;">
+                                @{
+                                    if (capNhat)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="quanLyBenhNhan.benhNhan.lichDieuTri.displayModal_CRUD('update', '@lichDieuTri.LichDieuTri.IdLichDieuTri')">
+                                            <i class="bi bi-pencil-square"></i> Cập nhật
+                                        </a>
+                                    }
+                                    if (xoaBo)
+                                    {
+                                        <a class="dropdown-item c-pointer"
+                                           onclick="quanLyBenhNhan.benhNhan.lichDieuTri.delete('single', '@lichDieuTri.LichDieuTri.IdLichDieuTri')">
+                                            <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            foreach (var tienTrinhDieuTri in lichDieuTri.TienTrinhDieuTris)
+            {
+                <tr id="@tienTrinhDieuTri.TienTrinhDieuTri.IdTienTrinhDieuTri">
+                    <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
+
+                    <td class="text-center">@(tienTrinhDieuTri.TienTrinhDieuTri?.RangSo)</td>
+                    <td class="text-center">@(tienTrinhDieuTri.TinhTrangRang?.TenTinhTrangRang)</td>
+                    <td class="text-center">@(tienTrinhDieuTri.ThuThuat?.TenThuThuat)</td>
+                    <td class="text-left" title="@tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat">
+                        @Public.Handle.TruncateString(input: tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat, maxLength: 30)
+                    </td>
+                    <td class="text-center">@(tienTrinhDieuTri.BacSyDieuTri?.HoTen)</td>
+                    <td class="text-center">@(tienTrinhDieuTri.PhuTa?.HoTen)</td>
+                    <td class="text-center">@(tienTrinhDieuTri.TienTrinhDieuTri?.SoLuong)</td>
+                    <td class="text-center">@(tienTrinhDieuTri.TienTrinhDieuTri?.GiaTien)</td>
+                    <td class="text-center">@(tienTrinhDieuTri.TienTrinhDieuTri?.PhanTramGiamGia)%</td>
+                    <td class="text-center">@(tienTrinhDieuTri.TienTrinhDieuTri?.TongChiPhi)</td>
+                    <td class="text-center">
+                        @{
+                            var trangThaiDieuTri = (TrangThaiDieuTriEnum)tienTrinhDieuTri.TienTrinhDieuTri.TrangThaiDieuTri;
+                            var trangThaiDieuTri_Desc = trangThaiDieuTri.GetDescription();
+
+                            string trangThaiDieuTri_badgeClass = "";
+                            string trangThaiDieuTri_iconClass = "";
+
+                            if (trangThaiDieuTri == TrangThaiDieuTriEnum.DaHoanThanh)
+                            {
+                                trangThaiDieuTri_badgeClass = "badge bg-light-success";
+                                trangThaiDieuTri_iconClass = "bi bi-check";
+                            }
+                            else if (trangThaiDieuTri == TrangThaiDieuTriEnum.ChuaHoanThanh)
+                            {
+                                trangThaiDieuTri_badgeClass = "badge bg-light-secondary";
+                                trangThaiDieuTri_iconClass = "bi bi-hourglass-split";
+                            }
+                        }
+                        <span class="@trangThaiDieuTri_badgeClass"><i class="@trangThaiDieuTri_iconClass"></i> @trangThaiDieuTri_Desc</span>
+                    </td>
+                    <td class="text-left" title="@tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat">
+                        @Public.Handle.TruncateString(input: tienTrinhDieuTri.TienTrinhDieuTri.GhiChu, maxLength: 30)
+                    </td>
+
+                    <td class="text-center"></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

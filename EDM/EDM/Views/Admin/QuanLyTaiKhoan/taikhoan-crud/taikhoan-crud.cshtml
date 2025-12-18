@@ -1,0 +1,39 @@
+﻿@model Applications.QuanLyTaiKhoan.Dtos.DisplayModel_CRUD_TaiKhoan_Output_Dto
+
+<div class="modal-dialog modal-dialog-scrollable modal-full" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                @(Model.Loai == "create" ? "Thêm mới" : Model.Loai  == "update" ? "Cập nhật" : "Xem chi tiết")
+            </h5>
+            <div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-end justify-content-center" id="" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="thongtin-list"
+                   data-bs-toggle="list" href="#thongtin" role="tab">Thông tin tài khoản</a>
+                <a class="list-group-item list-group-item-action" id="kiemtra-list"
+                   data-bs-toggle="list" href="#kiemtra" role="tab">Kiểm tra kết nối</a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    @Html.Partial("~/Views/Admin/QuanLyTaiKhoan/taikhoan-crud/tab-thongtin.cshtml", Model)
+                </div>
+            </div>
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade" id="kiemtra" role="tabpanel"
+                     aria-labelledby="kiemtra-list">
+                    @Html.Partial("~/Views/Admin/QuanLyTaiKhoan/taikhoan-crud/tab-kiemtra.cshtml", Model)
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="quanLyTaiKhoan.taiKhoan.save('@Model.Loai')">
+                <span class="">Lưu</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

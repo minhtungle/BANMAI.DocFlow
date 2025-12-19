@@ -20,8 +20,9 @@ class QuanLyTruongHoc {
                 var $timKiem = $("#truonghoc-timkiem-collapse");
                 var input = {
                     LocThongTin: {
-                        MaTruongHoc: $("#select-matruonghoc", $timKiem).val(),
                         TenTruongHoc: $("#input-tentruonghoc", $timKiem).val().trim(),
+                        Slug: $("#input-slug", $timKiem).val().trim(),
+                        TenVietTat: $("#input-tenviettat", $timKiem).val().trim(),
                         Email: $("#input-email", $timKiem).val().trim(),
                         SoDienThoai: $("#input-sodienthoai", $timKiem).val().trim(),
                         DiaChi: $("#input-diachi", $timKiem).val().trim(),
@@ -100,8 +101,6 @@ class QuanLyTruongHoc {
                         TruongHoc: {
                             IdTruongHoc: $("#input-idtruonghoc", $modal).val(),
                             TenTruongHoc: $("#input-tentruonghoc", $modal).val().trim(),
-                            TenVietTat: $("#input-tenviettat", $modal).val().trim(),
-                            Slug: $("#input-slug", $modal).val().trim(),
                             Email: $("#input-email", $modal).val().trim(),
                             SoDienThoai: $("#input-sodienthoai", $modal).val().trim(),
                             DiaChi: $("#input-diachi", $modal).val().trim(),
@@ -199,7 +198,6 @@ class QuanLyTruongHoc {
                         TruongHoc: {
                             IdTruongHoc: $("#input-idtruonghoc", $tab).val(),
                             TenTruongHoc: $("#input-tentruonghoc", $tab).val().trim(),
-                            TenVietTat: $("#input-tenviettat", $tab).val().trim(),
                             SoDienThoai: $("#input-sodienthoai", $tab).val().trim(),
                             Email: $("#input-email", $tab).val().trim(),
                             DiaChi: $("#input-diachi", $tab).val().trim(),

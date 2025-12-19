@@ -294,7 +294,7 @@ namespace UserAccount.Controllers
                         }
                         else
                         {
-                            string matKhau = Public.Handle.HashToMD5(nguoiDung_NEW.NguoiDung.MatKhau);
+                            string matKhau = Public.Handles.Handle.HashToMD5(nguoiDung_NEW.NguoiDung.MatKhau);
                             // Tạo hồ sơ
                             tbNguoiDung nguoiDung = new tbNguoiDung
                             {
@@ -436,17 +436,17 @@ namespace UserAccount.Controllers
                                     DonViSuDung = per.DonViSuDung
                                 };
                                 // Gọi phương thức RenderViewToString() để chuyển đổi view thành chuỗi
-                                string viewAsString = Public.Handle.RenderViewToString(this, $"{VIEW_PATH}/useraccount-mail.capnhattaikhoan.cshtml", model);
+                                string viewAsString = Public.Handles.Handle.RenderViewToString(this, $"{VIEW_PATH}/useraccount-mail.capnhattaikhoan.cshtml", model);
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
                             string tieuDeMail = "[📣 BanMai] - CẬP NHẬT THÔNG TIN TÀI KHOẢN❗";
                             string mailBody = mail();
                             // Gửi mail
-                            Public.Handle.SendEmail(sendTo: nguoiDung_OLD.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+                            Public.Handles.Handle.SendEmail(sendTo: nguoiDung_OLD.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
                             if (nguoiDung_NEW.NguoiDung.Email != nguoiDung_OLD.NguoiDung.Email)
                             {
-                                Public.Handle.SendEmail(sendTo: nguoiDung_NEW.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+                                Public.Handles.Handle.SendEmail(sendTo: nguoiDung_NEW.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
                             }
                             ;
                             #endregion
@@ -490,7 +490,7 @@ namespace UserAccount.Controllers
                     else
                     {
                         tbNguoiDung nguoiDung_OLD = db.tbNguoiDungs.FirstOrDefault(x => x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.IdNguoiDung == nguoiDung_NEW.NguoiDung.IdNguoiDung);
-                        string matKhau_MD5 = Public.Handle.HashToMD5(nguoiDung_NEW.MatKhauMoi);
+                        string matKhau_MD5 = Public.Handles.Handle.HashToMD5(nguoiDung_NEW.MatKhauMoi);
                         if (nguoiDung_OLD.MatKhau != matKhau_MD5)
                         {
                             status = "matkhaucuchuachinhxac";
@@ -499,7 +499,7 @@ namespace UserAccount.Controllers
                         else
                         {
                             // Kiểm tra độ bảo mật
-                            var conditions = Public.Handle.CheckPassPattern(nguoiDung_NEW.MatKhauMoi);
+                            var conditions = Public.Handles.Handle.CheckPassPattern(nguoiDung_NEW.MatKhauMoi);
                             // Kiểm tra từng điều kiện
                             foreach (var condition in conditions)
                             {
@@ -530,17 +530,17 @@ namespace UserAccount.Controllers
                                     HinhThucCapNhat = "doimatkhau"
                                 };
                                 // Gọi phương thức RenderViewToString() để chuyển đổi view thành chuỗi
-                                string viewAsString = Public.Handle.RenderViewToString(this, $"{VIEW_PATH}/useraccount-mail.capnhattaikhoan.cshtml", model);
+                                string viewAsString = Public.Handles.Handle.RenderViewToString(this, $"{VIEW_PATH}/useraccount-mail.capnhattaikhoan.cshtml", model);
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
                             string tieuDeMail = "[📣 BanMai] - CẬP NHẬT THÔNG TIN TÀI KHOẢN❗";
                             string mailBody = mail();
                             // Gửi mail
-                            Public.Handle.SendEmail(sendTo: nguoiDung_OLD.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+                            Public.Handles.Handle.SendEmail(sendTo: nguoiDung_OLD.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
                             if (nguoiDung_NEW.NguoiDung.Email != nguoiDung_OLD.Email)
                             {
-                                Public.Handle.SendEmail(sendTo: nguoiDung_NEW.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+                                Public.Handles.Handle.SendEmail(sendTo: nguoiDung_NEW.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
                             }
                             ;
                             #endregion
@@ -707,7 +707,7 @@ namespace UserAccount.Controllers
                                         DateTime NgaySinh = DateTime.Now;
                                         if (ngaySinh != null)
                                         {
-                                            NgaySinh = DateTime.ParseExact(row.Field("Ngày-sinh").GetString(), Public.Handle.DATETIMEFORMAT, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None);
+                                            NgaySinh = DateTime.ParseExact(row.Field("Ngày-sinh").GetString(), Public.Handles.Handle.DATETIMEFORMAT, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None);
                                         }
                                         ;
                                         tbNguoiDungExtend nguoiDung = new tbNguoiDungExtend();
@@ -932,7 +932,7 @@ namespace UserAccount.Controllers
                                 else
                                 {
                                     // Tạo người dùng
-                                    string matKhau = Public.Handle.HashToMD5(nguoiDung_NEW.NguoiDung.MatKhau);
+                                    string matKhau = Public.Handles.Handle.HashToMD5(nguoiDung_NEW.NguoiDung.MatKhau);
                                     tbNguoiDung nguoiDung = new tbNguoiDung
                                     {
                                         IdNguoiDung = Guid.NewGuid(),
@@ -1089,14 +1089,14 @@ namespace UserAccount.Controllers
                     DonViSuDung = per.DonViSuDung
                 };
                 // Gọi phương thức RenderViewToString() để chuyển đổi view thành chuỗi
-                string viewAsString = Public.Handle.RenderViewToString(this, $"{VIEW_PATH}/useraccount-mail.taotaikhoan.cshtml", model);
+                string viewAsString = Public.Handles.Handle.RenderViewToString(this, $"{VIEW_PATH}/useraccount-mail.taotaikhoan.cshtml", model);
                 // Trả về chuỗi đã được tạo ra từ view
                 return viewAsString;
             }
             string tieuDeMail = "[📣 BanMai] - THÔNG TIN TÀI KHOẢN CRM❗";
             string mailBody = mail();
             // Gửi mail
-            Public.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+            Public.Handles.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
         }
         private string taoTenDangNhap(string tenDangNhap)
         {

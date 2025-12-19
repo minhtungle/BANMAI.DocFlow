@@ -385,7 +385,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Handle\Handle.cs" />
+    <Compile Include="Handles\Handle.cs" />
+    <Compile Include="Helpers\XuLyTenTruongHoc.cs" />
     <Compile Include="Helpers\ClockHelper.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\CustomAuthorizeAttribute.cs" />

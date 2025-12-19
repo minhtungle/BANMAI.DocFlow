@@ -183,8 +183,8 @@ namespace Applications.QuanLyNhaCungCap.Services
                 }
                 //foreach (var truongHoc in nhaCungCap.TruongHocs)
                 //{
-                //    truongHoc.TenVietTat = Public.Handle.ToCode(text: truongHoc.TenTruongHoc);
-                //    truongHoc.Slug = Public.Handle.ToSlug(text: truongHoc.Slug);
+                //    truongHoc.TenVietTat = Public.Handles.Handle.ToCode(text: truongHoc.TenTruongHoc);
+                //    truongHoc.Slug = Public.Handles.Handle.ToSlug(text: truongHoc.Slug);
                 //    var _truongHoc = new tbTruongHoc
                 //    {
                 //        IdTruongHoc = Guid.NewGuid(),

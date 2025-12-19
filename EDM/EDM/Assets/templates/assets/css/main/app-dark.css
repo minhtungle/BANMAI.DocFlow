@@ -84,6 +84,7 @@ body.theme-dark body {
     margin: 0;
     text-align: var(--bs-body-text-align);
     scroll-behavior: smooth;
+    cursor: url('../../../../cursor/cursor.png'), auto !important;
 }
 
 body.theme-dark .gradient-background {

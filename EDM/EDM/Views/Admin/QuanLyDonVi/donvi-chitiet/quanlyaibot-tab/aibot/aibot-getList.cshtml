@@ -93,7 +93,7 @@
                     onclick="sys.copyTextFromElement(this)"
                     title="Click để sao chép"
                     data-copy="@aiBot.AIBot.IdAIBot.ToString()">
-                    <a href="#"><i class="bi bi-copy"></i> @Public.Handle.TruncateString(maxLength: 10, input: aiBot.AIBot.IdAIBot.ToString())</a>
+                    <a href="#"><i class="bi bi-copy"></i> @Public.Handles.Handle.TruncateString(maxLength: 10, input: aiBot.AIBot.IdAIBot.ToString())</a>
                 </td>
                 <td class="text-left">
                     <a class="c-pointer"
@@ -107,7 +107,7 @@
                             ? ""
                             : string.Join(", ", aiBot.LoaiAIBots?.Select(x => x.TenLoaiAIBot));
                         <span hidden>@tenLoai</span>
-                        <span title="@tenLoai">@Public.Handle.TruncateString(input: tenLoai, maxLength: 30)</span>
+                        <span title="@tenLoai">@Public.Handles.Handle.TruncateString(input: tenLoai, maxLength: 30)</span>
                     }
                 </td>
                 <td class="text-left">@aiBot.AIBot.NgayTao</td>

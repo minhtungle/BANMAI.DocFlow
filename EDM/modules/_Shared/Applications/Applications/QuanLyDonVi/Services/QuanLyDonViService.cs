@@ -89,7 +89,7 @@ namespace Applications.QuanLyDonVi.Services
 
                     if (!System.IO.Directory.Exists(folderPath_SERVER)) System.IO.Directory.CreateDirectory(folderPath_SERVER); // Tạo folder
 
-                    string inputFileName = Public.Handle.ConvertToUnSign(s: Path.GetFileName(logo.FileName), khoangCach: "-");
+                    string inputFileName = Public.Handles.Handle.ConvertToUnSign(s: Path.GetFileName(logo.FileName), khoangCach: "-");
                     string inputFilePath = string.Format("{0}/[{1}]{2}", folderPath, "LOGO", inputFileName);
                     string inputFilePath_SERVER = HttpContext.Current.Server.MapPath(inputFilePath); // Replace 'Request.MapPath' with 'HttpContext.Current.Server.MapPath'
                     donVi.Logo = inputFilePath;
@@ -144,7 +144,7 @@ namespace Applications.QuanLyDonVi.Services
 
                     if (!System.IO.Directory.Exists(folderPath_SERVER)) System.IO.Directory.CreateDirectory(folderPath_SERVER); // Tạo folder
 
-                    string inputFileName = Public.Handle.ConvertToUnSign(s: Path.GetFileName(logo.FileName), khoangCach: "-");
+                    string inputFileName = Public.Handles.Handle.ConvertToUnSign(s: Path.GetFileName(logo.FileName), khoangCach: "-");
                     string inputFilePath = string.Format("{0}/[{1}]{2}", folderPath, "LOGO", inputFileName);
                     string inputFilePath_SERVER = HttpContext.Current.Server.MapPath(inputFilePath); // Replace 'Request.MapPath' with 'HttpContext.Current.Server.MapPath'
                     donVi.Logo = inputFilePath;

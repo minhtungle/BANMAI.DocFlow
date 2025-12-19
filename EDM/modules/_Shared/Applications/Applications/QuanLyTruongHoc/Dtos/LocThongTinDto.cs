@@ -9,6 +9,8 @@ namespace Applications.QuanLyTruongHoc.Dtos
     {
         public List<Guid> IdTruongHocs { get; set; }
         public string TenTruongHoc { get; set; }
+        public string Slug { get; set; }
+        public string TenVietTat { get; set; }
         public string Email { get; set; }
         public string SoDienThoai { get; set; }
         public string DiaChi { get; set; }

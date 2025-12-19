@@ -133,7 +133,20 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\_Shared\Applications\Applications\Applications.csproj">
+      <Project>{86DA7BDA-C66A-4127-9096-28BBB66CFA58}</Project>
+      <Name>Applications</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\_Shared\EDM_DB\EDM_DB.csproj">
+      <Project>{4A2AA8B2-7FAF-4400-964E-B45818002093}</Project>
+      <Name>EDM_DB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\_Shared\Public\Public.csproj">
+      <Project>{6F03EF6A-8234-4D31-9570-3B2C0187C0A2}</Project>
+      <Name>Public</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

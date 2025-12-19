@@ -137,7 +137,7 @@
                     <td class="text-center">@(tienTrinhDieuTri.TinhTrangRang?.TenTinhTrangRang)</td>
                     <td class="text-center">@(tienTrinhDieuTri.ThuThuat?.TenThuThuat)</td>
                     <td class="text-left" title="@tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat">
-                        @Public.Handle.TruncateString(input: tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat, maxLength: 30)
+                        @Public.Handles.Handle.TruncateString(input: tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat, maxLength: 30)
                     </td>
                     <td class="text-center">@(tienTrinhDieuTri.BacSyDieuTri?.HoTen)</td>
                     <td class="text-center">@(tienTrinhDieuTri.PhuTa?.HoTen)</td>
@@ -167,7 +167,7 @@
                         <span class="@trangThaiDieuTri_badgeClass"><i class="@trangThaiDieuTri_iconClass"></i> @trangThaiDieuTri_Desc</span>
                     </td>
                     <td class="text-left" title="@tienTrinhDieuTri.TienTrinhDieuTri.NoiDungThuThuat">
-                        @Public.Handle.TruncateString(input: tienTrinhDieuTri.TienTrinhDieuTri.GhiChu, maxLength: 30)
+                        @Public.Handles.Handle.TruncateString(input: tienTrinhDieuTri.TienTrinhDieuTri.GhiChu, maxLength: 30)
                     </td>
 
                     <td class="text-center"></td>

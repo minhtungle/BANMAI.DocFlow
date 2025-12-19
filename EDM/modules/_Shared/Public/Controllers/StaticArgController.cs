@@ -44,7 +44,7 @@ namespace Public.Controllers {
              */
             string loaiTep = Path.GetExtension(tenTep_BANDAU);
             // Đổi tên: "Tên hồ sơ & Tên hồ sơ" => "Ten-ho-so-Ten-ho-so"
-            string tenTep_KHONGDAU_KHONGLOAI = Regex.Replace(Public.Handle.ConvertToUnSign(s: Path.GetFileNameWithoutExtension(tenTep_BANDAU), khoangCach: " "), @"[^\w\d]+", "-");
+            string tenTep_KHONGDAU_KHONGLOAI = Regex.Replace(Public.Handles.Handle.ConvertToUnSign(s: Path.GetFileNameWithoutExtension(tenTep_BANDAU), khoangCach: " "), @"[^\w\d]+", "-");
             string tenTep_CHUYENDOI = string.Format("{0}.pdf", tenTep_KHONGDAU_KHONGLOAI);
 
             string duongDanThuMuc_BANDAU = string.Format("{0}/{1}[{2}]", duongDanThuMucGoc, tenTep_KHONGDAU_KHONGLOAI, loaiTep); // (2)

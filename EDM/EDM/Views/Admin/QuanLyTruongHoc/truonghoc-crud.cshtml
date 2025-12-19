@@ -1,0 +1,114 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyTruongHoc.Dtos.DisplayModal_CRUD_TruongHoc_Output_Dto
+@{
+    var truongHoc = Model.TruongHoc.TruongHoc;
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+}
+<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title col-md-6 col-sm-12 my-2">
+                @(Model.Loai == "create" ? "Thêm mới" : Model.Loai  == "update" ? "Cập nhật" : "Xem chi tiết")
+            </h5>
+            <div class="list-group list-group-horizontal mb-1 text-center col-md-6 col-sm-12 justify-content-sm-end justify-content-center" id="" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="thongtin-list"
+                   data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="tab-content text-justify">
+                <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+                     aria-labelledby="thongtin-list">
+                    <div class="row" intro-container="thongtin-chung">
+                        <!--Id-->
+                        <input id="input-idtruonghoc" value="@truongHoc.IdTruongHoc" hidden />
+
+                        <!--Tên trường học-->
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="required" for="input-tentruonghoc">Tên trường học</label>
+                                    <input type="text"
+                                           class="form-control" id="input-tentruonghoc"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(truongHoc.TenTruongHoc ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "") required>
+                                    <div class="invalid-feedback feedback" for="input-tentruonghoc">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Số điện thoại-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-sodienthoai">Số điện thoại</label>
+                                    <input type="tel"
+                                           class="form-control" id="input-sodienthoai"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(truongHoc.SoDienThoai ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-sodienthoai">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Email-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-email">Email</label>
+                                    <input type="email"
+                                           class="form-control" id="input-email"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(truongHoc.Email ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-email">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Địa chỉ-->
+                        <div class="col-sm-12 col-md-6">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label class="" for="input-diachi">Địa chỉ</label>
+                                    <input type="text"
+                                           class="form-control" id="input-diachi"
+                                           placeholder="Nhập thông tin ..."
+                                           value="@(truongHoc.DiaChi ?? "")"
+                                           @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>
+                                    <div class="invalid-feedback feedback" for="input-diachi">Không được để trống</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ghi chú-->
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="position-relative">
+                                <div class="form-group mb-3">
+                                    <label for="input-ghichu">Ghi chú</label>
+                                    <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                              placeholder="Nhập thông tin ..."
+                                              value="@(truongHoc.GhiChu ?? "")"
+                                              @(loaiThaoTac_Disabled.Contains(Model.Loai) ? "disabled" : "")>@(truongHoc.GhiChu ?? "")</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary ml-1" onclick="quanLyTruongHoc.truongHoc.save('@Model.Loai')">
+                <span class="">Lưu</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="">Đóng</span>
+            </button>
+        </div>
+    </div>
+</div>

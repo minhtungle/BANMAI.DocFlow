@@ -223,7 +223,7 @@ namespace Applications.QuanLyNguoiDung.Services
             await _unitOfWork.ExecuteInTransaction(async () =>
             {
                 nguoiDung.NguoiDung.TenDangNhap = TaoTenDangNhap(tenDangNhap: nguoiDung.NguoiDung.TenDangNhap);
-                string matKhau = Public.Handle.HashToMD5(nguoiDung.NguoiDung.MatKhau);
+                string matKhau = Public.Handles.Handle.HashToMD5(nguoiDung.NguoiDung.MatKhau);
 
                 // Tạo hồ sơ
                 tbNguoiDung entity = new tbNguoiDung
@@ -320,11 +320,11 @@ namespace Applications.QuanLyNguoiDung.Services
                 if (nguoiDung_OLD == null)
                     throw new Exception("Người dùng không tồn tại");
 
-                string matKhau_MD5 = Public.Handle.HashToMD5(nguoiDung.MatKhauMoi);
+                string matKhau_MD5 = Public.Handles.Handle.HashToMD5(nguoiDung.MatKhauMoi);
                 if (nguoiDung_OLD.MatKhau != matKhau_MD5) throw new Exception("Mật khẩu cũ chưa chính xác");
 
                 // Kiểm tra độ bảo mật
-                var conditions = Public.Handle.CheckPassPattern(nguoiDung.MatKhauMoi);
+                var conditions = Public.Handles.Handle.CheckPassPattern(nguoiDung.MatKhauMoi);
                 // Kiểm tra từng điều kiện
                 foreach (var condition in conditions)
                 {
@@ -394,7 +394,7 @@ namespace Applications.QuanLyNguoiDung.Services
             string tieuDeMail = "[📣 BanMai] - THÔNG TIN TÀI KHOẢN CRM❗";
             string mailBody = await mail();
             // Gửi mail
-            Public.Handle.SendEmail(
+            Public.Handles.Handle.SendEmail(
                 sendTo: nguoiDung_OLD.NguoiDung.Email,
                 subject: tieuDeMail,
                 body: mailBody,

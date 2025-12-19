@@ -20,7 +20,7 @@ namespace Applications.QuanLyKieuNguoiDung.Services
 {
     public class QuanLyKieuNguoiDungService : BaseService, IQuanLyKieuNguoiDungService
     {
-        private readonly string VIEW_PATH = "~/Views/Admin/_SystemSetting/QuanLyKieuNguoiDung";
+        //private readonly string VIEW_PATH = "~/Views/Admin/_SystemSetting/QuanLyKieuNguoiDung";
         private readonly IRepository<tbKieuNguoiDung, Guid> _kieuNguoiDungRepo;
         private readonly IRepository<tbNguoiDungKieuNguoiDung, Guid> _nguoiDungKieuNguoiDungRepo;
         private readonly IRepository<default_tbChucNang, Guid> _chucNangRepo;

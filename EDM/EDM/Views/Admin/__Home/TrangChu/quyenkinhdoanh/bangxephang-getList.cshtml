@@ -59,19 +59,19 @@
                 <td>
                     @if (nguoiDung.XepHang == 1)
                     {
-                        <span class="font-bold text-success">@Public.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
+                        <span class="font-bold text-success">@Public.Handles.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
                     }
                     else if (nguoiDung.XepHang == 2)
                     {
-                        <span class="font-bold text-warning">@Public.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
+                        <span class="font-bold text-warning">@Public.Handles.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
                     }
                     else if (nguoiDung.XepHang == 3)
                     {
-                        <span class="font-bold text-primary">@Public.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
+                        <span class="font-bold text-primary">@Public.Handles.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
                     }
                     else
                     {
-                        <span class="">@Public.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
+                        <span class="">@Public.Handles.Handle.FormatCurrency((long)nguoiDung.TongDoanhThu)</span>
                     }
                 </td>
             </tr>

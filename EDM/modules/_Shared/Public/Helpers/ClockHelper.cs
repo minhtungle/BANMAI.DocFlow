@@ -1,9 +1,5 @@
-﻿using Microsoft.Extensions.Internal;
-using Public.Interfaces;
+﻿using Public.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Public.Helpers
 {

@@ -163,7 +163,7 @@ namespace EDM.Controllers
                         $"               <i class=\"{_chucNang.Icon} fs-1\"></i>" +
                         $"           </div>" +
                         $"           <div class=\"card-footer\">" +
-                        $"               <h4 class=\"card-title\"><i class=\"bi bi-calendar-range-fill\"></i> {_chucNang.TenChucNang}</h4>" +
+                        $"               <h4 class=\"card-title\"><i class=\"bi bi-arrow-up-right-square-fill\"></i> {_chucNang.TenChucNang}</h4>" +
                         $"           </div>" +
                         $"       </a>" +
                         $"   </div>");

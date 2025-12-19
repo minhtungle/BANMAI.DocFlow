@@ -2,38 +2,37 @@
 @using Public.Helpers
 
 <div class="row">
-
-    <!--Mã nhà cung cấp-->
+    <!--Tên trường học-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">
             <div class="form-group mb-3">
-                <label class="" for="input-manhacungcap">Mã nhà cung cấp</label>
+                <label class="" for="input-tentruonghoc">Tên trường học</label>
                 <input type="text"
-                       class="form-control" id="input-manhacungcap"
-                       placeholder="Nhập thông tin ...">
-            </div>
-        </div>
-    </div>
-
-    <!--Tên nhà cung cấp-->
-    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label class="" for="input-tennhacungcap">Tên nhà cung cấp</label>
-                <input type="text"
-                       class="form-control" id="input-tennhacungcap"
+                       class="form-control" id="input-tentruonghoc"
                        placeholder="Nhập thông tin ...">
             </div>
         </div>
     </div>
     
-    <!--Tên mặt hàng-->
+    <!--Slug-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">
             <div class="form-group mb-3">
-                <label class="" for="input-tenmathang">Tên mặt hàng</label>
+                <label class="" for="input-slug">Slug</label>
                 <input type="text"
-                       class="form-control" id="input-tenmathang"
+                       class="form-control" id="input-slug"
+                       placeholder="Nhập thông tin ...">
+            </div>
+        </div>
+    </div>
+
+    <!--Tên viết tắt-->
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-tenviettat">Tên viết tắt</label>
+                <input type="text"
+                       class="form-control" id="input-tenviettat"
                        placeholder="Nhập thông tin ...">
             </div>
         </div>
@@ -88,7 +87,7 @@
 
     <div class="col-12 py-2 text-center">
         <button type="button" class="btn btn-sm btn-primary ml-1 button-timkiem"
-                onclick="quanLyNhaCungCap.nhaCungCap.getList()">
+                onclick="quanLyTruongHoc.truongHoc.getList()">
             <span class="">Tìm kiếm</span>
         </button>
     </div>

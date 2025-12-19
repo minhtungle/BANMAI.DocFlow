@@ -1,10 +1,7 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
-using EDM_DB;
+﻿using EDM_DB;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.OpenSsl;
 using Public.Models;
 using System;
 using System.Collections.Generic;
@@ -20,11 +17,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.WebPages;
 
-namespace Public
+namespace Public.Handles
 {
     public static class Handle
     {
@@ -315,76 +310,7 @@ namespace Public
             string temp = s.Normalize(NormalizationForm.FormD);
             return regex.Replace(temp, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D').Replace(" ", khoangCach).Replace("(*)", String.Empty);
         }
-        // 1) "Tiểu học Lê Ngọc Hân" -> "LNH"
-        // Quy ước: bỏ các từ stopwords như "Tiểu", "học", "trường", "TH", ...
-        public static string ToCode(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
-
-            var normalized = RemoveDiacritics(text).Trim();
-
-            // Tách từ
-            var words = Regex.Split(normalized, @"\s+")
-                             .Where(w => !string.IsNullOrWhiteSpace(w))
-                             .ToArray();
-
-            // Danh sách từ bỏ qua (tuỳ bạn mở rộng)
-            var stop = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "tieu","hoc","truong","th","tieu-hoc"
-        };
-
-            var filtered = words.Where(w => !stop.Contains(w)).ToArray();
-            if (filtered.Length == 0) filtered = words; // nếu lọc hết thì fallback
-
-            var sb = new StringBuilder();
-            foreach (var w in filtered)
-            {
-                var ch = w.FirstOrDefault(char.IsLetterOrDigit);
-                if (ch != default) sb.Append(char.ToUpperInvariant(ch));
-            }
-
-            return sb.ToString();
-        }
-
-        // 2) "Tiểu học Lê Ngọc Hân" -> "tieu-hoc-le-ngoc-han"
-        public static string ToSlug(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return string.Empty;
-
-            var s = RemoveDiacritics(text).ToLowerInvariant();
-
-            // thay mọi ký tự không phải chữ/số bằng dấu -
-            s = Regex.Replace(s, @"[^a-z0-9]+", "-");
-
-            // bỏ - thừa
-            s = Regex.Replace(s, @"-+", "-").Trim('-');
-
-            return s;
-        }
-
-        // Bỏ dấu tiếng Việt (Unicode normalization)
-        public static string RemoveDiacritics(string text)
-        {
-            if (string.IsNullOrEmpty(text)) return text;
-
-            var formD = text.Normalize(NormalizationForm.FormD);
-            var sb = new StringBuilder();
-
-            foreach (var c in formD)
-            {
-                var uc = CharUnicodeInfo.GetUnicodeCategory(c);
-                if (uc != UnicodeCategory.NonSpacingMark)
-                    sb.Append(c);
-            }
-
-            // xử lý riêng đ/Đ
-            return sb.ToString()
-                     .Normalize(NormalizationForm.FormC)
-                     .Replace('đ', 'd')
-                     .Replace('Đ', 'D');
-        }
-
+              
         public static bool SendEmail(string sendTo, string subject, string body, bool isHTML, tbDonViSuDung donViSuDung, List<(string base64String, string fileName)> files = null)
         {
             SmtpSection cfg = (SmtpSection)ConfigurationManager.GetSection("system.net/mailSettings/smtp");

@@ -13,7 +13,7 @@
                         Mừng sinh nhật
                         @foreach (tbNguoiDung nguoiDung in nguoiDungs)
                         {
-                            int tuoi = Public.Handle.CalculateAge(birthDate: nguoiDung.NgaySinh.Value);
+                            int tuoi = Public.Handles.Handle.CalculateAge(birthDate: nguoiDung.NgaySinh.Value);
                             <span>
                                 <span class="text-danger font-bold" style="font-size: 1.5rem">@nguoiDung.TenNguoiDung</span> tròn <span class="text-danger font-bold" style="font-size: 1.5rem">@tuoi tuổi</span>
                             </span> <br />

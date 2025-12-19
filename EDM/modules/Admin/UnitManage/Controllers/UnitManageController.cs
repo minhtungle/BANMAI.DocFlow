@@ -53,7 +53,7 @@ namespace UnitManage.Controllers {
                         donViSuDung_OLD.NgaySua = DateTime.Now;
                         // Thêm tệp
                         if (logo != null) {
-                            string inputFileName = Public.Handle.ConvertToUnSign(s: Path.GetFileName(logo.FileName), khoangCach: "-");
+                            string inputFileName = Public.Handles.Handle.ConvertToUnSign(s: Path.GetFileName(logo.FileName), khoangCach: "-");
                             string inputFilePath = string.Format("{0}/[{1}]{2}", folderPath, "LOGO", inputFileName);
                             string inputFilePath_SERVER = Request.MapPath(inputFilePath);
                             donViSuDung_OLD.Logo = inputFilePath;
@@ -63,7 +63,7 @@ namespace UnitManage.Controllers {
                             logo.SaveAs(inputFilePath_SERVER);
                         };
                         if (banner != null) {
-                            string inputFileName = Public.Handle.ConvertToUnSign(s: Path.GetFileName(banner.FileName), khoangCach: "-");
+                            string inputFileName = Public.Handles.Handle.ConvertToUnSign(s: Path.GetFileName(banner.FileName), khoangCach: "-");
                             string inputFilePath = string.Format("{0}/[{1}]{2}", folderPath, "BANNER", inputFileName);
                             string inputFilePath_SERVER = Request.MapPath(inputFilePath);
                             donViSuDung_OLD.Banner = inputFilePath;

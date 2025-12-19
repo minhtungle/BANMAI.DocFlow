@@ -105,7 +105,7 @@ namespace Auth.Controllers
                     string currentDomain = Request.Url.Host.ToLower();
                     //tbDonViSuDung donViSuDung = db.tbDonViSuDungs.FirstOrDefault(k => k.TenMien == currentDomain && k.TrangThai == 1) ?? new tbDonViSuDung();
                     var donViSuDung = layDonViSuDung();
-                    string matKhau_MD5 = Public.Handle.HashToMD5(loginM.MatKhau);
+                    string matKhau_MD5 = Public.Handles.Handle.HashToMD5(loginM.MatKhau);
                     nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap
                     && x.MatKhau == matKhau_MD5
                     && x.KichHoat == true
@@ -185,7 +185,7 @@ namespace Auth.Controllers
                                     DonViSuDung = per.DonViSuDung
                                 };
                                 // Gọi phương thức RenderViewToString() để chuyển đổi view thành chuỗi
-                                string viewAsString = Public.Handle.RenderViewToString(this, $"{VIEW_PATH}/auth-mail.thongbaodangnhap.cshtml", model);
+                                string viewAsString = Public.Handles.Handle.RenderViewToString(this, $"{VIEW_PATH}/auth-mail.thongbaodangnhap.cshtml", model);
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
@@ -195,7 +195,7 @@ namespace Auth.Controllers
                             if (nguoiDung.ThongTinThietBi_TruyCap != null) // Kiểm tra thiết bị mới hay cũ
                             {
                                 ThongTinThietBi thongTinThietBi_DaSuDung = JsonConvert.DeserializeObject<ThongTinThietBi>(nguoiDung.ThongTinThietBi_TruyCap);
-                                List<Tuple<string, object, object>> thayDois = Public.Handle.CompareSpecificFields(obj1: thongTinThietBi_DaSuDung, obj2: thongTinThietBi,
+                                List<Tuple<string, object, object>> thayDois = Public.Handles.Handle.CompareSpecificFields(obj1: thongTinThietBi_DaSuDung, obj2: thongTinThietBi,
                                        fieldsToCompare: new List<string>(),
                                        fieldsToExclude: new List<string> {
                                 "QuyenTruyCap", "DuongDanFile", "TrangThai", "NguoiTao", "NguoiSua", "NgayTao", "NgaySua", "MaDonViSuDung"}
@@ -203,14 +203,14 @@ namespace Auth.Controllers
                                 if (thayDois.Count != 0)
                                 {
                                     nguoiDung.ThongTinThietBi_TruyCap = JsonConvert.SerializeObject(thongTinThietBi); // Lưu thiết bị mới
-                                    Public.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+                                    Public.Handles.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
                                 }
                                 ;
                             }
                             else
                             {
                                 nguoiDung.ThongTinThietBi_TruyCap = JsonConvert.SerializeObject(thongTinThietBi); // Lưu thiết bị mới
-                                Public.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
+                                Public.Handles.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
                             }
                             ;
                             #endregion
@@ -274,7 +274,7 @@ namespace Auth.Controllers
                         if (loginM.MaXacThuc == MAXACTHUC)
                         {
                             // Kiểm tra độ bảo mật
-                            var conditions = Public.Handle.CheckPassPattern(loginM.MatKhau);
+                            var conditions = Public.Handles.Handle.CheckPassPattern(loginM.MatKhau);
                             // Kiểm tra từng điều kiện
                             foreach (var condition in conditions)
                             {
@@ -284,7 +284,7 @@ namespace Auth.Controllers
 
                             //if (nguoiDung_NEW.MatKhauMoi != nguoiDung_NEW.MatKhauMoi) return Json(new { mess = "Mật khẩu xác nhận chưa trùng khớp" });
 
-                            string matKhau_MD5 = Public.Handle.HashToMD5(loginM.MatKhau);
+                            string matKhau_MD5 = Public.Handles.Handle.HashToMD5(loginM.MatKhau);
                             nguoiDung.MatKhau = matKhau_MD5;
 
                             status = 1;
@@ -317,7 +317,7 @@ namespace Auth.Controllers
         [HttpPost]
         public ActionResult LayMaXacThuc(AuthM loginM)
         {
-            string maXacThuc = Public.Handle.RandomString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6);
+            string maXacThuc = Public.Handles.Handle.RandomString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6);
             string currentDomain = Request.Url.Host.ToLower();
             Permission per = new Permission
             {
@@ -341,8 +341,8 @@ namespace Auth.Controllers
                         DonViSuDung = per.DonViSuDung
                     };
                     // Gọi phương thức RenderViewToString() để chuyển đổi view thành chuỗi
-                    string viewAsString = Public.Handle.RenderViewToString(this, $"{VIEW_PATH}/auth.forgot-mail.cshtml", model);
-                    Public.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: viewAsString, isHTML: true, donViSuDung: per.DonViSuDung);
+                    string viewAsString = Public.Handles.Handle.RenderViewToString(this, $"{VIEW_PATH}/auth.forgot-mail.cshtml", model);
+                    Public.Handles.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: viewAsString, isHTML: true, donViSuDung: per.DonViSuDung);
                 }
                 ;
                 guiMail();
@@ -377,7 +377,7 @@ namespace Auth.Controllers
                 try
                 {
                     // Kiểm tra độ bảo mật
-                    var conditions = Public.Handle.CheckPassPattern(matKhauMoi);
+                    var conditions = Public.Handles.Handle.CheckPassPattern(matKhauMoi);
                     // Kiểm tra từng điều kiện
                     foreach (var condition in conditions)
                     {
@@ -390,7 +390,7 @@ namespace Auth.Controllers
                     tbNguoiDung nguoiDung = db.tbNguoiDungs.Find(NGUOIDUNG.IdNguoiDung);
                     if (nguoiDung != null)
                     {
-                        string matKhau_MD5 = Public.Handle.HashToMD5(matKhauMoi);
+                        string matKhau_MD5 = Public.Handles.Handle.HashToMD5(matKhauMoi);
                         nguoiDung.MatKhau = matKhau_MD5;
                         nguoiDung.YeuCauDoiMatKhau = false;
 
@@ -422,7 +422,7 @@ namespace Auth.Controllers
         [HttpPost]
         public ActionResult LoginAfterChangePass(AuthM loginM)
         {
-            string maXacThuc = Public.Handle.RandomString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6);
+            string maXacThuc = Public.Handles.Handle.RandomString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 6);
             string currentDomain = Request.Url.Host.ToLower();
             Permission per = new Permission
             {
@@ -449,8 +449,8 @@ namespace Auth.Controllers
                         DonViSuDung = per.DonViSuDung
                     };
                     // Gọi phương thức RenderViewToString() để chuyển đổi view thành chuỗi
-                    string viewAsString = Public.Handle.RenderViewToString(this, $"{VIEW_PATH}/auth.forgot-mail.cshtml", model);
-                    Public.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: viewAsString, isHTML: true, donViSuDung: per.DonViSuDung);
+                    string viewAsString = Public.Handles.Handle.RenderViewToString(this, $"{VIEW_PATH}/auth.forgot-mail.cshtml", model);
+                    Public.Handles.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: viewAsString, isHTML: true, donViSuDung: per.DonViSuDung);
                 }
                 ;
                 guiMail();

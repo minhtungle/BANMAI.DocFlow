@@ -27,7 +27,7 @@
                     <span class="">Khách hàng:</span> <span class="">@doanhThuMoiNhat.TenKhachHang</span> <br />
                     <span class="">
                         Thanh toán: <span class="font-bold text-success">
-                            @Public.Handle.FormatCurrency((long)doanhThuMoiNhat.ThanhToan.SoTienDaDong)
+                            @Public.Handles.Handle.FormatCurrency((long)doanhThuMoiNhat.ThanhToan.SoTienDaDong)
                         </span>
                         <small class="font-bold text-danger">@string.Format("(lần {0} - {1}%)", doanhThuMoiNhat.ThanhToan.ThuTuThanhToan, doanhThuMoiNhat.ThanhToan.PhanTramDaDong)</small>
                     </span>

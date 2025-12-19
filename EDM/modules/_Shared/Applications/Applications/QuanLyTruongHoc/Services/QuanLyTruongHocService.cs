@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Applications.QuanLyTruongHoc.Services
@@ -59,8 +61,24 @@ namespace Applications.QuanLyTruongHoc.Services
         public async Task<DisplayModal_CRUD_TruongHoc_Output_Dto> DisplayModal_CRUD_TruongHoc(
             DisplayModal_CRUD_TruongHoc_Input_Dto input)
         {
-            // Current DTOs for TruongHoc are minimal; return an empty output DTO for now.
-            return await Task.FromResult(new DisplayModal_CRUD_TruongHoc_Output_Dto());
+            var truongHocs = await Get_TruongHocs(input: new GetList_TruongHoc_Input_Dto
+            {
+                Loai = "single",
+                LocThongTin = new LocThongTinDto
+                {
+                    IdTruongHocs = new List<Guid> { input.IdTruongHoc }
+                }
+            });
+
+            var output = new DisplayModal_CRUD_TruongHoc_Output_Dto
+            {
+                Loai = input.Loai,
+                TruongHoc = truongHocs.FirstOrDefault() ?? new tbTruongHocExtend()
+                {
+                    TruongHoc = new tbTruongHoc()
+                },
+            };
+            return output;
         }
 
         public async Task<bool> IsExisted_TruongHoc(tbTruongHoc truongHoc)
@@ -78,8 +96,8 @@ namespace Applications.QuanLyTruongHoc.Services
         {
             await _unitOfWork.ExecuteInTransaction(async () =>
             {
-                truongHoc.TruongHoc.TenVietTat = Public.Handle.ToCode(text: truongHoc.TruongHoc.TenTruongHoc);
-                truongHoc.TruongHoc.Slug = Public.Handle.ToSlug(text: truongHoc.TruongHoc.Slug);
+                truongHoc.TruongHoc.TenVietTat = Public.Helpers.XuLyTenTruongHoc.ToCode(text: truongHoc.TruongHoc.TenTruongHoc);
+                truongHoc.TruongHoc.Slug = Public.Helpers.XuLyTenTruongHoc.ToSlug(text: truongHoc.TruongHoc.TenTruongHoc);
                 var entity = new tbTruongHoc
                 {
                     IdTruongHoc = Guid.NewGuid(),
@@ -109,8 +127,8 @@ namespace Applications.QuanLyTruongHoc.Services
                 if (_truongHoc == null)
                     throw new Exception("Trường học không tồn tại.");
 
-                truongHoc.TruongHoc.TenVietTat = Public.Handle.ToCode(text: truongHoc.TruongHoc.TenTruongHoc);
-                truongHoc.TruongHoc.Slug = Public.Handle.ToSlug(text: truongHoc.TruongHoc.Slug);
+                truongHoc.TruongHoc.TenVietTat = Public.Helpers.XuLyTenTruongHoc.ToCode(text: truongHoc.TruongHoc.TenTruongHoc);
+                truongHoc.TruongHoc.Slug = Public.Helpers.XuLyTenTruongHoc.ToSlug(text: truongHoc.TruongHoc.TenTruongHoc);
 
                 _truongHoc.TenTruongHoc = truongHoc.TruongHoc.TenTruongHoc;
                 _truongHoc.TenVietTat = truongHoc.TruongHoc.TenVietTat;

@@ -440,7 +440,7 @@ namespace UserAccount.Controllers
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
-                            string tieuDeMail = "[📣 BanMai] - CẬP NHẬT THÔNG TIN TÀI KHOẢN❗";
+                            string tieuDeMail = "[📣 banmai] - CẬP NHẬT THÔNG TIN TÀI KHOẢN❗";
                             string mailBody = mail();
                             // Gửi mail
                             Public.Handles.Handle.SendEmail(sendTo: nguoiDung_OLD.NguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
@@ -534,7 +534,7 @@ namespace UserAccount.Controllers
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
-                            string tieuDeMail = "[📣 BanMai] - CẬP NHẬT THÔNG TIN TÀI KHOẢN❗";
+                            string tieuDeMail = "[📣 banmai] - CẬP NHẬT THÔNG TIN TÀI KHOẢN❗";
                             string mailBody = mail();
                             // Gửi mail
                             Public.Handles.Handle.SendEmail(sendTo: nguoiDung_OLD.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);
@@ -1093,7 +1093,7 @@ namespace UserAccount.Controllers
                 // Trả về chuỗi đã được tạo ra từ view
                 return viewAsString;
             }
-            string tieuDeMail = "[📣 BanMai] - THÔNG TIN TÀI KHOẢN CRM❗";
+            string tieuDeMail = "[📣 banmai] - THÔNG TIN TÀI KHOẢN CRM❗";
             string mailBody = mail();
             // Gửi mail
             Public.Handles.Handle.SendEmail(sendTo: nguoiDung.Email, subject: tieuDeMail, body: mailBody, isHTML: true, donViSuDung: per.DonViSuDung);

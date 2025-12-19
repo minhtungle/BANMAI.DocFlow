@@ -226,10 +226,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\cursor\arrow_13951049.png" />
+    <Content Include="Assets\cursor\cursor_5340810.png" />
     <Content Include="Assets\cursor\cursor_5340828.png" />
+    <Content Include="Assets\cursor\cursor_7599906.png" />
     <Content Include="Assets\cursor\cursor_889858.png" />
+    <Content Include="Assets\cursor\navigation_5425755.png" />
     <Content Include="Assets\files\Khúc hát mừng sinh nhật  Phan Đình Tùng.mp3" />
     <Content Include="Assets\cursor\cursor.png" />
+    <Content Include="Assets\logo\favicon.ico" />
     <Content Include="Assets\images\favicon.png" />
     <Content Include="Assets\images\banner-img.png" />
     <Content Include="Assets\images\logo-img.ico" />

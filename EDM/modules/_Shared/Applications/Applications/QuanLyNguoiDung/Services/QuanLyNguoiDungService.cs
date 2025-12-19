@@ -391,7 +391,7 @@ namespace Applications.QuanLyNguoiDung.Services
                 // Trả về chuỗi đã được tạo ra từ view
                 return Task.FromResult(viewAsString);
             }
-            string tieuDeMail = "[📣 BanMai] - THÔNG TIN TÀI KHOẢN CRM❗";
+            string tieuDeMail = "[📣 banmai] - THÔNG TIN TÀI KHOẢN CRM❗";
             string mailBody = await mail();
             // Gửi mail
             Public.Handles.Handle.SendEmail(

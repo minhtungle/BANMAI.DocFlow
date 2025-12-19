@@ -189,7 +189,7 @@ namespace Auth.Controllers
                                 // Trả về chuỗi đã được tạo ra từ view
                                 return viewAsString;
                             }
-                            string tieuDeMail = "[📣 BanMai] - CẢNH BÁO THIẾT BỊ LẠ ĐĂNG NHẬP❗";
+                            string tieuDeMail = "[📣 banmai] - CẢNH BÁO THIẾT BỊ LẠ ĐĂNG NHẬP❗";
                             string mailBody = mail();
 
                             if (nguoiDung.ThongTinThietBi_TruyCap != null) // Kiểm tra thiết bị mới hay cũ
@@ -328,7 +328,7 @@ namespace Auth.Controllers
             {
                 NGUOIDUNG = nguoiDung;
                 #region Gửi mail
-                string tieuDeMail = "[📣 BanMai] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
+                string tieuDeMail = "[📣 banmai] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
                 void guiMail()
                 {
                     Uri uri = new Uri(HttpContext.Request.Url.AbsoluteUri);
@@ -436,7 +436,7 @@ namespace Auth.Controllers
             if (nguoiDung != null)
             {
                 #region Gửi mail
-                string tieuDeMail = "[📣 BanMai] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
+                string tieuDeMail = "[📣 banmai] - LẤY LẠI THÔNG TIN TÀI KHOẢN 🔑";
                 void guiMail()
                 {
                     Uri uri = new Uri(HttpContext.Request.Url.AbsoluteUri);

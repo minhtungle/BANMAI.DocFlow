@@ -115,6 +115,7 @@ class QuanLyNhaCungCap {
                     var nhaCungCap = {
                         NhaCungCap: {
                             IdNhaCungCap: $("#input-idnhacungcap", $modal).val(),
+                            IdNhaCungCapCha: $("#select-nhacungcapcha", $modal).val(),
                             MaNhaCungCap: $("#input-manhacungcap", $modal).val().trim(),
                             TenNhaCungCap: $("#input-tennhacungcap", $modal).val().trim(),
                             TenMatHang: $("#input-tenmathang", $modal).val().trim(),
@@ -278,8 +279,108 @@ class QuanLyNhaCungCap {
             },
 
             xemChiTiet: {
-                
+
             }
         };
+
+        quanLyNhaCungCap.taiLieu = {
+            ...quanLyNhaCungCap.taiLieu,
+            maxDungLuongTep: 1024 * 1024 * 200, // 200MB,
+            maxTaiLieu: 200,
+            arrTaiLieu: [],
+            add: function (e, rowNumber = '00000000-0000-0000-0000-000000000000') {
+                var $modal = $("#baidang-crud");
+
+                var $imgContainer = $(`.baidang-read[row='${rowNumber}'] #anhmota-items`, $modal),
+                    soAnhDangCo = $(".image-item", $imgContainer).length;
+
+                var addTr = function (files) {
+                    let kiemTra = true,
+                        mess = "Thêm ảnh thành công";
+
+                    let arrTaiLieu = [];
+
+                    $.each(files, function (idx, f) {
+                        // Kiểm tra tệp
+                        if (!(/\.(pdf)$/i.test(f.name))) {
+                            mess = `Tồn tại tệp không thuộc định dạng cho phép [pdf]`;
+                            kiemTra = false;
+                            return false;
+                        };
+                        // Kiểm tra dung lượng
+                        if (f.size > quanLyBaiDang.baiDang.handleAnhMoTa.maxDungLuongTep) {
+                            mess = `Tồn tại tệp có kích thước tệp vượt quá giới hạn ${quanLyBaiDang.baiDang.handleAnhMoTa.maxDungLuongTep} Mb`;
+                            kiemTra = false;
+                            return false;
+                        };
+                        // Kiểm tra tên
+                        if (f.name.length > 80) {
+                            mess = `Tồn tại tệp có tên vượt quá giới hạn 80 ký tự`;
+                            kiemTra = false;
+                            return false;
+                        };
+
+                        // Thêm ảnh vào mảng
+                        let idTamThoi = sys.generateGUID();
+                        var tempImageUrl = URL.createObjectURL(f);
+
+                        var data = {
+                            rowNumber,
+                            idTamThoi,
+                            file: f,
+                            html: `
+                                    <div class="image-item" data-id="00000000-0000-0000-0000-000000000000" data-idtamthoi="${idTamThoi}">
+                                        <img src="${tempImageUrl}" alt="${f.name}" />
+                                        <button class="delete-btn"
+                                            onclick="quanLyBaiDang.baiDang.handleAnhMoTa.delete('${loaiAnh}', this, '${rowNumber}')">
+                                            &times;
+                                        </button>
+                                    </div>
+                                `
+                        };
+
+                        quanLyBaiDang.baiDang.handleAnhMoTa.arrTaiLieu.push(data);
+                        arrTaiLieu.push(data);
+                    });
+
+                    if (!kiemTra) {
+                        sys.alert({
+                            status: "error",
+                            mess,
+                            timeout: 5000
+                        });
+                    } else {
+                        $.each(arrTaiLieu, function (idx, anh) {
+                            //formData.append("files", anh.file); // Dùng khi save()
+                            $imgContainer.prepend(anh.html);
+                        });
+
+                        sys.alert({
+                            status: "success",
+                            mess: "Đã thêm ảnh thành công",
+                            timeout: 5000
+                        });
+                    };
+                };
+
+                var $fileInput = null;
+
+                $fileInput = $(`.baidang-read[row='${rowNumber}'] #image-anhmota-${rowNumber}`, $modal).get(0);
+                if (soAnhDangCo >= quanLyBaiDang.baiDang.handleAnhMoTa.maxTaiLieu) {
+                    sys.alert({
+                        status: "warning",
+                        mess: `Chỉ cho phép tối đa ${quanLyBaiDang.baiDang.handleAnhMoTa.maxTaiLieu} ảnh`,
+                        timeout: 5000
+                    });
+                } else {
+                    // Chỉ lấy đủ số ảnh quy định
+                    let files = Array.from($fileInput.files)
+                        .slice(0, (quanLyBaiDang.baiDang.handleAnhMoTa.maxTaiLieu - soAnhDangCo));
+                    addTr(files);
+                };
+
+                $fileInput.value = ''; // xóa giá trị của input file
+            },
+        }
     }
 };

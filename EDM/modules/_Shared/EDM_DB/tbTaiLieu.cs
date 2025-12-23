@@ -12,14 +12,14 @@ namespace EDM_DB
     using System;
     using System.Collections.Generic;
     
-    public partial class tbTaiLieuNhaCungCap
+    public partial class tbTaiLieu
     {
         public int Stt { get; set; }
         public System.Guid IdFile { get; set; }
         public Nullable<System.Guid> IdNhaCungCap { get; set; }
         public Nullable<System.DateTimeOffset> NgayDangKy { get; set; }
         public Nullable<System.DateTimeOffset> NgayHetHan { get; set; }
-        public Nullable<System.Guid> FileName { get; set; }
+        public string FileName { get; set; }
         public string FileNameUpdate { get; set; }
         public string FileExtension { get; set; }
         public string LoaiTep { get; set; }

@@ -367,6 +367,7 @@
     <Compile Include="Controllers\StaticArgController.cs" />
     <Compile Include="Controllers\RouteConfigController.cs" />
     <Compile Include="Dtos\EnumInfoDto.cs" />
+    <Compile Include="Dtos\FileSaveInfo.cs" />
     <Compile Include="Dtos\XemPDF_Output_Dto.cs" />
     <Compile Include="Enums\ChucVuEnum.cs" />
     <Compile Include="Enums\CRUDEnum.cs" />
@@ -386,6 +387,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handles\Handle.cs" />
+    <Compile Include="Helpers\FileSaveInfoHelper.cs" />
     <Compile Include="Helpers\XuLyTenTruongHoc.cs" />
     <Compile Include="Helpers\ClockHelper.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />

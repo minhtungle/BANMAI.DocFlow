@@ -142,7 +142,7 @@
     <Compile Include="tbNhaCungCapTruongHoc.cs">
       <DependentUpon>EDM_DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="tbTaiLieuNhaCungCap.cs">
+    <Compile Include="tbTaiLieu.cs">
       <DependentUpon>EDM_DB.tt</DependentUpon>
     </Compile>
     <Compile Include="tbTruongHoc.cs">

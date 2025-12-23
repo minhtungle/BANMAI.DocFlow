@@ -1,0 +1,93 @@
+﻿@using Public.Models
+@model Applications.QuanLyTaiLieu.Dtos.Index_Output_Dto
+@{
+    ViewBag.Title = "Quản lý tài liệu";
+    Layout = "~/Views/_Shared/Admin/admin.cshtml";
+
+    bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytailieu-themmoi");
+    bool capNhat = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytailieu-capnhat");
+    bool xoaBo = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlytailieu-xoabo");
+}
+@section hTitle {}
+@section hBreadcrumb {
+    <li class="breadcrumb-item"><a href="~/Home/Index">Trang chủ</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Quản lý tài liệu</li>
+}
+@section styles {
+}
+@section scripts {
+    <script src="~/Content/Admin/QuanLyTaiLieu/quanlytailieu.js"></script>
+    <script>
+        var quanLyTaiLieu = new QuanLyTaiLieu();
+        quanLyTaiLieu.init();
+        quanLyTaiLieu.taiLieu.getList();
+    </script>
+}
+<section class="section" page-group="page-group-quanlytailieu" id="page-quanlytailieu" data-aos="fade-up">
+    <div class="card">
+        <div class="card-body">
+            <div class="btn-group btn-group-sm" role="group">
+                <!--Thao tác-->
+                <a class="btn btn-primary"><i class="bi bi-three-dots-vertical"></i></a>
+                <div class="btn-group btn-group-sm dropdown">
+                    <button type="button" title="Thao tác" class="btn btn-light-secondary dropdown-toggle dropdown-toggle-split"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-reference="parent">
+                        Thao tác
+                    </button>
+                    <div class="dropdown-menu">
+                        @{
+                            if (themMoi)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyTaiLieu.taiLieu.displayModal_CRUD('create')">
+                                    <i class="bi bi-plus-circle-fill"></i> Thêm mới
+                                </a>
+                            }
+                            if (capNhat)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyTaiLieu.taiLieu.displayModal_CRUD('update')">
+                                    <i class="bi bi-pencil-square"></i> Cập nhật
+                                </a>
+                            }
+                            if (xoaBo)
+                            {
+                                <a class="dropdown-item c-pointer"
+                                   onclick="quanLyTaiLieu.taiLieu.delete('multiple')">
+                                    <i class="bi bi-trash3-fill"></i> Xóa bỏ
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="divider divider-right" data-bs-toggle="collapse" href="#tailieu-timkiem-collapse">
+                        <div class="divider-text font-bold">
+                            <div class="badges">
+                                <span class="badge bg-primary c-pointer">Nhấn xem bộ lọc</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse" id="tailieu-timkiem-collapse">
+                        @Html.Partial("~/Views/Admin/QuanLyTaiLieu/tailieu-timkiem.cshtml", Model)
+                        <hr />
+                    </div>
+                </div>
+            </div>
+            @*<hr />*@
+            <div class="row py-2" id="tailieu-getList-container"></div>
+        </div>
+    </div>
+
+</section>
+<!--tailieu-crud-->
+<div class="modal fade text-left" id="tailieu-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
+</div>

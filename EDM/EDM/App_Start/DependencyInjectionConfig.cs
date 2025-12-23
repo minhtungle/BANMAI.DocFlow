@@ -137,8 +137,8 @@ namespace EDM.App_Start
             builder.RegisterType<EfRepository<tbTruongHoc, Guid>>()
                    .As<IRepository<tbTruongHoc, Guid>>()
                    .InstancePerRequest();
-            builder.RegisterType<EfRepository<tbTaiLieuNhaCungCap, Guid>>()
-                   .As<IRepository<tbTaiLieuNhaCungCap, Guid>>()
+            builder.RegisterType<EfRepository<tbTaiLieu, Guid>>()
+                   .As<IRepository<tbTaiLieu, Guid>>()
                    .InstancePerRequest();
 
             #endregion

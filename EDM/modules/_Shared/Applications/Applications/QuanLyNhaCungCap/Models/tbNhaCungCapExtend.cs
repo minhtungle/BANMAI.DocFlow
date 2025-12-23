@@ -7,7 +7,7 @@ namespace Applications.QuanLyNhaCungCap.Models
     {
         public tbNhaCungCap NhaCungCap { get; set; }
         public List<tbTruongHoc> TruongHocs { get; set; } = new List<tbTruongHoc>();
-        public List<tbTaiLieuNhaCungCap> TaiLieus { get; set; } = new List<tbTaiLieuNhaCungCap>();
+        public List<tbTaiLieu> TaiLieus { get; set; } = new List<tbTaiLieu>();
         public int SoLuongTruongHoc { get; set; } = 0;
         public int SoLuongTaiLieu {  get; set; } = 0;
     }

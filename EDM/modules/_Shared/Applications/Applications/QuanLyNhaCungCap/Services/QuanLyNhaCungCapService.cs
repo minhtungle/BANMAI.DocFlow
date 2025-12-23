@@ -21,7 +21,7 @@ namespace Applications.QuanLyNhaCungCap.Services
         private readonly IRepository<tbNhaCungCap, Guid> _nhaCungCapRepo;
         private readonly IRepository<tbNhaCungCapTruongHoc, Guid> _nhaCungCapTruongHocRepo;
         private readonly IRepository<tbTruongHoc, Guid> _truongHocRepo;
-        private readonly IRepository<tbTaiLieuNhaCungCap, Guid> _taiLieuNhaCungCapRepo;
+        private readonly IRepository<tbTaiLieu, Guid> _taiLieuNhaCungCapRepo;
 
         public QuanLyNhaCungCapService(
             IUserContext userContext,
@@ -30,7 +30,7 @@ namespace Applications.QuanLyNhaCungCap.Services
             IRepository<tbNhaCungCap, Guid> nhaCungCapRepo,
             IRepository<tbNhaCungCapTruongHoc, Guid> nhaCungCapTruongHocRepo,
             IRepository<tbTruongHoc, Guid> truongHocRepo,
-            IRepository<tbTaiLieuNhaCungCap, Guid> taiLieuNhaCungCapRepo
+            IRepository<tbTaiLieu, Guid> taiLieuNhaCungCapRepo
 
             ) : base(userContext, unitOfWork)
         {
@@ -43,7 +43,6 @@ namespace Applications.QuanLyNhaCungCap.Services
         public async Task<Index_Output_Dto> Index()
         {
             var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNhaCungCap");
-            var nhaCungCaps = await Get_NhaCungCaps(input: new GetList_NhaCungCap_Input_Dto());
             return new Index_Output_Dto
             {
                 ThaoTacs = thaoTacs,
@@ -130,6 +129,7 @@ namespace Applications.QuanLyNhaCungCap.Services
                 {
                     NhaCungCap = new tbNhaCungCap()
                 },
+                NhaCungCaps = nhaCungCaps.Where(x => x.NhaCungCap.IdNhaCungCap != input.IdNhaCungCap).ToList(), // Loại trừ chính nó
                 TruongHocs = truongHocs,
             };
             return output;
@@ -151,6 +151,7 @@ namespace Applications.QuanLyNhaCungCap.Services
                 var _nhaCungCap = new tbNhaCungCap
                 {
                     IdNhaCungCap = Guid.NewGuid(),
+                    IdNhaCungCapCha = nhaCungCap.NhaCungCap.IdNhaCungCapCha,
                     MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap,
                     TenNhaCungCap = nhaCungCap.NhaCungCap.TenNhaCungCap,
                     TenMatHang = nhaCungCap.NhaCungCap.TenMatHang,
@@ -181,28 +182,6 @@ namespace Applications.QuanLyNhaCungCap.Services
                     };
                     await _unitOfWork.InsertAsync<tbNhaCungCapTruongHoc, Guid>(_nhaCungCapTruongHoc);
                 }
-                //foreach (var truongHoc in nhaCungCap.TruongHocs)
-                //{
-                //    truongHoc.TenVietTat = Public.Handles.Handle.ToCode(text: truongHoc.TenTruongHoc);
-                //    truongHoc.Slug = Public.Handles.Handle.ToSlug(text: truongHoc.Slug);
-                //    var _truongHoc = new tbTruongHoc
-                //    {
-                //        IdTruongHoc = Guid.NewGuid(),
-                //        TenTruongHoc = truongHoc.TenTruongHoc,
-                //        TenVietTat = truongHoc.TenVietTat,
-                //        Slug = truongHoc.Slug,
-                //        SoDienThoai = truongHoc.SoDienThoai,
-                //        Email = truongHoc.Email,
-                //        DiaChi = truongHoc.DiaChi,
-                //        GhiChu = truongHoc.GhiChu,
-
-                //        TrangThai = (int?)TrangThaiDuLieuEnum.DangSuDung,
-                //        MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung,
-                //        IdNguoiTao = CurrentNguoiDung.IdNguoiDung,
-                //        NgayTao = DateTime.Now,
-                //    };
-                //    await _unitOfWork.InsertAsync<tbTruongHoc, Guid>(_truongHoc);
-                //}
                 ;
             });
         }
@@ -217,6 +196,7 @@ namespace Applications.QuanLyNhaCungCap.Services
 
                 // Cập nhật thông tin chính
                 {
+                    _nhaCungCap.IdNhaCungCapCha = nhaCungCap.NhaCungCap.IdNhaCungCapCha;
                     _nhaCungCap.MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap;
                     _nhaCungCap.TenNhaCungCap = nhaCungCap.NhaCungCap.TenNhaCungCap;
                     _nhaCungCap.TenMatHang = nhaCungCap.NhaCungCap.TenMatHang;

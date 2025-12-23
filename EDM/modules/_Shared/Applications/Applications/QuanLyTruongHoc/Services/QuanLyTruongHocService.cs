@@ -1,4 +1,5 @@
 ﻿using Applications.QuanLyTruongHoc.Dtos;
+using Applications.QuanLyTruongHoc.Filters;
 using Applications.QuanLyTruongHoc.Interfaces;
 using Applications.QuanLyTruongHoc.Models;
 using EDM_DB;
@@ -44,7 +45,12 @@ namespace Applications.QuanLyTruongHoc.Services
         public async Task<List<tbTruongHocExtend>> Get_TruongHocs(GetList_TruongHoc_Input_Dto input)
         {
             var query = _truongHocRepo.Query()
-                .Where(x => x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
+              .ApplyFilters(input.LocThongTin, CurrentDonViSuDung.MaDonViSuDung);
+
+            if (input.Loai == "single" && input.LocThongTin.IdTruongHocs != null && input.LocThongTin.IdTruongHocs.Any())
+            {
+                query = query.Where(x => input.LocThongTin.IdTruongHocs.Contains(x.IdTruongHoc));
+            }
 
             // If input is used for filtering in the future, apply here
             var data = await query

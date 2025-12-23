@@ -1908,6 +1908,7 @@
     <Content Include="Content\Admin\QuanLyDonVi\quanlydonvi.js" />
     <Content Include="Content\Admin\QuanLyBaiDang\quanlybaidang.css" />
     <Content Include="Content\Admin\QuanLyBaiDang\quanlybaidang.js" />
+    <Content Include="Content\Admin\QuanLyTaiLieu\quanlytailieu.js" />
     <Content Include="Content\Admin\QuanLyTruongHoc\quanlytruonghoc.js" />
     <Content Include="Content\Admin\QuanLyNhaCungCap\quanlynhacungcap.js" />
     <Content Include="Content\Admin\UnitManage\unitmanage.js" />
@@ -7869,6 +7870,10 @@
     <Content Include="Views\Admin\QuanLyTruongHoc\truonghoc-getList.cshtml" />
     <Content Include="Views\Admin\QuanLyTruongHoc\truonghoc-timkiem.cshtml" />
     <Content Include="Views\Admin\QuanLyTruongHoc\truonghoc.cshtml" />
+    <Content Include="Views\Admin\QuanLyTaiLieu\tailieu-crud.cshtml" />
+    <Content Include="Views\Admin\QuanLyTaiLieu\tailieu-getList.cshtml" />
+    <Content Include="Views\Admin\QuanLyTaiLieu\tailieu-timkiem.cshtml" />
+    <Content Include="Views\Admin\QuanLyTaiLieu\tailieu.cshtml" />
     <None Include="Views\User\TrangTaiLieu\404.cshtml" />
     <None Include="Views\User\TrangTaiLieu\about.cshtml" />
     <None Include="Views\User\TrangTaiLieu\checkout.cshtml" />

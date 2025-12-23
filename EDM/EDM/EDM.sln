@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.1.11312.151 d18.0
+VisualStudioVersion = 18.1.11312.151
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EDM", "EDM.csproj", "{A1C74C77-77A5-48AE-8263-2075B6982137}"
 EndProject
@@ -42,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLyNhaCungCap", "..\modules\Admin\QuanLyNhaCungCap\QuanLyNhaCungCap.csproj", "{D728375B-7143-4ADB-AB5A-81899A9F5914}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLyTruongHoc", "..\modules\Admin\QuanLyTruongHoc\QuanLyTruongHoc.csproj", "{7ABAB452-F2C6-4BEC-BDDD-F29E0EC60EC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLyTaiLieu", "..\modules\Admin\QuanLyTaiLieu\QuanLyTaiLieu\QuanLyTaiLieu.csproj", "{8C4B13A6-F1BF-49A9-AAE3-91890A3709A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{7ABAB452-F2C6-4BEC-BDDD-F29E0EC60EC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7ABAB452-F2C6-4BEC-BDDD-F29E0EC60EC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7ABAB452-F2C6-4BEC-BDDD-F29E0EC60EC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C4B13A6-F1BF-49A9-AAE3-91890A3709A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C4B13A6-F1BF-49A9-AAE3-91890A3709A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C4B13A6-F1BF-49A9-AAE3-91890A3709A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C4B13A6-F1BF-49A9-AAE3-91890A3709A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +143,7 @@ Global
 		{DB8FBCA9-5FA5-409F-AB90-881E8E20C432} = {CA9E4AD5-3695-4915-A17F-0A6CD85BB6E2}
 		{D728375B-7143-4ADB-AB5A-81899A9F5914} = {CA9E4AD5-3695-4915-A17F-0A6CD85BB6E2}
 		{7ABAB452-F2C6-4BEC-BDDD-F29E0EC60EC1} = {CA9E4AD5-3695-4915-A17F-0A6CD85BB6E2}
+		{8C4B13A6-F1BF-49A9-AAE3-91890A3709A4} = {CA9E4AD5-3695-4915-A17F-0A6CD85BB6E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {323B6BFE-3FBF-4BD3-987B-F7DC6F2FB66D}

@@ -185,6 +185,7 @@
           </Key>
           <Property Name="Stt" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IdNhaCungCap" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="IdNhaCungCapCha" Type="uniqueidentifier" />
           <Property Name="MaNhaCungCap" Type="nvarchar(max)" />
           <Property Name="TenNhaCungCap" Type="nvarchar(max)" />
           <Property Name="TenMatHang" Type="nvarchar(max)" />
@@ -214,7 +215,7 @@
           <Property Name="NgaySua" Type="datetime" />
           <Property Name="IdNguoiSua" Type="uniqueidentifier" />
         </EntityType>
-        <EntityType Name="tbTaiLieuNhaCungCap">
+        <EntityType Name="tbTaiLieu">
           <Key>
             <PropertyRef Name="IdFile" />
           </Key>
@@ -223,7 +224,7 @@
           <Property Name="IdNhaCungCap" Type="uniqueidentifier" />
           <Property Name="NgayDangKy" Type="datetimeoffset" Precision="7" />
           <Property Name="NgayHetHan" Type="datetimeoffset" Precision="7" />
-          <Property Name="FileName" Type="uniqueidentifier" />
+          <Property Name="FileName" Type="nvarchar(max)" />
           <Property Name="FileNameUpdate" Type="nvarchar(max)" />
           <Property Name="FileExtension" Type="nvarchar(max)" />
           <Property Name="LoaiTep" Type="nvarchar(max)" />
@@ -271,7 +272,7 @@
           <EntitySet Name="tbNguoiDungKieuNguoiDung" EntityType="Self.tbNguoiDungKieuNguoiDung" Schema="banmai_docflow_admin" store:Type="Tables" />
           <EntitySet Name="tbNhaCungCap" EntityType="Self.tbNhaCungCap" Schema="banmai_docflow_admin" store:Type="Tables" />
           <EntitySet Name="tbNhaCungCapTruongHoc" EntityType="Self.tbNhaCungCapTruongHoc" Schema="banmai_docflow_admin" store:Type="Tables" />
-          <EntitySet Name="tbTaiLieuNhaCungCap" EntityType="Self.tbTaiLieuNhaCungCap" Schema="banmai_docflow_admin" store:Type="Tables" />
+          <EntitySet Name="tbTaiLieu" EntityType="Self.tbTaiLieu" Schema="banmai_docflow_admin" store:Type="Tables" />
           <EntitySet Name="tbTruongHoc" EntityType="Self.tbTruongHoc" Schema="banmai_docflow_admin" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -296,7 +297,7 @@
           <EntitySet Name="tbNguoiDungKieuNguoiDungs" EntityType="EDM_DBModel.tbNguoiDungKieuNguoiDung" />
           <EntitySet Name="tbNhaCungCaps" EntityType="EDM_DBModel.tbNhaCungCap" />
           <EntitySet Name="tbNhaCungCapTruongHocs" EntityType="EDM_DBModel.tbNhaCungCapTruongHoc" />
-          <EntitySet Name="tbTaiLieuNhaCungCaps" EntityType="EDM_DBModel.tbTaiLieuNhaCungCap" />
+          <EntitySet Name="tbTaiLieux" EntityType="EDM_DBModel.tbTaiLieu" />
           <EntitySet Name="tbTruongHocs" EntityType="EDM_DBModel.tbTruongHoc" />
           </EntityContainer>
         <ComplexType Name="Lay_TruongDuLieus_Result">
@@ -483,6 +484,7 @@
           </Key>
           <Property Name="Stt" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdNhaCungCap" Type="Guid" Nullable="false" />
+          <Property Name="IdNhaCungCapCha" Type="Guid" />
           <Property Name="MaNhaCungCap" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TenNhaCungCap" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TenMatHang" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -512,7 +514,7 @@
           <Property Name="NgaySua" Type="DateTime" Precision="3" />
           <Property Name="IdNguoiSua" Type="Guid" />
         </EntityType>
-        <EntityType Name="tbTaiLieuNhaCungCap">
+        <EntityType Name="tbTaiLieu">
           <Key>
             <PropertyRef Name="IdFile" />
           </Key>
@@ -521,7 +523,7 @@
           <Property Name="IdNhaCungCap" Type="Guid" />
           <Property Name="NgayDangKy" Type="DateTimeOffset" Precision="7" />
           <Property Name="NgayHetHan" Type="DateTimeOffset" Precision="7" />
-          <Property Name="FileName" Type="Guid" />
+          <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FileNameUpdate" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FileExtension" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="LoaiTep" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -762,6 +764,7 @@
                 <ScalarProperty Name="TenMatHang" ColumnName="TenMatHang" />
                 <ScalarProperty Name="TenNhaCungCap" ColumnName="TenNhaCungCap" />
                 <ScalarProperty Name="MaNhaCungCap" ColumnName="MaNhaCungCap" />
+                <ScalarProperty Name="IdNhaCungCapCha" ColumnName="IdNhaCungCapCha" />
                 <ScalarProperty Name="IdNhaCungCap" ColumnName="IdNhaCungCap" />
                 <ScalarProperty Name="Stt" ColumnName="Stt" />
               </MappingFragment>
@@ -783,9 +786,9 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbTaiLieuNhaCungCaps">
-            <EntityTypeMapping TypeName="EDM_DBModel.tbTaiLieuNhaCungCap">
-              <MappingFragment StoreEntitySet="tbTaiLieuNhaCungCap">
+          <EntitySetMapping Name="tbTaiLieux">
+            <EntityTypeMapping TypeName="EDM_DBModel.tbTaiLieu">
+              <MappingFragment StoreEntitySet="tbTaiLieu">
                 <ScalarProperty Name="IdNguoiSua" ColumnName="IdNguoiSua" />
                 <ScalarProperty Name="NgaySua" ColumnName="NgaySua" />
                 <ScalarProperty Name="IdNguoiTao" ColumnName="IdNguoiTao" />

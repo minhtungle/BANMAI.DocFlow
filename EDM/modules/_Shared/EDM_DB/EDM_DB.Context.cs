@@ -38,7 +38,7 @@ namespace EDM_DB
         public virtual DbSet<tbNguoiDungKieuNguoiDung> tbNguoiDungKieuNguoiDungs { get; set; }
         public virtual DbSet<tbNhaCungCap> tbNhaCungCaps { get; set; }
         public virtual DbSet<tbNhaCungCapTruongHoc> tbNhaCungCapTruongHocs { get; set; }
-        public virtual DbSet<tbTaiLieuNhaCungCap> tbTaiLieuNhaCungCaps { get; set; }
+        public virtual DbSet<tbTaiLieu> tbTaiLieux { get; set; }
         public virtual DbSet<tbTruongHoc> tbTruongHocs { get; set; }
     
         public virtual ObjectResult<Lay_TruongDuLieus_Result> Lay_TruongDuLieus(Nullable<int> maDonViSuDung)

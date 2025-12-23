@@ -1,0 +1,92 @@
+﻿@using Public.Enums
+@using Public.Helpers
+
+<div class="row">
+    <!--Tên tài liệu-->
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-tentailieu">Tên tài liệu</label>
+                <input type="text"
+                       class="form-control" id="input-tentailieu"
+                       placeholder="Nhập thông tin ...">
+            </div>
+        </div>
+    </div>
+    
+    <!--Tên tệp-->
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-tentep">Tên tệp</label>
+                <input type="text"
+                       class="form-control" id="input-tentep"
+                       placeholder="Nhập thông tin ...">
+            </div>
+        </div>
+    </div>
+
+    <!--Loại tệp-->
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-loiatep">Loại tệp</label>
+                <input type="text"
+                       class="form-control" id="input-loiatep"
+                       placeholder="Nhập thông tin ...">
+            </div>
+        </div>
+    </div>
+
+    <!--Ngày đăng ký-->
+    <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-ngaydangky">Ngày đăng ký</label>
+                <input type="date"
+                       class="form-control" id="input-ngaydangky">
+            </div>
+        </div>
+    </div>
+
+    <!--Ngày hết hạn-->
+    <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-ngayhethan">Ngày hết hạn</label>
+                <input type="date"
+                       class="form-control" id="input-ngayhethan">
+            </div>
+        </div>
+    </div>
+
+    <!--Tên tệp gốc-->
+    <div class="col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="input-tentepgoc">Tên tệp gốc</label>
+                <input type="text"
+                       class="form-control" id="input-tentepgoc"
+                       placeholder="Nhập thông tin ...">
+            </div>
+        </div>
+    </div>
+
+    <!--Ghi chú-->
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label for="input-ghichu">Ghi chú</label>
+                <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                          placeholder="Nhập thông tin ..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 py-2 text-center">
+        <button type="button" class="btn btn-sm btn-primary ml-1 button-timkiem"
+                onclick="quanLyTaiLieu.taiLieu.getList()">
+            <span class="">Tìm kiếm</span>
+        </button>
+    </div>
+</div>

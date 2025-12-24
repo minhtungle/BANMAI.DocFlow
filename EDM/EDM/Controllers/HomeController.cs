@@ -56,7 +56,7 @@ namespace EDM.Controllers
 
             #region Lấy thông tin chung
             #region Quốc gia
-            //List<default_tbQuocGia> quocGias = db.default_tbQuocGia.Where(x => x.TrangThai != 0).ToList() ?? new List<default_tbQuocGia>();
+            //List<default_tbQuocGia> quocGias = db.default_tbQuocGia.Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung).ToList() ?? new List<default_tbQuocGia>();
             //QUOCGIAs = quocGias;
             #endregion
             #endregion

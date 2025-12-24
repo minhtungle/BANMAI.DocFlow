@@ -1,0 +1,79 @@
+﻿@using EDM_DB
+@model Applications.QuanLyNhaCungCap.Dtos.Index_Output_Dto
+@{ 
+    string endName = "capnhattruong";
+}
+
+<div class="modal fade text-left" id="nhacungcap-crud-@endName" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content" style="border: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập nhật theo trường dữ liệu</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <p class="text-danger">Lưu ý: Tích chọn các trường dữ liệu muốn cập nhật</p>
+                    <!--Nhà cung cấp cha-->
+                    <div class="col-sm-12 col-md-12">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="select-nhacungcapcha-@endName">
+                                    <input class="form-check-input" type="checkbox" name="checkbox-nhacungcapcha-@endName" id="checkbox-nhacungcapcha-@endName" />
+                                    <label class="form-check-label" for="checkbox-nhacungcapcha-@endName">
+                                        Nhà cung cấp cha
+                                    </label>
+                                </label>
+                                <select class="form-control form-select2"
+                                        id="select-nhacungcapcha-@endName" name="select-nhacungcapcha-@endName"
+                                        >
+                                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                    @foreach (var ncc in Model.NhaCungCaps)
+                                    {
+                                        <option value="@ncc.IdNhaCungCap">@ncc.TenNhaCungCap</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="select-nhacungcapcha-@endName">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Trường học-->
+                    <div class="col-sm-12 col-md-12">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="mb-1" for="select-truonghoc-@endName">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="checkbox-truonghoc-@endName" 
+                                           id="checkbox-truonghoc-@endName" />
+                                    <label class="form-check-label" 
+                                           for="checkbox-truonghoc-@endName">
+                                        Trường học
+                                    </label>
+                                </label>
+                                <select class="form-control form-select2"
+                                        id="select-truonghoc-@endName" 
+                                        name="select-truonghoc-@endName"
+                                        multiple>
+                                    <option disabled @(Model.TruongHocs.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                    @foreach (var th in Model.TruongHocs)
+                                    {
+                                        <option value="@th.IdTruongHoc">@th.TenTruongHoc</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="select-truonghoc-@endName">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="quanLyNhaCungCap.handleModal_CRUD.updateMultipleCell()">
+                    <span class="">Cập nhật</span>
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span class="">Đóng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

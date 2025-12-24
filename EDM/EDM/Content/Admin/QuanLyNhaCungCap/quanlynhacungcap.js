@@ -16,6 +16,123 @@ class QuanLyNhaCungCap {
         quanLyNhaCungCap.nhaCungCap = {
             ...quanLyNhaCungCap.nhaCungCap,
             dataTable: null,
+            handleTaiLieu: {
+                maxDungLuongTaiLieu: 1024 * 1024 * 300, // 300MB,
+                maxSoLuongTaiLieu: 200,
+                arrTaiLieu: [],
+                add: function (e, rowNumber = '00000000-0000-0000-0000-000000000000') {
+                    var $modal = $("#nhacungcap-crud");
+
+                    var $imgContainer = $(`.nhacungcap-read[row='${rowNumber}'] #tailieu-items`, $modal),
+                        soAnhDangCo = $(".image-item", $imgContainer).length;
+
+                    var addTr = function (files) {
+                        let kiemTra = true,
+                            mess = "Thêm tệp thành công";
+
+                        let arrTaiLieu = [];
+
+                        $.each(files, function (idx, f) {
+                            // Kiểm tra tệp
+                            if (!(/\.(.pdf)$/i.test(f.name))) {
+                                mess = `Tồn tại tệp không thuộc định dạng cho phép [.pdf]`;
+                                kiemTra = false;
+                                return false;
+                            };
+                            // Kiểm tra dung lượng
+                            if (f.size > quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxDungLuongTaiLieu) {
+                                mess = `Tồn tại tệp có kích thước tệp vượt quá giới hạn ${quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxDungLuongTaiLieu} Mb`;
+                                kiemTra = false;
+                                return false;
+                            };
+                            // Kiểm tra tên
+                            if (f.name.length > 80) {
+                                mess = `Tồn tại tệp có tên vượt quá giới hạn 80 ký tự`;
+                                kiemTra = false;
+                                return false;
+                            };
+
+                            // Thêm tệp vào mảng
+                            let idTamThoi = sys.generateGUID();
+                            var tempImageUrl = URL.createObjectURL(f);
+
+                            var data = {
+                                rowNumber,
+                                idTamThoi,
+                                file: f,
+                                html: `
+                                    <div class="image-item" data-id="00000000-0000-0000-0000-000000000000" data-idtamthoi="${idTamThoi}">
+                                        <img src="${tempImageUrl}" alt="${f.name}" />
+                                        <button class="delete-btn"
+                                            onclick="quanLyNhaCungCap.nhaCungCap.handleTaiLieu.delete('${loaiAnh}', this, '${rowNumber}')">
+                                            &times;
+                                        </button>
+                                    </div>
+                                `
+                            };
+
+                            quanLyNhaCungCap.nhaCungCap.handleTaiLieu.arrTaiLieu.push(data);
+                            arrTaiLieu.push(data);
+                        });
+
+                        if (!kiemTra) {
+                            sys.alert({
+                                status: "error",
+                                mess,
+                                timeout: 5000
+                            });
+                        } else {
+                            $.each(arrTaiLieu, function (idx, tl) {
+                                //formData.append("files", anh.file); // Dùng khi save()
+                                $imgContainer.prepend(tl.html);
+                            });
+
+                            sys.alert({
+                                status: "success",
+                                mess: "Đã thêm tệp thành công",
+                                timeout: 5000
+                            });
+                        };
+                    };
+
+                    var $fileInput = null;
+
+                    $fileInput = $(`.nhacungcap-read[row='${rowNumber}'] #image-tailieu-${rowNumber}`, $modal).get(0);
+                    if (soAnhDangCo >= quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxSoLuongTaiLieu) {
+                        sys.alert({
+                            status: "warning",
+                            mess: `Chỉ cho phép tối đa ${quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxSoLuongTaiLieu} tệp`,
+                            timeout: 5000
+                        });
+                    } else {
+                        // Chỉ lấy đủ số tệp quy định
+                        let files = Array.from($fileInput.files)
+                            .slice(0, (quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxSoLuongTaiLieu - soAnhDangCo));
+                        addTr(files);
+                    };
+                    $fileInput.value = ''; // xóa giá trị của input file
+                },
+                delete: function (e, rowNumber) {
+                    var $item = $(e).closest(".image-item"),
+                        id = $item.attr("data-id"),
+                        idTamThoi = $item.attr("data-idtamthoi");
+
+                    // Lấy thẻ <img> để lấy URL tạm
+                    var img = $item.find("img")[0];
+                    if (img && img.src.startsWith("blob:")) {
+                        URL.revokeObjectURL(img.src); // Giải phóng bộ nhớ URL tạm 
+                    }
+
+                    // Xóa tệp trên giao diện
+                    $item.remove();
+
+                    // Xóa tệp trong mảng tạm
+                    quanLyNhaCungCap.nhaCungCap.handleTaiLieu.arrTaiLieu = quanLyNhaCungCap.nhaCungCap.handleTaiLieu.arrTaiLieu
+                        .filter(function (tl) {
+                            return tl.idTamThoi != idTamThoi;
+                        });
+                }
+            },
             getList: function () {
                 var $timKiem = $("#nhacungcap-timkiem-collapse");
                 var input = {
@@ -97,13 +214,10 @@ class QuanLyNhaCungCap {
                         },
                     }),
                     success: function (res) {
-                        $("#nhacungcap-crud").html(res);
-                        /**
-                          * Gán các thuộc tính
-                          */
-                        sys.displayModal({
-                            name: '#nhacungcap-crud'
-                        });
+                        $("#nhacungcap-crud").html(res.html);
+
+                        quanLyNhaCungCap.createModalCRUD_NhaCungCap();
+                        quanLyNhaCungCap.handleModal_CRUD.addBanGhi(res.output);
                     }
                 })
             },
@@ -121,7 +235,6 @@ class QuanLyNhaCungCap {
                             TenMatHang: $("#input-tenmathang", $modal).val().trim(),
                             SoDienThoai: $("#input-sodienthoai", $modal).val().trim(),
                             Email: $("#input-email", $modal).val().trim(),
-                            NgheNghiep: $("#input-nghenghiep", $modal).val().trim(),
                             DiaChi: $("#input-diachi", $modal).val().trim(),
                             GhiChu: $("#input-ghichu", $modal).val().trim(),
                         },
@@ -282,105 +395,341 @@ class QuanLyNhaCungCap {
 
             }
         };
+    }
+    createModalCRUD_NhaCungCap() {
+        var quanLyNhaCungCap = this;
 
-        quanLyNhaCungCap.taiLieu = {
-            ...quanLyNhaCungCap.taiLieu,
-            maxDungLuongTep: 1024 * 1024 * 200, // 200MB,
-            maxTaiLieu: 200,
-            arrTaiLieu: [],
-            add: function (e, rowNumber = '00000000-0000-0000-0000-000000000000') {
-                var $modal = $("#baidang-crud");
-
-                var $imgContainer = $(`.baidang-read[row='${rowNumber}'] #anhmota-items`, $modal),
-                    soAnhDangCo = $(".image-item", $imgContainer).length;
-
-                var addTr = function (files) {
-                    let kiemTra = true,
-                        mess = "Thêm ảnh thành công";
-
-                    let arrTaiLieu = [];
-
-                    $.each(files, function (idx, f) {
-                        // Kiểm tra tệp
-                        if (!(/\.(pdf)$/i.test(f.name))) {
-                            mess = `Tồn tại tệp không thuộc định dạng cho phép [pdf]`;
-                            kiemTra = false;
-                            return false;
-                        };
-                        // Kiểm tra dung lượng
-                        if (f.size > quanLyBaiDang.baiDang.handleAnhMoTa.maxDungLuongTep) {
-                            mess = `Tồn tại tệp có kích thước tệp vượt quá giới hạn ${quanLyBaiDang.baiDang.handleAnhMoTa.maxDungLuongTep} Mb`;
-                            kiemTra = false;
-                            return false;
-                        };
-                        // Kiểm tra tên
-                        if (f.name.length > 80) {
-                            mess = `Tồn tại tệp có tên vượt quá giới hạn 80 ký tự`;
-                            kiemTra = false;
-                            return false;
-                        };
-
-                        // Thêm ảnh vào mảng
-                        let idTamThoi = sys.generateGUID();
-                        var tempImageUrl = URL.createObjectURL(f);
-
-                        var data = {
-                            rowNumber,
-                            idTamThoi,
-                            file: f,
-                            html: `
-                                    <div class="image-item" data-id="00000000-0000-0000-0000-000000000000" data-idtamthoi="${idTamThoi}">
-                                        <img src="${tempImageUrl}" alt="${f.name}" />
-                                        <button class="delete-btn"
-                                            onclick="quanLyBaiDang.baiDang.handleAnhMoTa.delete('${loaiAnh}', this, '${rowNumber}')">
-                                            &times;
-                                        </button>
-                                    </div>
-                                `
-                        };
-
-                        quanLyBaiDang.baiDang.handleAnhMoTa.arrTaiLieu.push(data);
-                        arrTaiLieu.push(data);
-                    });
-
-                    if (!kiemTra) {
-                        sys.alert({
-                            status: "error",
-                            mess,
-                            timeout: 5000
-                        });
-                    } else {
-                        $.each(arrTaiLieu, function (idx, anh) {
-                            //formData.append("files", anh.file); // Dùng khi save()
-                            $imgContainer.prepend(anh.html);
-                        });
-
-                        sys.alert({
-                            status: "success",
-                            mess: "Đã thêm ảnh thành công",
-                            timeout: 5000
-                        });
-                    };
-                };
-
-                var $fileInput = null;
-
-                $fileInput = $(`.baidang-read[row='${rowNumber}'] #image-anhmota-${rowNumber}`, $modal).get(0);
-                if (soAnhDangCo >= quanLyBaiDang.baiDang.handleAnhMoTa.maxTaiLieu) {
-                    sys.alert({
-                        status: "warning",
-                        mess: `Chỉ cho phép tối đa ${quanLyBaiDang.baiDang.handleAnhMoTa.maxTaiLieu} ảnh`,
-                        timeout: 5000
-                    });
+        quanLyNhaCungCap.handleModal_CRUD = {
+            dataTable: new DataTableCustom({
+                name: "nhacungcap-getList",
+                table: $("#nhacungcap-getList", $("#nhacungcap-crud")),
+                props: {
+                    dom: `
+                    <'row'<'col-sm-12'rt>>
+                    <'row'<'col-sm-12 col-md-6 text-left'i><'col-sm-12 col-md-6 pt-2'p>>`,
+                    lengthMenu: [
+                        [-1],
+                        ['Tất cả'],
+                    ],
+                }
+            }).dataTable,
+            displayModal_UpdateMultipleCell: function () {
+                var rows = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray(),
+                    $rowChecks = $(`.checkRow-nhacungcap-getList:checked`, rows);
+                if ($rowChecks.length == 0) {
+                    sys.alert({ status: "warning", mess: "Bạn chưa chọn bản ghi nào" })
                 } else {
-                    // Chỉ lấy đủ số ảnh quy định
-                    let files = Array.from($fileInput.files)
-                        .slice(0, (quanLyBaiDang.baiDang.handleAnhMoTa.maxTaiLieu - soAnhDangCo));
-                    addTr(files);
+                    sys.displayModal({
+                        name: '#nhacungcap-crud-capnhattruong',
+                        level: 2
+                    });
                 };
-
-                $fileInput.value = ''; // xóa giá trị của input file
             },
-        }
+            updateSingleCell: function (el) {
+                var rows = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray(),
+                    $div = $(el).closest(".nhacungcap-read"),
+                    rowNumber = $div.attr("row"),
+                    val = $(el).val();
+
+                var tenTruongDuLieu = $(el).attr("id").split("-")[1];
+                $.each(rows, function () {
+                    if ($(this).attr("row") == rowNumber) {
+                        let $span = $(`span[data-tentruong="${tenTruongDuLieu}"]`, $(this));
+                        $span.text(sys.truncateString(val, 12));
+                        $span.closest("td").attr("title", val);
+                    }
+                });
+            },
+            updateMultipleCell: function () {
+                var $modal = $("#nhacungcap-crud"),
+                    endName = 'capnhattruong';
+
+                var $modal_CapNhatTruong = $(`#nhacungcap-crud-${endName}`);
+
+                var idTaiKhoan = $(`#select-taikhoan-${endName}`, $modal_CapNhatTruong).val(),
+                    idAITool = $(`#select-aitool-${endName}`, $modal_CapNhatTruong).val(),
+                    idAIBot = $(`#select-aibot-${endName}`, $modal_CapNhatTruong).val(),
+                    idChienDich = $(`#select-chiendich-${endName}`, $modal_CapNhatTruong).val();
+
+                var isCheck_TaiKhoan = $(`#checkbox-taikhoan-${endName}`, $modal_CapNhatTruong).is(":checked"),
+                    isCheck_AIBot = $(`#checkbox-aibot-${endName}`, $modal_CapNhatTruong).is(":checked"),
+                    isCheck_AITool = $(`#checkbox-aitool-${endName}`, $modal_CapNhatTruong).is(":checked"),
+                    isCheck_ChienDich = $(`#checkbox-chiendich-${endName}`, $modal_CapNhatTruong).is(":checked");
+
+                var rows = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray(),
+                    $rowChecks = $(`.checkRow-nhacungcap-getList:checked`, rows);
+                if ($rowChecks.length == 0) {
+                    sys.alert({ status: "warning", mess: "Bạn chưa chọn bản ghi nào" })
+                } else {
+                    $.each($rowChecks, function () {
+                        var $rowCheck = $(this).closest("tr"),
+                            rowNumber = $rowCheck.attr("row"),
+                            $div = $(`.nhacungcap-read[row=${rowNumber}]`, $modal);
+                        // Thay đổi value cho những dòng được chọn
+                        if (isCheck_TaiKhoan) {
+                            $(`#select-taikhoan-${rowNumber}`, $div).val(idTaiKhoan);
+                            $(`#select-taikhoan-${rowNumber}`, $div).trigger("change");
+                        };
+                        if (isCheck_AIBot) {
+                            $(`#select-aibot`, $div).val(idAIBot);
+                            $(`#select-aibot`, $div).trigger("change");
+                        };
+                        if (isCheck_AITool) {
+                            $(`#select-aitool`, $div).val(idAITool);
+                            $(`#select-aitool`, $div).trigger("change");
+                        };
+                        if (isCheck_ChienDich) {
+                            $(`#select-chiendich`, $div).val(idChienDich);
+                            $(`#select-chiendich`, $div).trigger("change");
+                        };
+                    });
+
+                    sys.alert({ status: "success", mess: "Cập nhật trường dữ liệu thành công" })
+                    sys.displayModal({
+                        name: '#nhacungcap-crud-capnhattruong',
+                        displayStatus: "hide",
+                        level: 2,
+                    });
+                };
+            },
+            addBanGhi: function (input) {
+                // Tạo mã guid cho bản ghi
+                //var guid = sys.generateGUID();
+                //#region Thêm bản ghi
+                var $modal = $("#nhacungcap-crud");
+                $.ajax({
+                    ...ajaxDefaultProps({
+                        url: "/QuanLyNhaCungCap/addBanGhi_Modal_CRUD",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: { input: input },
+                    }),
+                    success: function (res) {
+                        if (!res.status) {
+                            sys.alert({
+                                mess: `Không có bản ghi phù hợp trạng thái ${(res.Loai == "create"
+                                    ? "[Thêm mới]"
+                                    : res.Loai == "update"
+                                        ? "[Cập nhật]"
+                                        : "[Chuyển đăng bài]")
+                                    }`,
+                                status: "warning", timeout: 1500
+                            })
+                        }
+                        else {
+                            quanLyNhaCungCap.handleModal_CRUD.dataTable.destroy();
+                            // Tạo bản ghi mới
+                            $("#nhacungcap-getList tbody", $modal).prepend(res.html_nhacungcap_row);
+                            $("#nhacungcap-read-container", $modal).prepend(res.html_nhacungcap_read);
+                            // Tạo dataTable
+                            //if (!quanLyNhaCungCap.handleModal_CRUD.dataTable) {
+                            quanLyNhaCungCap.handleModal_CRUD.dataTable = new DataTableCustom({
+                                name: "nhacungcap-getList",
+                                table: $("#nhacungcap-getList", $modal),
+                                props: {
+                                    dom: `
+                                <'row'<'col-sm-12'rt>>
+                                <'row'<'col-sm-12 col-md-6 text-left'i><'col-sm-12 col-md-6 pt-2'p>>`,
+                                    lengthMenu: [
+                                        [-1],
+                                        ['Tất cả'],
+                                    ],
+                                }
+                            }).dataTable;
+                            //    // Nếu đã khởi tạo, chỉ cần thêm dòng mới (đã prepend bên trên rồi) và vẽ lại bảng
+                            //}
+                            //quanLyNhaCungCap.handleModal_CRUD.dataTable.row($(res.html_nhacungcap_row)).invalidate().draw(false);
+                            // Chọn bản ghi đó
+                            var rows_NEW = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray(); // Chọn phần thử đầu tiên của bảng
+                            quanLyNhaCungCap.handleModal_CRUD.readRow($(rows_NEW[0]));
+                            $.each($(".nhacungcap-read", $modal), function () {
+                                var $div = $(this),
+                                    rowNumber = $div.attr("row");
+                                // Gán validation
+                                htmlEl.validationStates($div);
+                                htmlEl.inputMask();
+                                var modalValidtion = htmlEl.activeValidationStates($div);
+                            });
+
+                            /**
+                              * Gán các thuộc tính
+                              */
+                            sys.displayModal({
+                                name: '#nhacungcap-crud'
+                            });
+
+                            setTimeout(function () {
+                                var containerHeight = $("#nhacungcap-crud .modal-body").height() - 10;
+                                $("#nhacungcap-read-container", $("#nhacungcap-crud")).height(containerHeight);
+                            }, 500)
+                        }
+                    }
+                })
+                //#endregion
+            },
+            deleteBanGhi: function () {
+                var $modal = $("#nhacungcap-crud");
+                var rows = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray(),
+                    $rowChecks = $(`.checkRow-nhacungcap-getList:checked`, rows);
+
+                if ($rowChecks.length === 0) {
+                    sys.alert({ status: "warning", mess: "Bạn chưa chọn bản ghi nào" });
+                    return;
+                }
+
+                // Nếu số bản ghi được chọn >= tổng số dòng hiện có, ctệp báo và không xóa
+                if ($rowChecks.length >= rows.length) {
+                    sys.alert({ status: "warning", mess: "Phải giữ lại ít nhất một bản ghi!" });
+                    return;
+                }
+
+                // Tiến hành xóa các bản ghi được chọn
+                $.each($rowChecks, function () {
+                    var $rowCheck = $(this).closest("tr"),
+                        rowNumber = $rowCheck.attr("row"),
+                        $div = $(`.nhacungcap-read[row=${rowNumber}]`, $modal);
+                    // Xóa bản ghi trong div
+                    quanLyNhaCungCap.handleModal_CRUD.dataTable.row($rowCheck).remove().draw();
+                    $div.remove();
+                    // Xóa tệp trong mảng
+                    quanLyNhaCungCap.nhaCungCap.handleTaiLieu.arrTaiLieu = quanLyNhaCungCap.nhaCungCap.handleTaiLieu.arrTaiLieu
+                        .filter(function (anh) {
+                            return anh.rowNumber != rowNumber;
+                        });
+                });
+
+                // Lấy lại các dòng mới sau khi xóa
+                var rows_NEW = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray();
+
+                if (rows_NEW.length > 0) {
+                    quanLyNhaCungCap.handleModal_CRUD.readRow($(rows_NEW[0]));
+                } else {
+                    $modal.find(".nhacungcap-read").empty();
+                }
+            },
+            readRow: function (el) {
+                var $modal = $("#nhacungcap-crud");
+                var rowNumber = $(el).attr("row"),
+                    rows = quanLyNhaCungCap.handleModal_CRUD.dataTable.rows().nodes().toArray(),
+                    $divs = $(".nhacungcap-read", $modal),
+                    $div = $(`.nhacungcap-read[row=${rowNumber}]`, $modal);
+
+                $divs.hide(); $div.show();
+                $.each(rows, function () {
+                    if ($(this).attr("row") == rowNumber) {
+                        $(this).css({
+                            "background-color": "var(--bs-table-hover-bg)",
+                        })
+                    } else {
+                        $(this).css({
+                            "background-color": "transparent",
+                        })
+                    };
+                });
+            },
+            save: function (loai) {
+                var nhaCungCaps = [];
+                $.each($(".nhacungcap-read", $("#nhacungcap-crud")), function () {
+                    var $div = $(this),
+                        rowNumber = $div.attr("row");
+
+                    //var tepDinhKems = [];
+                    //$.each($(`#tailieu-items .image-item`, $div), function () {
+                    //    let idTep = $(this).attr("data-id");
+                    //    // Chỉ lấy những tệp đã tồn tại trong CSDL
+                    //    if (idTep != "00000000-0000-0000-0000-000000000000") {
+                    //        tepDinhKems.push({
+                    //            IdTep: idTep,
+                    //        });
+                    //    };
+                    //});
+
+                    var idTruongHocs =
+                        $(`#select-truonghoc-${rowNumber}`, $div).val()?.map(x => ({
+                            IdTruongHoc: x
+                        }));
+                    var idNhaCungCapCha = $(`#select-nhacungcapcha-${rowNumber}`, $div).val();
+                    var idNhaCungCap = $(`#input-idnhacungcap`, $div).val();
+
+                    var nhaCungCap = {
+                        RowNumber: rowNumber,
+                        NhaCungCap: {
+                            IdNhaCungCap: idNhaCungCap,
+                            IdNhaCungCapCha: idNhaCungCapCha,
+
+                            MaNhaCungCap: $("#input-manhacungcap", $div).val().trim(),
+                            TenNhaCungCap: $("#input-tennhacungcap", $div).val().trim(),
+                            TenMatHang: $("#input-tenmathang", $div).val().trim(),
+                            SoDienThoai: $("#input-sodienthoai", $div).val().trim(),
+                            Email: $("#input-email", $div).val().trim(),
+                            DiaChi: $("#input-diachi", $div).val().trim(),
+                            GhiChu: $("#input-ghichu", $div).val().trim(),
+                        },
+                        TruongHocs: idTruongHocs,
+                        //TaiLieus: taiLieus,
+                    };
+
+                    nhaCungCaps.push(nhaCungCap);
+                });
+
+                sys.confirmDialog({
+                    mess: loai == 'create'
+                        ? `<p>Bạn có thực sự muốn thêm bản ghi này hay không ?</p>`
+                        : `<p>Bản ghi sẽ được lưu nháp cho lần sử dụng tiếp theo ?</p>`,
+                    callback: function () {
+                        var formData = new FormData();
+                        formData.append("nhaCungCaps", JSON.stringify(nhaCungCaps));
+                        formData.append("loai", loai);
+
+                        $.each(quanLyNhaCungCap.nhaCungCap.handleTaiLieu.arrTaiLieu, function (idx, anh) {
+                            formData.append("files", anh.file);
+                            formData.append("rowNumbers", anh.rowNumber);
+                        });
+
+                        var url = "/QuanLyNhaCungCap/create_NhaCungCap";
+                        //if (loai == "create" || loai == "draft")
+                        if (loai == "draftToSave" || loai == "update") url = "/QuanLyNhaCungCap/update_NhaCungCap";
+                        $.ajax({
+                            ...ajaxDefaultProps({
+                                url: url,
+                                type: "POST",
+                                data: formData,
+                            }),
+                            //contentType: "application/json; charset=utf-8",  // Chỉ định kiểu nội dung là JSON
+                            contentType: false,
+                            processData: false,
+                            success: function (res) {
+                                if (res.status == "success") {
+                                    quanLyNhaCungCap.nhaCungCap.getList();
+
+                                    sys.displayModal({
+                                        name: '#nhacungcap-crud',
+                                        displayStatus: "hide"
+                                    });
+                                };
+                                sys.alert({ status: res.status, mess: res.mess });
+                            }
+                        });
+                    }
+                });
+            },
+            close: function () {
+                sys.confirmDialog({
+                    mess: `<span class="font-bold">Bản ghi chưa hoàn thiện</span><br />
+                    <p>Bạn có muốn tiếp tục không ?</p>`,
+                    callback_no: function () {
+                        sys.displayModal({
+                            name: "#confirmdialog",
+                            displayStatus: "hide",
+                            level: 100
+                        });
+                        sys.displayModal({
+                            name: '#nhacungcap-crud',
+                            displayStatus: "hide"
+                        });
+                    }
+                });
+            }
+        };
     }
 };

@@ -1,13 +1,13 @@
 ﻿using EDM_DB;
-using Public.Models;
 using System.Collections.Generic;
 
 namespace Applications.QuanLyNhaCungCap.Dtos
 {
-    public class Index_Output_Dto
+    public class FormAddNhaCungCapDto
     {
-        public List<ThaoTac> ThaoTacs { get; set; }
+        public AddBanGhi_Modal_CRUD_Output_Dto Data { get; set; }
         public List<tbNhaCungCap> NhaCungCaps { get; set; }
         public List<tbTruongHoc> TruongHocs { get; set; }
+        public string LoaiView { get; set; }
     }
 }

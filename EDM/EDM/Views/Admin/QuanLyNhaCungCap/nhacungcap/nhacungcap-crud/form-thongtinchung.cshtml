@@ -1,0 +1,295 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyNhaCungCap.Dtos.FormThongTinChung_Dto
+@{
+    var nhaCungCap = Model.NhaCungCap.NhaCungCap;
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+}
+<div class="list-group list-group-horizontal mb-1 col-12 justify-content-end" id="" role="tablist">
+    <a class="list-group-item list-group-item-action active" id="thongtin-list"
+       data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
+    <a class="list-group-item list-group-item-action" id="tailieu-list"
+       data-bs-toggle="list" href="#tailieu" role="tab">Tài liệu đính kèm</a>
+</div>
+
+<div class="tab-content text-justify">
+    <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+         aria-labelledby="thongtin-list">
+        <div class="row">
+            <!--Id-->
+            <input id="input-idnhacungcap" value="@nhaCungCap.IdNhaCungCap" hidden />
+            <input id="input-rownumber" value="@Model.NhaCungCap.RowNumber" hidden />
+
+            <!--Nhà cung cấp cha-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="" for="select-nhacungcapcha-@Model.NhaCungCap.RowNumber">Nhà cung cấp cha</label>
+                        <select class="form-control form-select2"
+                                id="select-nhacungcapcha-@Model.NhaCungCap.RowNumber"
+                                name="select-nhacungcapcha-@Model.NhaCungCap.RowNumber"
+                                multiple>
+                            <option disabled>Chọn thông tin</option>
+                            @foreach (var ncc in Model.Data.NhaCungCaps)
+                            {
+                                var selected = nhaCungCap.IdNhaCungCapCha == ncc.IdNhaCungCap;
+                                var disabled = nhaCungCap.IdNhaCungCap == ncc.IdNhaCungCap; // Không chọn chính nó
+                                <option value="@ncc.IdNhaCungCap"
+                                        @(selected ? "selected" : "")
+                                        @(disabled ? "disabled" : "")>
+                                    @ncc.TenNhaCungCap
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-nhacungcapcha">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+            <!--Mã nhà cung cấp-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-manhacungcap">Mã nhà cung cấp</label>
+                        <input type="text"
+                               class="form-control" id="input-manhacungcap"
+                               placeholder="Nhập thông tin ..."
+                               value="@(nhaCungCap.MaNhaCungCap ?? "")"
+                               onchange="quanLyNhaCungCap.handleModal_CRUD.updateSingleCell(this)"
+                               required>
+                        <div class="invalid-feedback feedback" for="input-manhacungcap">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Tên nhà cung cấp-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-tennhacungcap">Tên nhà cung cấp</label>
+                        <input type="text"
+                               class="form-control" id="input-tennhacungcap"
+                               placeholder="Nhập thông tin ..."
+                               value="@(nhaCungCap.TenNhaCungCap ?? "")"
+                               onchange="quanLyNhaCungCap.handleModal_CRUD.updateSingleCell(this)"
+                               required>
+                        <div class="invalid-feedback feedback" for="input-tennhacungcap">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Tên mặt hàng-->
+            <div class="col-12 col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-tenmathang">Tên mặt hàng</label>
+                        <input type="text"
+                               class="form-control" id="input-tenmathang"
+                               placeholder="Nhập thông tin ..."
+                               value="@(nhaCungCap.TenMatHang ?? "")"
+                               required>
+                        <div class="invalid-feedback feedback" for="input-tenmathang">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Số điện thoại-->
+            <div class="col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-sodienthoai">Số điện thoại</label>
+                        <input type="tel"
+                               class="form-control" id="input-sodienthoai"
+                               placeholder="Nhập thông tin ..."
+                               value="@(nhaCungCap.SoDienThoai ?? "")"
+                               required>
+                        <div class="invalid-feedback feedback" for="input-sodienthoai">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Email-->
+            <div class="col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="" for="input-email">Email</label>
+                        <input type="email"
+                               class="form-control" id="input-email"
+                               placeholder="Nhập thông tin ..."
+                               value="@(nhaCungCap.Email ?? "")">
+                        <div class="invalid-feedback feedback" for="input-email">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Địa chỉ-->
+            <div class="col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="" for="input-diachi">Địa chỉ</label>
+                        <input type="text"
+                               class="form-control" id="input-diachi"
+                               placeholder="Nhập thông tin ..."
+                               value="@(nhaCungCap.DiaChi ?? "")">
+                        <div class="invalid-feedback feedback" for="input-diachi">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Trường học-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="" for="select-truonghoc-@Model.NhaCungCap.RowNumber">Trường học</label>
+                        <select class="form-control form-select2"
+                                id="select-truonghoc-@Model.NhaCungCap.RowNumber"
+                                name="select-truonghoc-@Model.NhaCungCap.RowNumber"
+                                multiple>
+                            <option disabled>Chọn thông tin</option>
+                            @foreach (var truongHoc in Model.Data.TruongHocs)
+                            {
+                                var selected = Model.NhaCungCap.TruongHocs.Any(x => x.IdTruongHoc == truongHoc.IdTruongHoc);
+                                <option value="@truongHoc.IdTruongHoc" @(selected ? "selected" : "")>
+                                    @truongHoc.TenTruongHoc
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-truonghoc">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Ghi chú-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label for="input-ghichu">Ghi chú</label>
+                        <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                  placeholder="Nhập thông tin ..."
+                                  value="@(nhaCungCap.GhiChu ?? "")">@(nhaCungCap.GhiChu ?? "")</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tab-pane fade" id="tailieu" role="tabpanel"
+     aria-labelledby="tailieu-list">
+    <div class="row">
+        <div class="col-sm-12">
+            <table class="table table-hover table-bordered w-100 nowrap" id="table-tailieu" data-page-length="2">
+                @{
+                    var columns = new[] {
+                      "Tên tài liệu", "Thời hạn bảo quản", "Ngày tạo", "Ngày kết thúc"
+                   };
+                }
+
+                <thead>
+                    <tr>
+                        @foreach (var c in columns)
+                        {
+                            <th class="text-center">@c</th>
+                        }
+
+                        <th class="text-center w-5" data-orderable="false">
+                            <label class="btn btn-light-secondary c-pointer" for="btn-themtailieu">
+                                <i class="bi bi-plus-square"></i>
+                            </label>
+                            <input hidden class="btn btn-primary" id="btn-themtailieu"
+                                   onchange="quanLyLopHoc.lopHoc.taiLieu.create()"
+                                   type="file" accept=".pdf" multiple>
+                        </th>
+                    </tr>
+                </thead>
+                <tfoot class="show-footer-above">
+                    <tr>
+                        <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+                        <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+                        <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+                        <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+
+                        <th></th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @if (Model.NhaCungCap.TaiLieus.Count == 0)
+                    {
+                        var trangThaiBaoQuans = Enum.GetValues(typeof(TrangThaiBaoQuanEnum))
+                        .Cast<TrangThaiBaoQuanEnum>()
+                        .Select(e => new SelectListItem
+                        {
+                            Value = ((int)e).ToString(),
+                            Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+                            Selected = false
+                        })
+                        .ToList();
+
+                        <tr class="tr-tailieu"
+                            data-idtailieu="@Guid.Empty"
+                            data-thoihan=""
+                            data-tentailieu="">
+                            <td colspan="5" class="text-center">
+                                Không có bản ghi
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+
+                        foreach (var taiLieu in Model.NhaCungCap.TaiLieus)
+                        {
+                            var trangThaiBaoQuans = Enum.GetValues(typeof(TrangThaiBaoQuanEnum))
+                            .Cast<TrangThaiBaoQuanEnum>()
+                            .Select(e => new SelectListItem
+                            {
+                                Value = ((int)e).ToString(),
+                                Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+                                Selected = taiLieu.TrangThaiBaoQuan != null
+                            && (int)taiLieu.TrangThaiBaoQuan == (int)e
+                            })
+                            .ToList();
+                            <tr class="tr-tailieu"
+                                data-idtailieu="@taiLieu.IdFile"
+                                data-thoihan="@taiLieu.NgayHetHan"
+                                data-tentailieu="@taiLieu.FileName">
+                                <td>
+                                    <input type="text" class="form-control input-tentailieu" value="@taiLieu.FileName"
+                                           placeholder="Tên tài liệu" />
+                                </td>
+                                <td>
+                                    <select class="form-control" id="select-trangthaibaoquan" name="select-trangthaibaoquan"
+                                            required>
+                                        <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                        @foreach (var data in trangThaiBaoQuans)
+                                        {
+                                            <option value="@data.Value" @(data.Selected ? "selected" : "")>
+                                                @data.Text
+                                            </option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                <td class="text-center">
+                                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-ngayketthuc"
+                                           placeholder=""
+                                           name="input-ngayketthuc"
+                                           value="" required>
+                                </td>
+                                <td class="text-center">
+                                    <input type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-ngayketthuc"
+                                           placeholder=""
+                                           name="input-ngayketthuc"
+                                           value="" required>
+                                </td>
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-sm btn-danger" title="Xóa bỏ"
+                                       onclick="quanLyLopHoc.lopHoc.taiLieu.delete(this)"><i class="bi bi-trash3-fill"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Public.Controllers;
+using Public.Enums;
 
 namespace EDM.Controllers
 {
@@ -52,7 +53,7 @@ namespace EDM.Controllers
         public void KiemTraNguoiDungDangHoatDong(Permission per)
         {
             // Cập nhật mọi người dùng về offline
-            List<tbNguoiDung> nguoiDungs = db.tbNguoiDungs.Where(x => x.TrangThai != 0 &&
+            List<tbNguoiDung> nguoiDungs = db.tbNguoiDungs.Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
             x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung &&
             x.Online == true).ToList() ?? new List<tbNguoiDung>();
             foreach (var nguoiDung in nguoiDungs)

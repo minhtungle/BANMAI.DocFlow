@@ -20,5 +20,9 @@ namespace Public.Enums
         [Display(Name = "Xóa bỏ tạm thời")]
         [Description("Xóa bỏ do xóa phần tử cha và có thể khôi phục")]
         XoaBoTamThoi = -1,
+
+        [Display(Name = "Chờ phê duyệt")]
+        [Description("Chờ quản lý phê duyệt dữ liệu")]
+        ChoPheDuyet = -2,
     }
 }

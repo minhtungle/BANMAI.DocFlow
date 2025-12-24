@@ -169,7 +169,7 @@ namespace Organization.Controllers
         [HttpGet]
         public List<tbNguoiDung> get_NguoiDungs()
         {
-            List<tbNguoiDung> nguoiDungs = db.tbNguoiDungs.Where(x => x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung).OrderByDescending(x => x.NgayTao).ToList();
+            List<tbNguoiDung> nguoiDungs = db.tbNguoiDungs.Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung).OrderByDescending(x => x.NgayTao).ToList();
             return nguoiDungs;
         }
         #endregion
@@ -318,7 +318,7 @@ namespace Organization.Controllers
             tbCoCauToChuc coCau_OLD = db.tbCoCauToChucs.FirstOrDefault(x =>
             x.TenCoCauToChuc == coCau.TenCoCauToChuc && x.IdCoCauToChuc != coCau.IdCoCauToChuc &&
             x.IdCha == coCau.IdCha &&
-            x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+            x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
             if (coCau_OLD == null) return false;
             return true;
         }
@@ -512,7 +512,7 @@ namespace Organization.Controllers
                             x.IdCoCauToChuc != coCau.IdCoCauToChuc && // Không tìm chính nó
                             x.IdCoCauToChuc != idCoCau && // Không tìm bản ghi cha đang xóa
                             x.IdCha == coCau.IdCha &&
-                            x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+                            x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
                             if (coCau_OLD == null) return false;
                             return true;
                         }
@@ -540,7 +540,7 @@ namespace Organization.Controllers
                              */
                             List<tbCoCauToChuc> coCaus = db.tbCoCauToChucs.Where(
                                 x => x.IdCha == _coCauCha.IdCoCauToChuc
-                                && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.TrangThai != 0)
+                                && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung)
                                 .OrderBy(x => x.IdCoCauToChuc).ToList();
                             // B1: Cập nhật cấp độ và thông tin cơ bản
                             foreach (tbCoCauToChuc coCau in coCaus)

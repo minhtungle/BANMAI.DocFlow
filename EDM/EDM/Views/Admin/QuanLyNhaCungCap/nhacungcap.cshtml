@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="collapse" id="nhacungcap-timkiem-collapse">
-                        @Html.Partial("~/Views/Admin/QuanLyNhaCungCap/nhacungcap-timkiem.cshtml", Model)
+                        @Html.Partial("~/Views/Admin/QuanLyNhaCungCap/nhacungcap/nhacungcap-timkiem.cshtml", Model)
                         <hr />
                     </div>
                 </div>
@@ -92,3 +92,4 @@
 <!--nhacungcap-crud-->
 <div class="modal fade text-left" id="nhacungcap-crud" tabindex="-1" data-bs-keyboard="false" data-bs-backdrop="static" removeBody="true">
 </div>
+@Html.Partial("~/Views/Admin/QuanLyNhaCungCap/nhacungcap/nhacungcap-crud/nhacungcap-crud-capnhattruong.cshtml", Model)

@@ -14,11 +14,12 @@ namespace Applications.QuanLyNhaCungCap.Interfaces
         Task<Index_Output_Dto> Index();
         Task<List<tbNhaCungCapExtend>> Get_NhaCungCaps
            (GetList_NhaCungCap_Input_Dto input);
+        Task<FormAddNhaCungCapDto> AddBanGhi_Modal_CRUD_Output(
+          AddBanGhi_Modal_CRUD_Input_Dto input);
         Task<DisplayModal_CRUD_NhaCungCap_Output_Dto> DisplayModal_CRUD_NhaCungCap(
             DisplayModal_CRUD_NhaCungCap_Input_Dto input);
-        Task<bool> IsExisted_NhaCungCap(tbNhaCungCap nhaCungCap);
         Task Create_NhaCungCap(
-            tbNhaCungCapExtend nhaCungCap);
+            List<tbNhaCungCapExtend> nhaCungCaps);
         Task Update_NhaCungCap(
             tbNhaCungCapExtend nhaCungCap);
         Task Delete_NhaCungCaps(

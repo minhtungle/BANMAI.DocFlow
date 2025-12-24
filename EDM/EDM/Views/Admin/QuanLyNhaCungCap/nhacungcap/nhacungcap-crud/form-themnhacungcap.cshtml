@@ -1,0 +1,46 @@
+﻿@using Public
+@using Applications.QuanLyNhaCungCap.Dtos
+@model Applications.QuanLyNhaCungCap.Dtos.FormAddNhaCungCapDto
+
+@if (Model.LoaiView == "row")
+{
+    foreach (var nhaCungCap in Model.Data.NhaCungCaps)
+    {
+        <tr row="@nhaCungCap.RowNumber"
+            onclick="quanLyNhaCungCap.handleModal_CRUD.readRow(this)">
+            <td class="text-center"><input class="form-check-input checkRow-nhacungcap-getList" type="checkbox" /></td>
+            <td class="text-left"
+                style="vertical-align: top;">
+                <span data-tentruong="trangthaikiemtra"></span>
+            </td>
+            <td class="text-left"
+                style="vertical-align: top;">
+                <span data-tentruong="manhacungcap">
+                    @Public.Handles.Handle.TruncateString(input: nhaCungCap.NhaCungCap?.MaNhaCungCap, maxLength: 12)
+                </span>
+            </td>
+            <td class="text-left"
+                style="vertical-align: top;">
+                <span data-tentruong="tennhacungcap">
+                    @Public.Handles.Handle.TruncateString(input: nhaCungCap.NhaCungCap?.TenNhaCungCap, maxLength: 12)
+                </span>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    foreach (var nhaCungCap in Model.Data.NhaCungCaps)
+    {
+        <div class="row nhacungcap-read p-2" row="@nhaCungCap.RowNumber">
+            <div class="col-sm-12 col-lg-12">
+                @Html.Partial("~/Views/Admin/QuanLyNhaCungCap/nhacungcap/nhacungcap-crud/form-thongtinchung.cshtml",
+               new FormThongTinChung_Dto
+               {
+                   NhaCungCap = nhaCungCap,
+                   Data = Model,
+               })
+            </div>
+        </div>
+    }
+}

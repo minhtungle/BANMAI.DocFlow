@@ -61,7 +61,7 @@ namespace Applications.QuanLyKieuNguoiDung.Services
         {
             var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNguoiDung");
             var kieuNguoiDungs = await _kieuNguoiDungRepo.Query().Where(x =>
-                    x.TrangThai != 0 &&
+                    x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
                     x.MaDonViSuDung == Guid.Empty).ToListAsync(); // Lấy trong kho chung
 
             return new Index_Output_Dto
@@ -77,7 +77,7 @@ namespace Applications.QuanLyKieuNguoiDung.Services
         {
             var query = _kieuNguoiDungRepo.Query()
                .Where(x =>
-                   x.TrangThai != 0); // Lấy tất cả người dùng
+                   x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung); // Lấy tất cả người dùng
 
             // Áp dụng lọc trước khi join để tối ưu
             if (locThongTin != null)
@@ -274,14 +274,14 @@ namespace Applications.QuanLyKieuNguoiDung.Services
                     // Cập nhật lại người dùng về kiểu người dùng thay thế
                     var nguoiDungKieuNguoiDungs = await _nguoiDungKieuNguoiDungRepo.Query()
                         .Where(x => x.IdKieuNguoiDung == idKieuNguoiDung
-                        && x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung).ToListAsync();
+                        && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung).ToListAsync();
                     foreach (var nguoiDungKieuNguoiDung in nguoiDungKieuNguoiDungs)
                     {
                         // Nếu chưa tồn tại kiểu người dùng thay thế thì mới cập nhật
                         var nguoiDungKieuNguoiDung_THAYTHE = await _nguoiDungKieuNguoiDungRepo.Query()
                             .FirstOrDefaultAsync(x => x.IdNguoiDung == nguoiDungKieuNguoiDung.IdNguoiDung
                             && x.IdKieuNguoiDung == idKieuNguoiDung_THAYTHE
-                            && x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
+                            && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
 
                         if (nguoiDungKieuNguoiDung_THAYTHE == null)
                         {

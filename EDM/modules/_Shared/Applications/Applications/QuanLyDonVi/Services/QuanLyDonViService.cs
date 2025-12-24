@@ -46,7 +46,7 @@ namespace Applications.QuanLyDonVi.Services
         {
             var query = _donViRepo.Query()
                 .Where(x =>
-                x.TrangThai != 0 &&
+                x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
                 x.MaDonViSuDung != CurrentDonViId); // Lấy các đơn vị khác đang dùng
 
             if (loai == "single" && idDonVis != null)

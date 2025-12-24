@@ -3,6 +3,7 @@ using Applications.QuanLyNguoiDung.Interfaces;
 using EDM_DB;
 using Infrastructure.Interfaces;
 using Public.AppServices;
+using Public.Enums;
 using Public.Interfaces;
 using Public.Models;
 using System;
@@ -39,7 +40,7 @@ namespace Applications.QuanLyCoCauToChuc.Services
                 //_coCaus = db.tbCoCauToChucs.Where(x => x.MaDonViSuDung == maDonViSuDung && x.TrangThai == 1 && x.IdCha == idCha)
                 //    .OrderByDescending(x => x.IdCoCauToChuc).ToList();
                 List<tbCoCauToChuc> coCaus = await _coCauToChucRepo.Query()
-                    .Where(x => x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung
+                    .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung
                         && x.IdCha == idCha)
                     .OrderByDescending(x => x.NgayTao)
                     .ToListAsync();

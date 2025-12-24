@@ -366,23 +366,20 @@
     <Compile Include="AppServices\ViewRenderer.cs" />
     <Compile Include="Controllers\StaticArgController.cs" />
     <Compile Include="Controllers\RouteConfigController.cs" />
+    <Compile Include="Dtos\DataValidResultDto.cs" />
     <Compile Include="Dtos\EnumInfoDto.cs" />
+    <Compile Include="Dtos\FieldInvalidDto.cs" />
+    <Compile Include="Dtos\FieldValidationOptionDto.cs" />
     <Compile Include="Dtos\FileSaveInfo.cs" />
     <Compile Include="Dtos\XemPDF_Output_Dto.cs" />
     <Compile Include="Enums\ChucVuEnum.cs" />
     <Compile Include="Enums\CRUDEnum.cs" />
     <Compile Include="Enums\GioiTinhEnum.cs" />
-    <Compile Include="Enums\LichHenLoaiDieuTriEnum.cs" />
-    <Compile Include="Enums\LichHenLoaiThoiGianEnum.cs" />
-    <Compile Include="Enums\LichHenTrangThaiKhamEnum.cs" />
-    <Compile Include="Enums\LoaiChiDinhEnum.cs" />
-    <Compile Include="Enums\LoaiRangEnum.cs" />
     <Compile Include="Enums\TrangThaiBaoQuanEnum.cs" />
-    <Compile Include="Enums\TinhTrangRangEnum.cs" />
-    <Compile Include="Enums\TrangThaiDatLichHenEnum.cs" />
-    <Compile Include="Enums\TrangThaiDieuTriEnum.cs" />
+    <Compile Include="Enums\TrangThaiKiemTraDuLieuEnum.cs" />
     <Compile Include="Enums\TrangThaiDuLieuEnum.cs" />
     <Compile Include="Enums\TrangThaiLamViecEnum.cs" />
+    <Compile Include="Enums\ValidateRuleEnum.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

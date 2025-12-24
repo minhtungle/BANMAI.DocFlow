@@ -151,7 +151,6 @@ class QuanLyBaiDang {
                             return anh.idTamThoi != idTamThoi;
                         });
                 }
-
             },
             handleAI: {
                 chonLoaiAIBot: function (rowNumber) {

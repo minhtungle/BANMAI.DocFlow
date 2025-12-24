@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Public.Controllers;
 using Applications.QuanLyNguoiDung.Models;
+using Public.Enums;
 
 namespace UserAccount.Controllers
 {
@@ -62,7 +63,7 @@ namespace UserAccount.Controllers
         public bool kiemTra_NguoiDung(tbNguoiDung nguoiDung)
         {
             // Kiểm tra còn hồ sơ khác có trùng mã không
-            tbNguoiDung nguoiDung_OLD = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == nguoiDung.TenDangNhap && x.IdNguoiDung != nguoiDung.IdNguoiDung && x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+            tbNguoiDung nguoiDung_OLD = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == nguoiDung.TenDangNhap && x.IdNguoiDung != nguoiDung.IdNguoiDung && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
             if (nguoiDung_OLD == null) return false;
             return true;
         }

@@ -28,7 +28,7 @@ namespace UserType.Controllers
         #endregion
         public ActionResult Index()
         {
-            CHUCNANGs = db.default_tbChucNang.OrderBy(x => x.TrangThai != 0).OrderBy(x => x.SoThuTu).ToList();
+            CHUCNANGs = db.default_tbChucNang.OrderBy(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung).OrderBy(x => x.SoThuTu).ToList();
             return View($"{VIEW_PATH}/usertype.cshtml");
         }
         [HttpGet]
@@ -108,7 +108,7 @@ namespace UserType.Controllers
             List<tbKieuNguoiDung> kieuNguoiDungs = new List<tbKieuNguoiDung>();
             if (loai == "all")
             {
-                kieuNguoiDungs = db.tbKieuNguoiDungs.Where(x => x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.TrangThai != 0)
+                kieuNguoiDungs = db.tbKieuNguoiDungs.Where(x => x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung)
                     .OrderByDescending(x => x.NgayTao).ToList();
             }
             else
@@ -126,7 +126,7 @@ namespace UserType.Controllers
         public bool kiemTra_KieuNguoiDung(tbKieuNguoiDung kieuNguoiDung)
         {
             // Kiểm tra còn hồ sơ khác có trùng mã không
-            tbKieuNguoiDung kieuNguoiDung_OLD = db.tbKieuNguoiDungs.FirstOrDefault(x => x.TenKieuNguoiDung == kieuNguoiDung.TenKieuNguoiDung && x.IdKieuNguoiDung != kieuNguoiDung.IdKieuNguoiDung && x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+            tbKieuNguoiDung kieuNguoiDung_OLD = db.tbKieuNguoiDungs.FirstOrDefault(x => x.TenKieuNguoiDung == kieuNguoiDung.TenKieuNguoiDung && x.IdKieuNguoiDung != kieuNguoiDung.IdKieuNguoiDung && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
             if (kieuNguoiDung_OLD == null) return false;
             return true;
         }

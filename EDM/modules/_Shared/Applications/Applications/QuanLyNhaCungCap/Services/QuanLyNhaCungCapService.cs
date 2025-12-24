@@ -1,10 +1,13 @@
 ﻿using Applications.QuanLyNhaCungCap.Dtos;
+using Applications.QuanLyNhaCungCap.Enums;
 using Applications.QuanLyNhaCungCap.Filters;
 using Applications.QuanLyNhaCungCap.Interfaces;
 using Applications.QuanLyNhaCungCap.Models;
+using Applications.QuanLyNhaCungCap.Validations;
 using EDM_DB;
 using Infrastructure.Interfaces;
 using Public.AppServices;
+using Public.Dtos;
 using Public.Enums;
 using Public.Models;
 using System;
@@ -21,7 +24,9 @@ namespace Applications.QuanLyNhaCungCap.Services
         private readonly IRepository<tbNhaCungCap, Guid> _nhaCungCapRepo;
         private readonly IRepository<tbNhaCungCapTruongHoc, Guid> _nhaCungCapTruongHocRepo;
         private readonly IRepository<tbTruongHoc, Guid> _truongHocRepo;
-        private readonly IRepository<tbTaiLieu, Guid> _taiLieuNhaCungCapRepo;
+        private readonly IRepository<tbTaiLieu, Guid> _taiLieuRepo;
+        private readonly IsExistedNhaCungCapValidation _isExistedNhaCungCapValidation;
+        private readonly IsValidNhaCungCapValidation _isValidNhaCungCapValidation;
 
         public QuanLyNhaCungCapService(
             IUserContext userContext,
@@ -30,22 +35,41 @@ namespace Applications.QuanLyNhaCungCap.Services
             IRepository<tbNhaCungCap, Guid> nhaCungCapRepo,
             IRepository<tbNhaCungCapTruongHoc, Guid> nhaCungCapTruongHocRepo,
             IRepository<tbTruongHoc, Guid> truongHocRepo,
-            IRepository<tbTaiLieu, Guid> taiLieuNhaCungCapRepo
+            IRepository<tbTaiLieu, Guid> taiLieuRepo,
+
+            IsExistedNhaCungCapValidation isExistedNhaCungCapValidation,
+            IsValidNhaCungCapValidation isValidNhaCungCapValidation
 
             ) : base(userContext, unitOfWork)
         {
             _nhaCungCapRepo = nhaCungCapRepo;
             _nhaCungCapTruongHocRepo = nhaCungCapTruongHocRepo;
             _truongHocRepo = truongHocRepo;
-            _taiLieuNhaCungCapRepo = taiLieuNhaCungCapRepo;
+            _taiLieuRepo = taiLieuRepo;
+
+            _isExistedNhaCungCapValidation = isExistedNhaCungCapValidation;
+            _isValidNhaCungCapValidation = isValidNhaCungCapValidation;
         }
         public List<ThaoTac> GetThaoTacs(string maChucNang) => GetThaoTacByIdChucNang(maChucNang);
         public async Task<Index_Output_Dto> Index()
         {
             var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNhaCungCap");
+
+            var truongHocs = await _truongHocRepo.Query()
+              .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
+              && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+              .ToListAsync();
+
+            var nhaCungCaps = await _nhaCungCapRepo.Query()
+                .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
+                && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .ToListAsync();
+
             return new Index_Output_Dto
             {
                 ThaoTacs = thaoTacs,
+                NhaCungCaps = nhaCungCaps,
+                TruongHocs = truongHocs,
             };
         }
 
@@ -62,7 +86,7 @@ namespace Applications.QuanLyNhaCungCap.Services
 
             // 1) Đếm tài liệu theo NCC
             var taiLieuCount =
-                from tl in _taiLieuNhaCungCapRepo.Query()
+                from tl in _taiLieuRepo.Query()
                 group tl by tl.IdNhaCungCap into g
                 select new
                 {
@@ -105,6 +129,74 @@ namespace Applications.QuanLyNhaCungCap.Services
 
             return data;
         }
+        public async Task<FormAddNhaCungCapDto> AddBanGhi_Modal_CRUD_Output(AddBanGhi_Modal_CRUD_Input_Dto input)
+        {
+            var truongHocs = await _truongHocRepo.Query()
+                .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
+                && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .ToListAsync();
+
+            var nhaCungCaps = await _nhaCungCapRepo.Query()
+                .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
+                && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .ToListAsync();
+
+            var output = new AddBanGhi_Modal_CRUD_Output_Dto
+            {
+                Loai = input.Loai,
+            };
+            if (input.Loai == "create")
+            {
+                output.NhaCungCaps = new List<tbNhaCungCapExtend>
+                {
+                    new tbNhaCungCapExtend()
+                    {
+                        NhaCungCap = new tbNhaCungCap(),
+                    }
+                };
+            }
+            else if (input.Loai == "update" || input.Loai == "detail")
+            {
+                var nhaCungCap = await GetDetail_NhaCungCaps(idNhaCungCaps: input.IdNhaCungCaps);
+                // Chỉ lấy những bài đăng có trạng thái (chờ đăng)
+                output.NhaCungCaps = nhaCungCap.ToList();
+            }
+            //else if (input.Loai == "draftToSave")
+            //{
+            //    var nhaCungCap = await GetDetail_NhaCungCaps(idNhaCungCaps: input.IdNhaCungCaps);
+            //    // Chỉ lấy những bài đăng có trạng thái (nháp)
+            //    output.NhaCungCaps = nhaCungCap
+            //        .Where(x => x.NhaCungCap.TrangThaiDangBai == (int?)TrangThaiDangBai_NhaCungCap.Draft)
+            //        .ToList();
+            //}
+
+            return new FormAddNhaCungCapDto
+            {
+                Data = output,
+                NhaCungCaps = nhaCungCaps,
+                TruongHocs = truongHocs,
+            };
+        }
+        public async Task<List<tbNhaCungCapExtend>> GetDetail_NhaCungCaps(
+         List<Guid> idNhaCungCaps = null)
+        {
+            var nhaCungCaps = await _nhaCungCapRepo.Query()
+                .Where(x =>
+                    idNhaCungCaps.Contains(x.IdNhaCungCap) &&
+                    x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
+                    x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .GroupJoin(_taiLieuRepo.Query(),
+                ncc => ncc.IdNhaCungCap,
+                tl => tl.IdNhaCungCap,
+                (ncc, tl) => new tbNhaCungCapExtend
+                {
+                    NhaCungCap = ncc,
+                    TaiLieus = tl.ToList(),
+                })
+                .ToListAsync();
+
+            return nhaCungCaps;
+        }
         public async Task<DisplayModal_CRUD_NhaCungCap_Output_Dto> DisplayModal_CRUD_NhaCungCap(
             DisplayModal_CRUD_NhaCungCap_Input_Dto input)
         {
@@ -118,7 +210,7 @@ namespace Applications.QuanLyNhaCungCap.Services
             });
 
             var truongHocs = await _truongHocRepo.Query()
-                .Where(x => x.TrangThai != (int)TrangThaiDuLieuEnum.XoaBo
+                .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
                 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
                 .ToListAsync();
 
@@ -134,55 +226,100 @@ namespace Applications.QuanLyNhaCungCap.Services
             };
             return output;
         }
-        public async Task<bool> IsExisted_NhaCungCap(tbNhaCungCap nhaCungCap)
+        public async Task<Validate_NhaCungCap_Output_Dto> Validate_NhaCungCap(List<tbNhaCungCapExtend> nhaCungCaps)
         {
-            var nhaCungCap_OLD = await _nhaCungCapRepo.Query()
-                .FirstOrDefaultAsync(x =>
-                    x.MaNhaCungCap == nhaCungCap.MaNhaCungCap
-                    && (x.SoDienThoai == nhaCungCap.SoDienThoai || x.Email == nhaCungCap.Email)
-                    && x.IdNhaCungCap != nhaCungCap.IdNhaCungCap
-                    && x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
-            return nhaCungCap_OLD != null;
+            /**
+             * Các thông tin cần kiểm tra
+             * Mã nhà cung cấp
+             * Tên nhà cung cấp
+             */
+            var output = new Validate_NhaCungCap_Output_Dto();
+
+            foreach (var nhaCungCap in nhaCungCaps)
+            {
+                var isExisted = await _isExistedNhaCungCapValidation.IsExisted(
+                      nhaCungCap: nhaCungCap.NhaCungCap,
+                      NhaCungCapFieldEnum.MaNhaCungCap);
+
+                var isValid = await _isValidNhaCungCapValidation.ValidateFieldsOnlyAsync(
+                   nhaCungCap: nhaCungCap.NhaCungCap,
+                   new FieldValidationOptionDto<NhaCungCapFieldEnum>
+                   {
+                       Field = NhaCungCapFieldEnum.MaNhaCungCap,
+                       DisplayName = "Mã NCC",
+                       Rules = ValidateRule.Required
+                       //| ValidateRule.MinLength | ValidateRule.MaxLength | ValidateRule.Regex,
+                       //MinLen = 3,
+                       //MaxLen = 20,
+                       //Pattern = @"^[A-Za-z0-9\-_]+$",
+                       //PatternMessage = "Mã NCC chỉ gồm chữ/số và - _."
+                   });
+
+                if (isExisted.IsValid)
+                {
+                    // Cập nhật dữ liệu sau kiểm tra
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.Add(string.Join(", ", isExisted.InvalidFields.Select(x => x.Message)));
+
+                }
+            ;
+                if (isValid.IsValid)
+                {
+                    // Cập nhật dữ liệu sau kiểm tra
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.Add(string.Join(", ", isValid.InvalidFields.Select(x => x.Message)));
+                }
+
+                // Tổng kết
+                if ((int)nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu == (int)TrangThaiKiemTraDuLieuEnum.HopLe)
+                    output.NhaCungCap_HopLe.Add(nhaCungCap);
+                else output.NhaCungCap_KhongHopLe.Add(nhaCungCap);
+            }
+
+            return output;
         }
-        public async Task Create_NhaCungCap(tbNhaCungCapExtend nhaCungCap)
+        public async Task Create_NhaCungCap(List<tbNhaCungCapExtend> nhaCungCaps)
         {
             await _unitOfWork.ExecuteInTransaction(async () =>
             {
-                var _nhaCungCap = new tbNhaCungCap
+                foreach (var nhaCungCap in nhaCungCaps)
                 {
-                    IdNhaCungCap = Guid.NewGuid(),
-                    IdNhaCungCapCha = nhaCungCap.NhaCungCap.IdNhaCungCapCha,
-                    MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap,
-                    TenNhaCungCap = nhaCungCap.NhaCungCap.TenNhaCungCap,
-                    TenMatHang = nhaCungCap.NhaCungCap.TenMatHang,
-                    SoDienThoai = nhaCungCap.NhaCungCap.SoDienThoai,
-                    Email = nhaCungCap.NhaCungCap.Email,
-                    DiaChi = nhaCungCap.NhaCungCap.DiaChi,
-                    GhiChu = nhaCungCap.NhaCungCap.GhiChu,
-
-                    TrangThai = (int?)TrangThaiDuLieuEnum.DangSuDung,
-                    MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung,
-                    IdNguoiTao = CurrentNguoiDung.IdNguoiDung,
-                    NgayTao = DateTime.Now
-                };
-                await _unitOfWork.InsertAsync<tbNhaCungCap, Guid>(_nhaCungCap);
-
-                foreach (var truongHoc in nhaCungCap.TruongHocs)
-                {
-                    var _nhaCungCapTruongHoc = new tbNhaCungCapTruongHoc
+                    var _nhaCungCap = new tbNhaCungCap
                     {
-                        IdNhaCungCapTruongHoc = Guid.NewGuid(),
-                        IdTruongHoc = truongHoc.IdTruongHoc,
-                        IdNhaCungCap = _nhaCungCap.IdNhaCungCap,
+                        IdNhaCungCap = Guid.NewGuid(),
+                        IdNhaCungCapCha = nhaCungCap.NhaCungCap.IdNhaCungCapCha,
+                        MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap,
+                        TenNhaCungCap = nhaCungCap.NhaCungCap.TenNhaCungCap,
+                        TenMatHang = nhaCungCap.NhaCungCap.TenMatHang,
+                        SoDienThoai = nhaCungCap.NhaCungCap.SoDienThoai,
+                        Email = nhaCungCap.NhaCungCap.Email,
+                        DiaChi = nhaCungCap.NhaCungCap.DiaChi,
+                        GhiChu = nhaCungCap.NhaCungCap.GhiChu,
 
                         TrangThai = (int?)TrangThaiDuLieuEnum.DangSuDung,
                         MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung,
                         IdNguoiTao = CurrentNguoiDung.IdNguoiDung,
-                        NgayTao = DateTime.Now,
+                        NgayTao = DateTime.Now
                     };
-                    await _unitOfWork.InsertAsync<tbNhaCungCapTruongHoc, Guid>(_nhaCungCapTruongHoc);
-                }
+                    await _unitOfWork.InsertAsync<tbNhaCungCap, Guid>(_nhaCungCap);
+
+                    foreach (var truongHoc in nhaCungCap.TruongHocs)
+                    {
+                        var _nhaCungCapTruongHoc = new tbNhaCungCapTruongHoc
+                        {
+                            IdNhaCungCapTruongHoc = Guid.NewGuid(),
+                            IdTruongHoc = truongHoc.IdTruongHoc,
+                            IdNhaCungCap = _nhaCungCap.IdNhaCungCap,
+
+                            TrangThai = (int?)TrangThaiDuLieuEnum.DangSuDung,
+                            MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung,
+                            IdNguoiTao = CurrentNguoiDung.IdNguoiDung,
+                            NgayTao = DateTime.Now,
+                        };
+                        await _unitOfWork.InsertAsync<tbNhaCungCapTruongHoc, Guid>(_nhaCungCapTruongHoc);
+                    }
                 ;
+                }
             });
         }
         public async Task Update_NhaCungCap(tbNhaCungCapExtend nhaCungCap)
@@ -330,7 +467,7 @@ namespace Applications.QuanLyNhaCungCap.Services
         //    var lichHens = await _lichHenRepo.Query()
         //        .Where(x =>
         //        x.IdNhaCungCap == idNhaCungCap
-        //        && x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+        //        && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
         //        .OrderByDescending(x => x.NgayHen)
         //        .ToListAsync();
 

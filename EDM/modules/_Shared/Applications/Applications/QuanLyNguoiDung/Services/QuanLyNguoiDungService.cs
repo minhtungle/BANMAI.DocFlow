@@ -63,7 +63,7 @@ namespace Applications.QuanLyNguoiDung.Services
 
             #region Kiểu người dùng
             var kieuNguoiDungs = await _kieuNguoiDungRepo.Query()
-                .Where(x => x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung && x.TrangThai != 0)
+                .Where(x => x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung)
                 .ToListAsync() ?? new List<tbKieuNguoiDung>();
             #endregion
 
@@ -88,13 +88,13 @@ namespace Applications.QuanLyNguoiDung.Services
         {
             var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNguoiDung");
             var kieuNguoiDungs = await _kieuNguoiDungRepo.Query().Where(x =>
-                    x.TrangThai != 0 &&
+                    x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
                     x.MaDonViSuDung == Guid.Empty).ToListAsync(); // Lấy trong kho chung
             var coCauToChucs = await _coCauToChucRepo.Query().Where(x =>
-                    x.TrangThai != 0 &&
+                    x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
                     x.MaDonViSuDung == Guid.Empty).ToListAsync(); // Lấy trong kho chung
             var chucVus = await _chucVuRepo.Query().Where(x =>
-                    x.TrangThai != 0 &&
+                    x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
                     x.MaDonViSuDung == Guid.Empty).ToListAsync(); // Lấy trong kho chung
 
             return new Index_Output_Dto
@@ -112,7 +112,7 @@ namespace Applications.QuanLyNguoiDung.Services
         {
             var query = _nguoiDungRepo.Query()
                .Where(x =>
-                   x.TrangThai != 0); // Lấy tất cả người dùng
+                   x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung); // Lấy tất cả người dùng
 
             // Áp dụng lọc trước khi join để tối ưu
             if (locThongTin != null)
@@ -214,7 +214,7 @@ namespace Applications.QuanLyNguoiDung.Services
             var nguoiDung_OLD = await _nguoiDungRepo.Query()
                 .FirstOrDefaultAsync(x => x.TenDangNhap == nguoiDung.TenDangNhap
                 && x.IdNguoiDung != nguoiDung.IdNguoiDung
-                && x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
+                && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
             return nguoiDung_OLD != null;
         }
         public async Task Create_NguoiDung(

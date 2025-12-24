@@ -40,7 +40,7 @@ namespace Applications.QuanLyTaiLieu.Services
         {
             var thaoTacs = GetThaoTacs(maChucNang: "QuanLyTaiLieu");
             var nhaCungCaps = await _nhaCungCapRepo.Query()
-                .Where(x => x.TrangThai != 0 && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
                 .OrderByDescending(x => x.Stt)
                 .ToListAsync();
 
@@ -91,7 +91,7 @@ namespace Applications.QuanLyTaiLieu.Services
                 .FirstOrDefaultAsync(x =>
                     (x.FileNameUpdate == taiLieu.FileNameUpdate)
                     && x.IdFile != taiLieu.IdFile
-                    && x.TrangThai != 0
+                    && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
                     && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
             return existed != null;
         }

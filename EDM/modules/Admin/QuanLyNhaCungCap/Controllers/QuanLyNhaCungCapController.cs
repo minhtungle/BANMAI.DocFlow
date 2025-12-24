@@ -40,16 +40,48 @@ namespace QuanLyNhaCungCap.Controllers
                 NhaCungCaps = nhaCungCaps,
                 ThaoTacs = thaoTacs,
             };
-            return PartialView($"{VIEW_PATH}/nhacungcap-getList.cshtml", output);
+
+            return PartialView($"{VIEW_PATH}/nhacungcap/nhacungcap-getList.cshtml", output);
         }
 
         #region Nhà cung cấp
         [HttpPost]
         public async Task<ActionResult> displayModal_CRUD_NhaCungCap(DisplayModal_CRUD_NhaCungCap_Input_Dto input)
         {
-            var output = await _quanLyNhaCungCapService.DisplayModal_CRUD_NhaCungCap(input: input);
+            var html = Public.Handles.Handle.RenderViewToString(
+              controller: this,
+              viewName: $"{VIEW_PATH}/nhacungcap/nhacungcap-crud/nhacungcap-crud.cshtml",
+              model: input);
+            return Json(new
+            {
+                html,
+                output = input
+            }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public async Task<ActionResult> addBanGhi_Modal_CRUD(AddBanGhi_Modal_CRUD_Input_Dto input)
+        {
+            var output = await _quanLyNhaCungCapService.AddBanGhi_Modal_CRUD_Output(input: input);
 
-            return PartialView($"{VIEW_PATH}/nhacungcap-crud.cshtml", output);
+            output.LoaiView = "row";
+            var html_nhacungcap_row = Public.Handles.Handle.RenderViewToString(
+                controller: this,
+                viewName: $"{VIEW_PATH}/nhacungcap/nhacungcap-crud/form-themnhacungcap.cshtml",
+                model: output);
+
+            output.LoaiView = "read";
+            var html_nhacungcap_read = Public.Handles.Handle.RenderViewToString(
+                controller: this,
+                viewName: $"{VIEW_PATH}/nhacungcap/nhacungcap-crud/form-themnhacungcap.cshtml",
+                model: output);
+
+            return Json(new
+            {
+                status = (output.Data.NhaCungCaps != null && output.Data.NhaCungCaps.Count > 0),
+                Loai = output.Data.Loai,
+                html_nhacungcap_row,
+                html_nhacungcap_read
+            }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public async Task<ActionResult> create_NhaCungCap()
@@ -116,6 +148,16 @@ namespace QuanLyNhaCungCap.Controllers
                 return Json(new { status = "error", mess = "Lỗi: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+        #endregion
+
+        #region NOT USE - Phần không sử dụng
+        //[HttpPost]
+        //public async Task<ActionResult> displayModal_CRUD_NhaCungCap(DisplayModal_CRUD_NhaCungCap_Input_Dto input)
+        //{
+        //    var output = await _quanLyNhaCungCapService.DisplayModal_CRUD_NhaCungCap(input: input);
+
+        //    return PartialView($"{VIEW_PATH}/nhacungcap/nhacungcap-crud.cshtml", output);
+        //}
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Applications.QuanLyTruongHoc.Dtos;
 using EDM_DB;
+using Public.Enums;
 using System;
 using System.Linq;
 
@@ -11,7 +12,7 @@ namespace Applications.QuanLyTruongHoc.Filters
             this IQueryable<tbTruongHoc> q, LocThongTinDto locThongTin, Guid? maDonVi = null)
         {
             // Điều kiện chung
-            q = q.Where(x => x.TrangThai != 0);
+            q = q.Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung);
             if (maDonVi.HasValue)
                 q = q.Where(x => x.MaDonViSuDung == maDonVi.Value);
 

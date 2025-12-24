@@ -93,7 +93,7 @@ namespace Applications.QuanLyTruongHoc.Services
                 .FirstOrDefaultAsync(x =>
                     x.TenTruongHoc == truongHoc.TenTruongHoc
                     && x.IdTruongHoc != truongHoc.IdTruongHoc
-                    && x.TrangThai != 0
+                    && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
                     && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung);
             return existed != null;
         }

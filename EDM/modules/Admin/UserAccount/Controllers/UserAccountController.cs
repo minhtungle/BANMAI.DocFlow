@@ -128,7 +128,7 @@ namespace UserAccount.Controllers
             #region Lấy các danh sách
 
             #region Kiểu người dùng
-            List<tbKieuNguoiDung> kieuNguoiDungs = db.tbKieuNguoiDungs.Where(x => x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.TrangThai != 0).ToList() ?? new List<tbKieuNguoiDung>();
+            List<tbKieuNguoiDung> kieuNguoiDungs = db.tbKieuNguoiDungs.Where(x => x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung).ToList() ?? new List<tbKieuNguoiDung>();
             #endregion
 
             #region Cơ cấu tổ chức
@@ -138,7 +138,7 @@ namespace UserAccount.Controllers
             #endregion
 
             #region Chức vụ
-            List<default_tbChucVu> chucVus = db.default_tbChucVu.Where(x => x.TrangThai != 0).ToList() ?? new List<default_tbChucVu>();
+            List<default_tbChucVu> chucVus = db.default_tbChucVu.Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung).ToList() ?? new List<default_tbChucVu>();
             #endregion
 
             #region Thao tác
@@ -176,7 +176,7 @@ namespace UserAccount.Controllers
             List<Guid> idNguoiDungs = null)
         {
             var nguoiDungRepo = db.tbNguoiDungs.Where(x =>
-            x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung).ToList();
+            x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung).ToList();
 
             var nguoiDungs = nguoiDungRepo
                .Where(x => loai != "single" || idNguoiDungs.Contains(x.IdNguoiDung))
@@ -263,7 +263,7 @@ namespace UserAccount.Controllers
             // Kiểm tra còn hồ sơ khác có trùng mã không
             tbNguoiDung nguoiDung_OLD = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == nguoiDung.TenDangNhap
             && x.IdNguoiDung != nguoiDung.IdNguoiDung
-            && x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+            && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
             if (nguoiDung_OLD == null) return false;
             return true;
         }

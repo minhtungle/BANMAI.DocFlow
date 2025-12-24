@@ -109,7 +109,7 @@ namespace Auth.Controllers
                     nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap
                     && x.MatKhau == matKhau_MD5
                     && x.KichHoat == true
-                    && x.TrangThai != 0
+                    && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung
                     && x.MaDonViSuDung == donViSuDung.MaDonViSuDung) ?? new tbNguoiDung();
                     if (nguoiDung.IdNguoiDung != Guid.Empty)
                     {
@@ -267,7 +267,7 @@ namespace Auth.Controllers
             {
                 try
                 {
-                    tbNguoiDung nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap && x.Email == loginM.Email && x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+                    tbNguoiDung nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap && x.Email == loginM.Email && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
                     if (nguoiDung != null)
                     {
                         mess = "Thông tin cung cấp chưa đúng, vui lòng kiểm tra lại";
@@ -323,7 +323,7 @@ namespace Auth.Controllers
             {
                 DonViSuDung = layDonViSuDung(),
             };
-            tbNguoiDung nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap && x.Email == loginM.Email && x.TrangThai != 0 && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
+            tbNguoiDung nguoiDung = db.tbNguoiDungs.FirstOrDefault(x => x.TenDangNhap == loginM.TenDangNhap && x.Email == loginM.Email && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == per.DonViSuDung.MaDonViSuDung);
             if (nguoiDung != null)
             {
                 NGUOIDUNG = nguoiDung;

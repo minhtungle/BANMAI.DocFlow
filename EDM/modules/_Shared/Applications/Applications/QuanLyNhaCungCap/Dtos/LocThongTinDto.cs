@@ -6,7 +6,7 @@ namespace Applications.QuanLyNhaCungCap.Dtos
     public class LocThongTinDto
     {
         public List<Guid> IdNhaCungCaps {  get; set; }
-        //public string MaNhaCungCap { get; set; }
+        public int Stt { get; set; }
         public string TenNhaCungCap { get; set; }
         public string Email {  get; set; }
         public string SoDienThoai {  get; set; }

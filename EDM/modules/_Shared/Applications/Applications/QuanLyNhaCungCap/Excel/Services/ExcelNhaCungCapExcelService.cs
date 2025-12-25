@@ -7,8 +7,11 @@ using Applications.QuanLyNhaCungCap.Validations;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using EDM_DB;
+using Infrastructure.Interfaces;
+using Public.AppServices;
 using Public.Dtos;
 using Public.Enums;
+using Public.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +20,19 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace Applications.QuanLyNhaCungCap.Excel.Services {
-    public class ExcelNhaCungCapExcelService : IExcelNhaCungCapExcelService {
+    public class ExcelNhaCungCapExcelService : BaseService, IExcelNhaCungCapExcelService {
         private readonly IsExistedNhaCungCapValidation _isExistedNhaCungCapValidation;
         private readonly IsValidNhaCungCapValidation _isValidNhaCungCapValidation;
 
         public ExcelNhaCungCapExcelService(
+                IUserContext userContext,
+            IUnitOfWork unitOfWork,
+
             IsExistedNhaCungCapValidation isExistedNhaCungCapValidation,
             IsValidNhaCungCapValidation isValidNhaCungCapValidation
-            ) {
+            ) : base(userContext, unitOfWork) {
+
+
             _isExistedNhaCungCapValidation = isExistedNhaCungCapValidation;
             _isValidNhaCungCapValidation = isValidNhaCungCapValidation;
         }
@@ -256,85 +264,160 @@ namespace Applications.QuanLyNhaCungCap.Excel.Services {
             sheet.Columns().AdjustToContents();
             return await Task.FromResult(workbook);
         }
-        public static List<tbNhaCungCapExtend> GroupDataAsTree(List<tbNhaCungCapExtend> input) {
-            var daXuLy = new List<tbNhaCungCapExtend>();
+        /// <summary>
+        /// Organizes a flat list of supplier data into a hierarchical tree structure based on parent-child
+        /// relationships.
+        /// </summary>
+        /// <remarks>The method assigns temporary unique identifiers to suppliers with missing IDs to
+        /// establish parent-child links during grouping. The resulting list reflects the tree structure, with each
+        /// supplier's hierarchy level indicated by its 'CapDo' property. The method does not modify the original input
+        /// list's order.</remarks>
+        /// <param name="input">The list of supplier data to be grouped as a tree. Each item should contain information about its parent
+        /// supplier, if applicable. Cannot be null.</param>
+        /// <returns>A list of supplier data arranged in hierarchical order, where parent suppliers precede their children.
+        /// Returns an empty list if the input is null or empty.</returns>
+        public List<Tree<tbNhaCungCapExtend>> SapXepChaCon_Tree(List<tbNhaCungCapExtend> input) {
+            if (input == null || input.Count == 0)
+                return new List<Tree<tbNhaCungCapExtend>>();
 
-            // set nhanh để check đã thêm
-            bool DaThem(tbNhaCungCapExtend x)
+            var roots = new List<Tree<tbNhaCungCapExtend>>();
+            var daXuLy = new List<tbNhaCungCapExtend>();
+            int stt = 0;
+
+            bool DaXuLy(tbNhaCungCapExtend x)
                 => daXuLy.Any(a => a.NhaCungCap.TenNhaCungCap == x.NhaCungCap.TenNhaCungCap);
 
-            void timCon(tbNhaCungCapExtend cha) {
+            Tree<tbNhaCungCapExtend> timCon(tbNhaCungCapExtend cha) {
+                var node = new Tree<tbNhaCungCapExtend> {
+                    SoThuTu = ++stt,
+                    root = cha
+                };
+
                 var cons = input
                     .Where(x => x.NhaCungCapCha != null
                              && x.NhaCungCapCha.TenNhaCungCap == cha.NhaCungCap.TenNhaCungCap)
                     .ToList();
 
                 foreach (var con in cons) {
-                    if (DaThem(con)) continue;
+                    if (DaXuLy(con)) continue;
 
-                    // gán liên kết cha-con bằng ID giả trong RAM
-                    con.NhaCungCap.IdNhaCungCap = con.NhaCungCap.IdNhaCungCap == Guid.Empty
-                        ? Guid.NewGuid()
-                        : con.NhaCungCap.IdNhaCungCap;
-
-                    con.NhaCungCap.IdNhaCungCapCha = cha.NhaCungCap.IdNhaCungCap;
                     con.NhaCungCap.CapDo = (cha.NhaCungCap.CapDo ?? 1) + 1;
-
                     daXuLy.Add(con);
 
-                    timCon(con);
+                    var childNode = timCon(con);
+                    node.nodes.Add(childNode);
                 }
+
+                return node;
             }
 
             void timCha(tbNhaCungCapExtend con) {
-                // tìm cha của "con" trong input
                 var chaTrongDs = input.FirstOrDefault(x =>
                     x.NhaCungCap != null
                     && con.NhaCungCapCha != null
                     && x.NhaCungCap.TenNhaCungCap == con.NhaCungCapCha.TenNhaCungCap);
 
                 if (chaTrongDs == null) {
-                    // không có cha trong input => coi con là root (cha = null/Guid.Empty)
-                    con.NhaCungCap.IdNhaCungCap = con.NhaCungCap.IdNhaCungCap == Guid.Empty
-                        ? Guid.NewGuid()
-                        : con.NhaCungCap.IdNhaCungCap;
-
-                    con.NhaCungCap.IdNhaCungCapCha = null; // hoặc Guid.Empty tuỳ bạn
+                    // root
                     con.NhaCungCap.CapDo = 1;
 
-                    if (!DaThem(con))
+                    if (!DaXuLy(con))
                         daXuLy.Add(con);
 
-                    timCon(con);
+                    var rootNode = timCon(con);
+                    roots.Add(rootNode);
                 }
                 else {
-                    // có cha trong input => đệ quy tìm cha cao nhất
-                    if (!DaThem(chaTrongDs))
+                    if (!DaXuLy(chaTrongDs))
                         timCha(chaTrongDs);
-                    else {
-                        // cha đã có rồi -> gán con theo cha đã gán
-                        con.NhaCungCap.IdNhaCungCap = con.NhaCungCap.IdNhaCungCap == Guid.Empty
-                            ? Guid.NewGuid()
-                            : con.NhaCungCap.IdNhaCungCap;
-
-                        con.NhaCungCap.IdNhaCungCapCha = chaTrongDs.NhaCungCap.IdNhaCungCap;
-                        con.NhaCungCap.CapDo = (chaTrongDs.NhaCungCap.CapDo ?? 1) + 1;
-
-                        if (!DaThem(con))
-                            daXuLy.Add(con);
-
-                        timCon(con);
-                    }
                 }
             }
 
-            foreach (var ncc in input) {
-                if (!DaThem(ncc))
-                    timCha(ncc);
+            foreach (var x in input) {
+                if (!DaXuLy(x))
+                    timCha(x);
             }
 
-            return daXuLy;
+            return roots;
+        }
+        /// <summary>
+        /// Asynchronously saves a list of supplier extensions and their parent-child relationships to the database.
+        /// </summary>
+        /// <remarks>This method creates new supplier records and establishes parent-child relationships
+        /// based on the provided order. Each supplier's parent is determined by the name specified in the corresponding
+        /// extension object. The operation is performed within a database transaction to ensure consistency.</remarks>
+        /// <param name="ordered">The ordered list of supplier extension objects to be saved. Each item may specify a parent supplier by name.
+        /// Cannot be null or empty.</param>
+        /// <returns>A task that represents the asynchronous save operation.</returns>
+        public async Task LuuTreeAsync(List<Tree<tbNhaCungCapExtend>> trees) {
+            if (trees == null || trees.Count == 0) return;
+
+            await _unitOfWork.ExecuteInTransaction(async () =>
+            {
+                foreach (var tree in trees) {
+                    await LuuNodeAsync(tree, parentId: null);
+                }
+            });
         }
 
+        #region Private Methods
+        /// <summary>
+        /// Asynchronously saves a supplier node and its associated school links to the data store, including all
+        /// descendant nodes in the tree structure.
+        /// </summary>
+        /// <remarks>This method recursively processes the entire tree, saving each supplier node and its
+        /// related school links. The operation is performed asynchronously for each node and its descendants.</remarks>
+        /// <param name="tree">The tree node representing the supplier and its children to be saved. The root of the tree contains supplier
+        /// data and associated schools.</param>
+        /// <param name="parentId">The unique identifier of the parent supplier node. Specify null if the current node is a root node.</param>
+        /// <returns>A task that represents the asynchronous save operation.</returns>
+        private async Task LuuNodeAsync(
+            Tree<tbNhaCungCapExtend> tree,
+            Guid? parentId) {
+            var ex = tree.root;
+
+            var entity = new tbNhaCungCap {
+                IdNhaCungCap = Guid.NewGuid(),
+                IdNhaCungCapCha = parentId,
+
+                TenNhaCungCap = ex.NhaCungCap.TenNhaCungCap,
+                TenMatHang = ex.NhaCungCap.TenMatHang,
+                SoDienThoai = ex.NhaCungCap.SoDienThoai,
+                Email = ex.NhaCungCap.Email,
+                DiaChi = ex.NhaCungCap.DiaChi,
+                GhiChu = ex.NhaCungCap.GhiChu,
+
+                TrangThai = (int?)TrangThaiDuLieuEnum.DangSuDung,
+                MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung,
+                IdNguoiTao = CurrentNguoiDung.IdNguoiDung,
+                NgayTao = DateTime.Now
+            };
+
+            await _unitOfWork.InsertAsync<tbNhaCungCap, Guid>(entity);
+
+            // lưu trường học
+            if (ex.TruongHocs != null) {
+                foreach (var truongHoc in ex.TruongHocs) {
+                    var link = new tbNhaCungCapTruongHoc {
+                        IdNhaCungCapTruongHoc = Guid.NewGuid(),
+                        IdTruongHoc = truongHoc.IdTruongHoc,
+                        IdNhaCungCap = entity.IdNhaCungCap,
+
+                        TrangThai = (int?)TrangThaiDuLieuEnum.DangSuDung,
+                        MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung,
+                        IdNguoiTao = CurrentNguoiDung.IdNguoiDung,
+                        NgayTao = DateTime.Now
+                    };
+
+                    await _unitOfWork.InsertAsync<tbNhaCungCapTruongHoc, Guid>(link);
+                }
+            }
+
+            // đệ quy lưu con
+            foreach (var child in tree.nodes) {
+                await LuuNodeAsync(child, entity.IdNhaCungCap);
+            }
+        }
+        #endregion
     }
 }

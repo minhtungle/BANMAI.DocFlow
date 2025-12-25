@@ -8,5 +8,6 @@ namespace Applications.QuanLyNhaCungCap.Enums
     public enum NhaCungCapFieldEnum
     {
         MaNhaCungCap,
+        TenNhaCungCap
     }
 }

@@ -24,7 +24,7 @@ namespace Applications.QuanLyNhaCungCap.Validations
             if (options == null || options.Length == 0)
                 options = new[] {
                     new FieldValidationOptionDto<NhaCungCapFieldEnum> {
-                        Field = NhaCungCapFieldEnum.MaNhaCungCap,
+                        Field = NhaCungCapFieldEnum.TenNhaCungCap,
                         Rules = ValidateRule.Required,
                         DisplayName = "Mã nhà cung cấp"
                     }
@@ -41,7 +41,7 @@ namespace Applications.QuanLyNhaCungCap.Validations
             {
                 switch (field)
                 {
-                    case NhaCungCapFieldEnum.MaNhaCungCap: return (nhaCungCap.MaNhaCungCap ?? "").Trim();
+                    case NhaCungCapFieldEnum.TenNhaCungCap: return (nhaCungCap.TenNhaCungCap ?? "").Trim();
                     //case NhaCungCapFieldEnum.SoDienThoai: return (nhaCungCap.SoDienThoai ?? "").Trim();
                     //case NhaCungCapFieldEnum.Email: return (nhaCungCap.Email ?? "").Trim();
                     default: return "";

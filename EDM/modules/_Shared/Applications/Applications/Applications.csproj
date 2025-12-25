@@ -44,6 +44,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ClosedXML">
+      <HintPath>..\..\..\..\EDM\Bin\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=3.3.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\EDM\packages\DocumentFormat.OpenXml.3.3.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.3.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\EDM\packages\DocumentFormat.OpenXml.Framework.3.3.0\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\EDM\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -102,6 +111,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -152,8 +162,10 @@
     <Compile Include="QuanLyNhaCungCap\Dtos\GetList_NhaCungCap_Input_Dto.cs" />
     <Compile Include="QuanLyNhaCungCap\Dtos\Index_Output_Dto.cs" />
     <Compile Include="QuanLyNhaCungCap\Dtos\LocThongTinDto.cs" />
-    <Compile Include="QuanLyNhaCungCap\Dtos\Validate_NhaCungCap_Output_Dto.cs" />
+    <Compile Include="QuanLyNhaCungCap\Excel\Dtos\ValidateImportData_Output_Dto.cs" />
     <Compile Include="QuanLyNhaCungCap\Enums\NhaCungCapFieldEnum.cs" />
+    <Compile Include="QuanLyNhaCungCap\Excel\Interfaces\IExcelNhaCungCapExcelService.cs" />
+    <Compile Include="QuanLyNhaCungCap\Excel\Services\ExcelNhaCungCapExcelService.cs" />
     <Compile Include="QuanLyNhaCungCap\Filters\GetNhaCungCapFilter.cs" />
     <Compile Include="QuanLyNhaCungCap\Interfaces\IQuanLyNhaCungCapService.cs" />
     <Compile Include="QuanLyNhaCungCap\Models\tbNhaCungCapExtend.cs" />

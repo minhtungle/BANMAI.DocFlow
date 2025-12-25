@@ -17,6 +17,7 @@ namespace EDM_DB
         public int Stt { get; set; }
         public System.Guid IdNhaCungCap { get; set; }
         public Nullable<System.Guid> IdNhaCungCapCha { get; set; }
+        public Nullable<int> CapDo { get; set; }
         public string MaNhaCungCap { get; set; }
         public string TenNhaCungCap { get; set; }
         public string TenMatHang { get; set; }

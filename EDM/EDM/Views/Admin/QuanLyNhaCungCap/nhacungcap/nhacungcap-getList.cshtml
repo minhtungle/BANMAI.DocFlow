@@ -4,7 +4,7 @@
 @{
     string tableName = "nhacungcap";
     var columns = new[] {
-       "Mã NCC", "Tên NCC", "Tên mặt hàng", "Số điện thoại", "Tài liệu", "Trường học"
+       "Stt", "Tên NCC", "Tên mặt hàng", "Số điện thoại", "Tài liệu", "Trường học"
     };
 
     bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-themmoi");
@@ -22,8 +22,7 @@
         <tr>
             <th class="text-center" data-orderable="false"></th>
 
-            @foreach (var c in columns)
-            {
+            @foreach (var c in columns) {
                 <th class="text-center">@c</th>
             }
 
@@ -37,15 +36,13 @@
                         </button>
                         <div class="dropdown-menu me-2" style="border: 1px solid black;">
                             @{
-                                if (themMoi)
-                                {
+                                if (themMoi) {
                                     <a class="dropdown-item c-pointer"
                                        onclick="quanLyNhaCungCap.nhaCungCap.displayModal_CRUD('create')">
                                         <i class="bi bi-plus-circle-fill"></i> Thêm mới
                                     </a>
                                 }
-                                if (xoaBo)
-                                {
+                                if (xoaBo) {
                                     <a class="dropdown-item c-pointer"
                                        onclick="quanLyNhaCungCap.nhaCungCap.delete('multiple')">
                                         <i class="bi bi-trash3-fill"></i> Xóa bỏ
@@ -62,8 +59,7 @@
         <tr>
             <th class="text-center"><input class="form-check-input checkAll-@tableName-getList" type="checkbox" title="Chọn tất cả" /></th>
 
-            @foreach (var c in columns)
-            {
+            @foreach (var c in columns) {
                 <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
             }
 
@@ -71,8 +67,7 @@
         </tr>
     </tfoot>
     <tbody>
-        @foreach (var nhaCungCap in Model.NhaCungCaps)
-        {
+        @foreach (var nhaCungCap in Model.NhaCungCaps) {
             <tr id="@nhaCungCap.NhaCungCap.IdNhaCungCap">
                 <td class="text-center"><input class="form-check-input checkRow-@tableName-getList" type="checkbox" /></td>
 
@@ -80,18 +75,18 @@
                     onclick="sys.copyTextFromElement(this)"
                     title="Click để sao chép"
                     data-copy="@nhaCungCap.NhaCungCap.Stt.ToString()">
-                    <a href="#"><i class="bi bi-copy"></i> @Public.Handles.Handle.TruncateString(maxLength: 10, input: nhaCungCap.NhaCungCap.MaNhaCungCap.ToString())</a>
+                    <a href="#">
+                        <i class="bi bi-copy"></i> @Public.Handles.Handle.TruncateString(maxLength: 10, input: nhaCungCap.NhaCungCap.Stt.ToString())
+                    </a>
                 </td>
                 <td class="text-left">
-                    @if (xemChiTiet)
-                    {
+                    @if (xemChiTiet) {
                         <a class="c-pointer"
                            href="/QuanLyNhaCungCap/xemChiTiet_NhaCungCap?idNhaCungCap=@nhaCungCap.NhaCungCap.IdNhaCungCap">
                             @nhaCungCap.NhaCungCap.TenNhaCungCap
                         </a>
                     }
-                    else
-                    {
+                    else {
                         @nhaCungCap.NhaCungCap.TenNhaCungCap
                     }
                 </td>
@@ -110,22 +105,19 @@
                             </button>
                             <div class="dropdown-menu me-2" style="border: 1px solid black;">
                                 @{
-                                    if (capNhat)
-                                    {
+                                    if (capNhat) {
                                         <a class="dropdown-item c-pointer"
                                            onclick="quanLyNhaCungCap.nhaCungCap.displayModalCRUD('update', '@nhaCungCap.NhaCungCap.IdNhaCungCap')">
                                             <i class="bi bi-eye"></i> Cập nhật
                                         </a>
                                     }
-                                    if (xemChiTiet)
-                                    {
+                                    if (xemChiTiet) {
                                         <a class="dropdown-item c-pointer"
                                            href="/QuanLyTaiLieu/Index?idNhaCungCap=@nhaCungCap.NhaCungCap.IdNhaCungCap">
                                             <i class="bi bi-eye"></i> Xem chi tiết
                                         </a>
                                     }
-                                    if (xoaBo)
-                                    {
+                                    if (xoaBo) {
                                         <a class="dropdown-item c-pointer"
                                            onclick="quanLyNhaCungCap.nhaCungCap.delete('single', '@nhaCungCap.NhaCungCap.IdNhaCungCap')">
                                             <i class="bi bi-trash3-fill"></i> Xóa bỏ

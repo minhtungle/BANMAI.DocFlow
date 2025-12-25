@@ -186,6 +186,7 @@
           <Property Name="Stt" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="IdNhaCungCap" Type="uniqueidentifier" Nullable="false" />
           <Property Name="IdNhaCungCapCha" Type="uniqueidentifier" />
+          <Property Name="CapDo" Type="int" />
           <Property Name="MaNhaCungCap" Type="nvarchar(max)" />
           <Property Name="TenNhaCungCap" Type="nvarchar(max)" />
           <Property Name="TenMatHang" Type="nvarchar(max)" />
@@ -485,6 +486,7 @@
           <Property Name="Stt" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="IdNhaCungCap" Type="Guid" Nullable="false" />
           <Property Name="IdNhaCungCapCha" Type="Guid" />
+          <Property Name="CapDo" Type="Int32" />
           <Property Name="MaNhaCungCap" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TenNhaCungCap" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TenMatHang" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -764,6 +766,7 @@
                 <ScalarProperty Name="TenMatHang" ColumnName="TenMatHang" />
                 <ScalarProperty Name="TenNhaCungCap" ColumnName="TenNhaCungCap" />
                 <ScalarProperty Name="MaNhaCungCap" ColumnName="MaNhaCungCap" />
+                <ScalarProperty Name="CapDo" ColumnName="CapDo" />
                 <ScalarProperty Name="IdNhaCungCapCha" ColumnName="IdNhaCungCapCha" />
                 <ScalarProperty Name="IdNhaCungCap" ColumnName="IdNhaCungCap" />
                 <ScalarProperty Name="Stt" ColumnName="Stt" />

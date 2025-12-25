@@ -37,11 +37,11 @@ namespace Applications.QuanLyNhaCungCap.Validations
             if (nhaCungCap == null) throw new ArgumentNullException(nameof(nhaCungCap));
             if (fieldsToCheck == null || fieldsToCheck.Length == 0)
                 fieldsToCheck = new[] {
-                    NhaCungCapFieldEnum.MaNhaCungCap
+                    NhaCungCapFieldEnum.TenNhaCungCap
                 };
 
             // Chuẩn hoá input (giảm false-negative)
-            string ma = (nhaCungCap.MaNhaCungCap ?? "").Trim();
+            string ma = (nhaCungCap.TenNhaCungCap ?? "").Trim();
 
             var result = new ValidationResultEx();
 
@@ -53,15 +53,15 @@ namespace Applications.QuanLyNhaCungCap.Validations
             );
 
             // Check từng trường (mỗi check 1 query exists, rõ ràng & dễ debug)
-            if (fieldsToCheck.Contains(NhaCungCapFieldEnum.MaNhaCungCap) && !string.IsNullOrWhiteSpace(ma))
+            if (fieldsToCheck.Contains(NhaCungCapFieldEnum.TenNhaCungCap) && !string.IsNullOrWhiteSpace(ma))
             {
-                bool existed = await baseQuery.AnyAsync(x => x.MaNhaCungCap == ma);
+                bool existed = await baseQuery.AnyAsync(x => x.TenNhaCungCap == ma);
                 if (existed)
                 {
                     result.InvalidFields.Add(new FieldInvalidDto<NhaCungCapFieldEnum>
                     {
-                        Field = NhaCungCapFieldEnum.MaNhaCungCap,
-                        Message = "Mã nhà cung cấp đã tồn tại."
+                        Field = NhaCungCapFieldEnum.TenNhaCungCap,
+                        Message = "Tên nhà cung cấp đã tồn tại."
                     });
                 }
             }

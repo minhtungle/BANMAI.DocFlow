@@ -143,7 +143,7 @@ class QuanLyNhaCungCap {
                         //IdNhaCungCaps: [
                         //    $("#select-idnhacungcap", $timKiem).val(),
                         //],
-                        MaNhaCungCap: $("#select-manhacungcap", $timKiem).val(),
+                        Stt: $("#input-stt", $timKiem).val(),
                         TenNhaCungCap: $("#input-tennhacungcap", $timKiem).val().trim(),
                         TenMatHang: $("#input-tenmathang", $timKiem).val().trim(),
                         SoDienThoai: $("#input-sodienthoai", $timKiem).val().trim(),
@@ -230,7 +230,7 @@ class QuanLyNhaCungCap {
                         NhaCungCap: {
                             IdNhaCungCap: $("#input-idnhacungcap", $modal).val(),
                             IdNhaCungCapCha: $("#select-nhacungcapcha", $modal).val(),
-                            MaNhaCungCap: $("#input-manhacungcap", $modal).val().trim(),
+                            //MaNhaCungCap: $("#input-manhacungcap", $modal).val().trim(),
                             TenNhaCungCap: $("#input-tennhacungcap", $modal).val().trim(),
                             TenMatHang: $("#input-tenmathang", $modal).val().trim(),
                             SoDienThoai: $("#input-sodienthoai", $modal).val().trim(),
@@ -270,7 +270,7 @@ class QuanLyNhaCungCap {
                                     } else {
                                         if (res.status == "warning") {
                                             htmlEl.inputValidationStates(
-                                                $("#input-manhacungcap"),
+                                                $("#input-tennhacungcap"),
                                                 "#nhacungcap-crud",
                                                 res.mess,
                                                 {
@@ -335,7 +335,7 @@ class QuanLyNhaCungCap {
                     var nhaCungCap = {
                         NhaCungCap: {
                             IdNhaCungCap: $("#input-idnhacungcap", $tab).val(),
-                            MaNhaCungCap: $("#input-manhacungcap", $tab).val().trim(),
+                            //MaNhaCungCap: $("#input-manhacungcap", $tab).val().trim(),
                             GioiTinh: $("#select-gioitinh", $tab).val() == 1 ? true : false,
                             TenNhaCungCap: $("#input-tennhacungcap", $tab).val().trim(),
                             SoDienThoai: $("#input-sodienthoai", $tab).val().trim(),
@@ -657,7 +657,7 @@ class QuanLyNhaCungCap {
                             IdNhaCungCap: idNhaCungCap,
                             IdNhaCungCapCha: idNhaCungCapCha,
 
-                            MaNhaCungCap: $("#input-manhacungcap", $div).val().trim(),
+                            //MaNhaCungCap: $("#input-manhacungcap", $div).val().trim(),
                             TenNhaCungCap: $("#input-tennhacungcap", $div).val().trim(),
                             TenMatHang: $("#input-tenmathang", $div).val().trim(),
                             SoDienThoai: $("#input-sodienthoai", $div).val().trim(),

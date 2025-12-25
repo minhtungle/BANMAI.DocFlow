@@ -88,16 +88,21 @@ namespace QuanLyNhaCungCap.Controllers
         {
             try
             {
-                var nhaCungCap_NEW = JsonConvert.DeserializeObject<tbNhaCungCapExtend>(Request.Form["nhaCungCap"]);
-                if (nhaCungCap_NEW == null)
+                var nhaCungCap_NEWs = JsonConvert.DeserializeObject<List<tbNhaCungCapExtend>>(Request.Form["nhaCungCaps"]);
+                if (nhaCungCap_NEWs == null || nhaCungCap_NEWs.Count == 0)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
 
-                var isExisted = await _quanLyNhaCungCapService.IsExisted_NhaCungCap(
-                    nhaCungCap: nhaCungCap_NEW.NhaCungCap);
-                if (isExisted)
-                    return Json(new { status = "error", mess = "Mã đã tồn tại" }, JsonRequestBehavior.AllowGet);
+                var validationResult = await _quanLyNhaCungCapService.Validate_NhaCungCap(
+                    nhaCungCaps: nhaCungCap_NEWs);
+                if (validationResult.NhaCungCap_KhongHopLe.Count != 0)
+                    return Json(new
+                    {
+                        status = "error",
+                        mess = "Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại",
+                        data = validationResult
+                    }, JsonRequestBehavior.AllowGet);
 
-                await _quanLyNhaCungCapService.Create_NhaCungCap(nhaCungCap: nhaCungCap_NEW);
+                await _quanLyNhaCungCapService.Create_NhaCungCap(nhaCungCaps: nhaCungCap_NEWs);
                 return Json(new { status = "success", mess = "Thêm mới thành công" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -115,10 +120,10 @@ namespace QuanLyNhaCungCap.Controllers
                 if (nhaCungCap_NEW == null)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
 
-                var isExisted = await _quanLyNhaCungCapService.IsExisted_NhaCungCap(
-                    nhaCungCap: nhaCungCap_NEW.NhaCungCap);
-                if (isExisted)
-                    return Json(new { status = "error", mess = "Mã đã tồn tại" }, JsonRequestBehavior.AllowGet);
+                //var isExisted = await _quanLyNhaCungCapService.IsExisted_NhaCungCap(
+                //    nhaCungCap: nhaCungCap_NEW.NhaCungCap);
+                //if (isExisted)
+                //    return Json(new { status = "error", mess = "Mã đã tồn tại" }, JsonRequestBehavior.AllowGet);
 
                 await _quanLyNhaCungCapService.Update_NhaCungCap(nhaCungCap: nhaCungCap_NEW);
                 return Json(new { status = "success", mess = "Cập nhật thành công" }, JsonRequestBehavior.AllowGet);

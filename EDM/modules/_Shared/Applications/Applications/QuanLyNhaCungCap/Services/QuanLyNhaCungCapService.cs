@@ -25,8 +25,6 @@ namespace Applications.QuanLyNhaCungCap.Services
         private readonly IRepository<tbNhaCungCapTruongHoc, Guid> _nhaCungCapTruongHocRepo;
         private readonly IRepository<tbTruongHoc, Guid> _truongHocRepo;
         private readonly IRepository<tbTaiLieu, Guid> _taiLieuRepo;
-        private readonly IsExistedNhaCungCapValidation _isExistedNhaCungCapValidation;
-        private readonly IsValidNhaCungCapValidation _isValidNhaCungCapValidation;
 
         public QuanLyNhaCungCapService(
             IUserContext userContext,
@@ -46,9 +44,6 @@ namespace Applications.QuanLyNhaCungCap.Services
             _nhaCungCapTruongHocRepo = nhaCungCapTruongHocRepo;
             _truongHocRepo = truongHocRepo;
             _taiLieuRepo = taiLieuRepo;
-
-            _isExistedNhaCungCapValidation = isExistedNhaCungCapValidation;
-            _isValidNhaCungCapValidation = isValidNhaCungCapValidation;
         }
         public List<ThaoTac> GetThaoTacs(string maChucNang) => GetThaoTacByIdChucNang(maChucNang);
         public async Task<Index_Output_Dto> Index()
@@ -226,58 +221,7 @@ namespace Applications.QuanLyNhaCungCap.Services
             };
             return output;
         }
-        public async Task<Validate_NhaCungCap_Output_Dto> Validate_NhaCungCap(List<tbNhaCungCapExtend> nhaCungCaps)
-        {
-            /**
-             * Các thông tin cần kiểm tra
-             * Mã nhà cung cấp
-             * Tên nhà cung cấp
-             */
-            var output = new Validate_NhaCungCap_Output_Dto();
-
-            foreach (var nhaCungCap in nhaCungCaps)
-            {
-                var isExisted = await _isExistedNhaCungCapValidation.IsExisted(
-                      nhaCungCap: nhaCungCap.NhaCungCap,
-                      NhaCungCapFieldEnum.MaNhaCungCap);
-
-                var isValid = await _isValidNhaCungCapValidation.ValidateFieldsOnlyAsync(
-                   nhaCungCap: nhaCungCap.NhaCungCap,
-                   new FieldValidationOptionDto<NhaCungCapFieldEnum>
-                   {
-                       Field = NhaCungCapFieldEnum.MaNhaCungCap,
-                       DisplayName = "Mã NCC",
-                       Rules = ValidateRule.Required
-                       //| ValidateRule.MinLength | ValidateRule.MaxLength | ValidateRule.Regex,
-                       //MinLen = 3,
-                       //MaxLen = 20,
-                       //Pattern = @"^[A-Za-z0-9\-_]+$",
-                       //PatternMessage = "Mã NCC chỉ gồm chữ/số và - _."
-                   });
-
-                if (isExisted.IsValid)
-                {
-                    // Cập nhật dữ liệu sau kiểm tra
-                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
-                    nhaCungCap.KiemTraDuLieu.Messages.Add(string.Join(", ", isExisted.InvalidFields.Select(x => x.Message)));
-
-                }
-            ;
-                if (isValid.IsValid)
-                {
-                    // Cập nhật dữ liệu sau kiểm tra
-                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
-                    nhaCungCap.KiemTraDuLieu.Messages.Add(string.Join(", ", isValid.InvalidFields.Select(x => x.Message)));
-                }
-
-                // Tổng kết
-                if ((int)nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu == (int)TrangThaiKiemTraDuLieuEnum.HopLe)
-                    output.NhaCungCap_HopLe.Add(nhaCungCap);
-                else output.NhaCungCap_KhongHopLe.Add(nhaCungCap);
-            }
-
-            return output;
-        }
+      
         public async Task Create_NhaCungCap(List<tbNhaCungCapExtend> nhaCungCaps)
         {
             await _unitOfWork.ExecuteInTransaction(async () =>
@@ -288,7 +232,7 @@ namespace Applications.QuanLyNhaCungCap.Services
                     {
                         IdNhaCungCap = Guid.NewGuid(),
                         IdNhaCungCapCha = nhaCungCap.NhaCungCap.IdNhaCungCapCha,
-                        MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap,
+                        //MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap,
                         TenNhaCungCap = nhaCungCap.NhaCungCap.TenNhaCungCap,
                         TenMatHang = nhaCungCap.NhaCungCap.TenMatHang,
                         SoDienThoai = nhaCungCap.NhaCungCap.SoDienThoai,
@@ -334,7 +278,7 @@ namespace Applications.QuanLyNhaCungCap.Services
                 // Cập nhật thông tin chính
                 {
                     _nhaCungCap.IdNhaCungCapCha = nhaCungCap.NhaCungCap.IdNhaCungCapCha;
-                    _nhaCungCap.MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap;
+                    //_nhaCungCap.MaNhaCungCap = nhaCungCap.NhaCungCap.MaNhaCungCap;
                     _nhaCungCap.TenNhaCungCap = nhaCungCap.NhaCungCap.TenNhaCungCap;
                     _nhaCungCap.TenMatHang = nhaCungCap.NhaCungCap.TenMatHang;
                     _nhaCungCap.SoDienThoai = nhaCungCap.NhaCungCap.SoDienThoai;
@@ -424,167 +368,6 @@ namespace Applications.QuanLyNhaCungCap.Services
                 }
             });
         }
-        #endregion
-
-        #region Xem chi tiết
-        //public async Task<XemChiTiet_NhaCungCap_Output_Dto> XemChiTiet_NhaCungCap(Guid idNhaCungCap)
-        //{
-        //    var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNhaCungCap");
-        //    var nhaCungCaps = await Get_NhaCungCaps(input: new GetList_NhaCungCap_Input_Dto()) ?? new List<tbNhaCungCapExtend>();
-        //    var nhaCungCap = nhaCungCaps.FirstOrDefault(x => x.NhaCungCap.IdNhaCungCap == idNhaCungCap) ?? new tbNhaCungCapExtend();
-        //    var output = new XemChiTiet_NhaCungCap_Output_Dto
-        //    {
-        //        ThaoTacs = thaoTacs,
-        //        NhaCungCaps = nhaCungCaps,
-        //        NhaCungCap = nhaCungCap,
-        //    };
-        //    return output;
-        //}
-        //public async Task<ShowTab_ThongTinCoBan_Output_Dto> ShowTab_ThongTinCoBan_NhaCungCap(Guid idNhaCungCap)
-        //{
-        //    var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNhaCungCap");
-        //    var nhaCungCaps = await Get_NhaCungCaps(input: new GetList_NhaCungCap_Input_Dto
-        //    {
-        //        Loai = "single",
-        //        LocThongTin = new LocThongTinDto
-        //        {
-        //            IdNhaCungCaps = new List<Guid?> { idNhaCungCap }
-        //        }
-        //    });
-        //    var output = new ShowTab_ThongTinCoBan_Output_Dto
-        //    {
-        //        ThaoTacs = thaoTacs,
-        //        NhaCungCap = nhaCungCaps.FirstOrDefault() ?? new tbNhaCungCapExtend()
-        //        {
-        //            NhaCungCap = new tbNhaCungCap()
-        //        },
-        //    };
-        //    return output;
-        //}
-        //public async Task<ShowTab_LichHen_Output_Dto> ShowTab_LichHen_NhaCungCap(Guid idNhaCungCap)
-        //{
-        //    var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNhaCungCap");
-        //    var lichHens = await _lichHenRepo.Query()
-        //        .Where(x =>
-        //        x.IdNhaCungCap == idNhaCungCap
-        //        && x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
-        //        .OrderByDescending(x => x.NgayHen)
-        //        .ToListAsync();
-
-        //    var output = new ShowTab_LichHen_Output_Dto
-        //    {
-        //        ThaoTacs = thaoTacs,
-        //        LichHens = lichHens,
-        //    };
-        //    return output;
-        //}
-        //public async Task<ShowTab_PhieuKham_Output_Dto> ShowTab_PhieuKham_NhaCungCap(Guid idNhaCungCap)
-        //{
-        //    var thaoTacs = GetThaoTacs(maChucNang: "QuanLyNhaCungCap");
-
-        //    // 1) Lấy phiếu + lịch điều trị
-        //    var baseData = await _phieuKhamRepo.Query().AsNoTracking()
-        //        .Where(pk => pk.IdNhaCungCap == idNhaCungCap
-        //            && pk.TrangThai == (int?)TrangThaiDuLieuEnum.DangSuDung
-        //            && pk.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
-        //        .Select(pk => new ShowTab_PhieuKham_Output_Dto
-        //        {
-        //            PhieuKham = pk,
-        //        })
-        //        .FirstOrDefaultAsync();
-
-        //    if (baseData == null)
-        //        return new ShowTab_PhieuKham_Output_Dto { ThaoTacs = thaoTacs };
-
-        //    baseData.LichDieuTris = await _lichDieuTriRepo.Query().AsNoTracking()
-        //                .Where(ldt => ldt.IdPhieuKham == baseData.PhieuKham.IdPhieuKham
-        //                    && ldt.TrangThai == (int?)TrangThaiDuLieuEnum.DangSuDung)
-        //                .Select(x => new tbLichDieuTriExtend
-        //                {
-        //                    LichDieuTri = x,
-        //                })
-        //                .OrderByDescending(x => x.LichDieuTri.NgayDieuTri) // tuỳ field
-        //                .ToListAsync();
-
-        //    var lichIds = baseData.LichDieuTris.Select(x => x.LichDieuTri.IdLichDieuTri).ToList();
-
-        //    var allTienTrinhs =
-        //    await (from tt in _tienTrinhDieuTriRepo.Query().AsNoTracking()
-        //           where tt.IdLichDieuTri.HasValue
-        //                 && lichIds.Contains(tt.IdLichDieuTri.Value)
-        //                 && tt.TrangThai == (int?)TrangThaiDuLieuEnum.DangSuDung
-
-        //           // LEFT JOIN bác sỹ điều trị
-        //           join bsDieuTri in _bacSyRepo.Query().AsNoTracking()
-        //               on tt.IdBacSy equals bsDieuTri.IdBacSy into gBsDieuTri
-        //           from bsDieuTri in gBsDieuTri.DefaultIfEmpty()
-
-        //               // LEFT JOIN phụ tá
-        //           join phuTa in _bacSyRepo.Query().AsNoTracking()
-        //               on tt.IdPhuTa equals phuTa.IdBacSy into gPhuTa
-        //           from phuTa in gPhuTa.DefaultIfEmpty()
-
-        //               // LEFT JOIN tình trạng răng
-        //           join tinhTrangRang in _tinhTrangRangRepo.Query().AsNoTracking()
-        //               on tt.IdTinhTrangRang equals tinhTrangRang.IdTinhTrangRang into gTinhTrangRang
-        //           from tinhTrangRang in gTinhTrangRang.DefaultIfEmpty()
-
-        //               // LEFT JOIN thủ thuật
-        //           join thuThuat in _thuThuatRepo.Query().AsNoTracking()
-        //               on tt.IdThuThuat equals thuThuat.IdThuThuat into gThuThuat
-        //           from thuThuat in gThuThuat.DefaultIfEmpty()
-
-        //           orderby tt.Stt descending
-        //           select new tbTienTrinhDieuTriExtend
-        //           {
-        //               TienTrinhDieuTri = tt,
-        //               BacSyDieuTri = bsDieuTri,  // có thể null
-        //               PhuTa = phuTa,         // có thể null
-        //               TinhTrangRang = tinhTrangRang,
-        //               ThuThuat = thuThuat,
-        //           })
-        //    .ToListAsync();
-
-        //    // 1) Lookup: IdLichDieuTri -> List<TienTrinh>
-        //    var ttLookup = allTienTrinhs
-        //        .Where(t => t.TienTrinhDieuTri?.IdLichDieuTri != null)                 // tránh null
-        //        .GroupBy(t => t.TienTrinhDieuTri.IdLichDieuTri.Value)                 // Guid? -> Guid
-        //        .ToDictionary(
-        //            g => g.Key,
-        //            g => g.Select(t => new tbTienTrinhDieuTriExtend                    // clone an toàn
-        //            {
-        //                TienTrinhDieuTri = t.TienTrinhDieuTri,
-        //                BacSyDieuTri = t.BacSyDieuTri,
-        //                PhuTa = t.PhuTa,
-        //                TinhTrangRang = t.TinhTrangRang,
-        //                ThuThuat = t.ThuThuat
-        //            }).ToList()
-        //        );
-
-        //    // 2) Build result an toàn null (baseData hoặc LichDieuTris có thể null)
-        //    var result = new ShowTab_PhieuKham_Output_Dto
-        //    {
-        //        PhieuKham = baseData?.PhieuKham,
-        //        ThaoTacs = thaoTacs,
-        //        LichDieuTris = (baseData?.LichDieuTris ?? new List<tbLichDieuTriExtend>())
-        //            .Select(ldt =>
-        //            {
-        //                var idLdt = ldt?.LichDieuTri?.IdLichDieuTri ?? Guid.Empty;     // phòng null
-        //                ttLookup.TryGetValue(idLdt, out var ttList);
-        //                return new tbLichDieuTriExtend
-        //                {
-        //                    LichDieuTri = ldt.LichDieuTri,
-        //                    TienTrinhDieuTris = ttList ?? new List<tbTienTrinhDieuTriExtend>(),
-        //                    //AnhMoTas = (anhLookup.TryGetValue(idLdt, out var anh) ? anh : new List<tbLichDieuTri_AnhMoTa>())
-        //                };
-        //            })
-        //            .ToList()
-        //    };
-
-
-        //    return result;
-        //}
-
         #endregion
     }
 }

@@ -10,6 +10,16 @@
                     Cập nhật hàng loạt
                 </a>
             </div>
+            <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-primary" title="Import Excel"><i class="bi bi-upload"></i></a>
+                <a class="btn btn-light-secondary" onclick="quanLyNhaCungCap.handleModal_CRUD.excel.import()">
+                    Tải lên
+                </a>
+                <a class="btn btn-primary" title="Export Excel"><i class="bi bi-download"></i></a>
+                <a class="btn btn-light-secondary" onclick="quanLyNhaCungCap.handleModal_CRUD.excel.export()">
+                    Tải mẫu
+                </a>
+            </div>
         </div>
         <div class="modal-body table-responsive">
             <div class="row">
@@ -38,10 +48,6 @@
                                 </th>
                                 <th class="text-center"
                                     style="min-width: 10rem!important">
-                                    Mã NCC
-                                </th>
-                                <th class="text-center"
-                                    style="min-width: 10rem!important">
                                     Tên NCC
                                 </th>
                             </tr>
@@ -49,7 +55,6 @@
                         <tfoot class="show-footer-above">
                             <tr>
                                 <th class="text-center"><input class="form-check-input checkAll-nhacungcap-getList" type="checkbox" title="Chọn tất cả" /></th>
-                                <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
                                 <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
                                 <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
                             </tr>

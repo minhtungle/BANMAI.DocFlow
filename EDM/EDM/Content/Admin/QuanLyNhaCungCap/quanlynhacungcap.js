@@ -729,6 +729,59 @@ class QuanLyNhaCungCap {
                         });
                     }
                 });
+            },
+            excel: {
+                import: function () {
+                    var $modal = $("#nhacungcap-crud");
+                    var $excel = $("#select-excel", $modal).get(0),
+                        formData = new FormData();
+                    $.each($excel.files, function (idx, f) {
+                        var extension = f.type;
+                        if (extension.includes("sheet")) {
+                            formData.append("files", f);
+                        };
+                    });
+                    // Xóa bộ nhớ đệm để upload file trong lần tiếp theo
+                    $excel.value = ''; // xóa giá trị của input file
+
+                    $.ajax({
+                        ...ajaxDefaultProps({
+                            url: "/QuanLyNhaCungCap/importPreview_NhaCungCap_Excel_Ajax",
+                            type: "POST",
+                            data: formData
+                        }),
+                        contentType: false,
+                        processData: false,
+                        success: function (res) {
+
+                            // ❌ Có lỗi -> tự tải file lỗi về ngay
+                            if (res.status == "error" && res.downloadToken) {
+                                sys.alert({ status: "error", mess: res.mess });
+
+                                // trigger download dialog (không cần base64)
+                                window.location = "/QuanLyNhaCungCap/downloadImportError_NhaCungCap_Excel?token=" + res.downloadToken;
+                                return;
+                            }
+
+                            // ✅ OK -> trả data preview để user xem và bấm lưu
+                            if (res.status == "success") {
+                                quanLyNhaCungCap.nhaCungCap.previewData = res.data;
+                                sys.alert({ status: "success", mess: res.mess });
+
+                                // mở modal preview để user chọn lưu
+                                sys.displayModal({ name: "#ncc-import-preview", displayStatus: "show" });
+                                return;
+                            }
+
+                            sys.alert({ status: res.status, mess: res.mess });
+                        }
+                    });
+
+                },
+                export: function () {
+                    window.location = "/QuanLyNhaCungCap/exportTemplate_NhaCungCap_Excel";
+                }
+
             }
         };
     }

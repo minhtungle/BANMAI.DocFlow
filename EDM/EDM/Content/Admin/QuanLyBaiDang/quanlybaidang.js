@@ -765,7 +765,7 @@ class QuanLyBaiDang {
                         });
                     }
                 });
-            }
+            },
         };
     }
 };

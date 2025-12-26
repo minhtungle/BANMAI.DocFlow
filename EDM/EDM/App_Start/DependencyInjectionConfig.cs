@@ -6,8 +6,11 @@ using Applications.QuanLyKieuNguoiDung.Interfaces;
 using Applications.QuanLyKieuNguoiDung.Services;
 using Applications.QuanLyNguoiDung.Interfaces;
 using Applications.QuanLyNguoiDung.Services;
+using Applications.QuanLyNhaCungCap.Excel.Interfaces;
+using Applications.QuanLyNhaCungCap.Excel.Services;
 using Applications.QuanLyNhaCungCap.Interfaces;
 using Applications.QuanLyNhaCungCap.Services;
+using Applications.QuanLyNhaCungCap.Validations;
 using Applications.QuanLyTruongHoc.Interfaces;
 using Applications.QuanLyTruongHoc.Services;
 using Autofac;
@@ -75,6 +78,15 @@ namespace EDM.App_Start
                    .SingleInstance(); // hoặc InstancePerRequest nếu cần
             #endregion
 
+            #region Validations
+            builder.RegisterType<IsExistedNhaCungCapValidation>()
+                   .AsSelf()
+                   .InstancePerLifetimeScope();
+
+            builder.RegisterType<IsValidNhaCungCapValidation>()
+                   .AsSelf()
+                   .InstancePerLifetimeScope();
+            #endregion
 
             #region ✅ Đăng ký AppServices
             builder.RegisterType<HttpClient>()
@@ -105,6 +117,9 @@ namespace EDM.App_Start
 
             builder.RegisterType<QuanLyNhaCungCapService>()
                    .As<IQuanLyNhaCungCapService>()
+                   .InstancePerRequest();
+            builder.RegisterType<ExcelNhaCungCapExcelService>()
+                   .As<IExcelNhaCungCapExcelService>()
                    .InstancePerRequest();
             builder.RegisterType<QuanLyTruongHocService>()
                    .As<IQuanLyTruongHocService>()

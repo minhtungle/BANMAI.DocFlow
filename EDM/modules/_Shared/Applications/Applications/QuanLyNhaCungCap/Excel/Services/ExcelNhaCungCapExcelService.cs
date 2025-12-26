@@ -101,7 +101,7 @@ namespace Applications.QuanLyNhaCungCap.Excel.Services {
         /// be checked for validity.</param>
         /// <returns>A result object containing collections of valid and invalid supplier entries, along with validation messages
         /// for each entry.</returns>
-        public async Task<ValidateImportData_Output_Dto> ValidateImportData(List<tbNhaCungCapExtend> input) {
+        public async Task<ValidateImportData_Output_Dto> _ValidateImportData(List<tbNhaCungCapExtend> input) {
             /**
              * Các thông tin cần kiểm tra
              * Mã nhà cung cấp
@@ -168,6 +168,149 @@ namespace Applications.QuanLyNhaCungCap.Excel.Services {
 
             return output;
         }
+        public async Task<ValidateImportData_Output_Dto> ValidateImportData(List<tbNhaCungCapExtend> input) {
+            var output = new ValidateImportData_Output_Dto();
+
+            // ====== Chuẩn hoá so sánh tên ======
+            string Norm(string s) => string.IsNullOrWhiteSpace(s) ? "" : s.Trim().ToLower();
+
+            // ====== 1) Pre-calc duplicate tên NCC ======
+            var dupTenNcc = input
+                .GroupBy(x => Norm(x?.NhaCungCap?.TenNhaCungCap))
+                .Where(g => !string.IsNullOrEmpty(g.Key) && g.Count() > 1)
+                .Select(g => g.Key)
+                .ToHashSet();
+
+            // ====== 2) Build map: childName -> parentName (để detect cycle) ======
+            // Nếu tên NCC trống thì bỏ qua map (vì bản thân đã lỗi Required)
+            var parentMap = new Dictionary<string, string>();
+            foreach (var x in input) {
+                var child = Norm(x?.NhaCungCap?.TenNhaCungCap);
+                if (string.IsNullOrEmpty(child)) continue;
+
+                // parent có thể rỗng (root) => vẫn cho vào map với parent="" để xử lý logic
+                var parent = Norm(x?.NhaCungCapCha?.TenNhaCungCap);
+                parentMap[child] = parent; // nếu child trùng, dupTenNcc đã bắt, map lấy cái cuối cũng OK vì vẫn lỗi
+            }
+
+            // ====== helper detect cycle ======
+            bool HasCycleNear(string child, string parent) {
+                // vòng lặp gần: A->B và B->A
+                if (string.IsNullOrEmpty(child) || string.IsNullOrEmpty(parent)) return false;
+                if (!parentMap.ContainsKey(parent)) return false; // nếu parent không có trong file thì bỏ qua theo yêu cầu
+                return Norm(parentMap[parent]) == child;
+            }
+
+            bool HasCycleFar(string startChild) {
+                // vòng lặp xa: A->...->A
+                if (string.IsNullOrEmpty(startChild)) return false;
+
+                var visited = new HashSet<string>();
+                var cur = startChild;
+
+                while (true) {
+                    if (!parentMap.ContainsKey(cur)) return false; // parent không có trong file -> bỏ qua (không check "không tồn tại")
+                    var p = Norm(parentMap[cur]);
+
+                    if (string.IsNullOrEmpty(p)) return false;      // root
+                    if (p == startChild) return true;               // quay về chính nó => cycle xa
+
+                    // nếu gặp lại một node đã đi qua => cũng là cycle (không nhất thiết quay về start)
+                    if (visited.Contains(p)) return true;
+
+                    visited.Add(p);
+                    cur = p;
+                }
+            }
+
+            foreach (var nhaCungCap in input) {
+                // đảm bảo có container message
+                if (nhaCungCap.KiemTraDuLieu == null)
+                    nhaCungCap.KiemTraDuLieu = new DataValidResultDto(); // bạn thay đúng type trong project
+                if (nhaCungCap.KiemTraDuLieu.Messages == null)
+                    nhaCungCap.KiemTraDuLieu.Messages = new List<string>();
+
+                // mặc định hợp lệ
+                nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = TrangThaiKiemTraDuLieuEnum.HopLe;
+
+                var tenCon = Norm(nhaCungCap?.NhaCungCap?.TenNhaCungCap);
+                var tenCha = Norm(nhaCungCap?.NhaCungCapCha?.TenNhaCungCap);
+
+                // ====== 3) Required: Tên NCC ======
+                var validTenCon = await _isValidNhaCungCapValidation.ValidateFieldsOnlyAsync(
+                    nhaCungCap: nhaCungCap.NhaCungCap,
+                    new FieldValidationOptionDto<NhaCungCapFieldEnum> {
+                        Field = NhaCungCapFieldEnum.TenNhaCungCap,
+                        DisplayName = "Tên nhà cung cấp",
+                        Rules = ValidateRule.Required
+                    });
+
+                if (!validTenCon.IsValid) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.AddRange(validTenCon.InvalidFields.Select(x => x.Message));
+                }
+
+                // ====== 4) Required: Tên NCC cha (nếu bạn bắt buộc cha phải có) ======
+                // Nếu bạn muốn: cha có thể trống (root) => bỏ khối này
+                var validTenCha = await _isValidNhaCungCapValidation.ValidateFieldsOnlyAsync(
+                    nhaCungCap: nhaCungCap.NhaCungCapCha,
+                    new FieldValidationOptionDto<NhaCungCapFieldEnum> {
+                        Field = NhaCungCapFieldEnum.TenNhaCungCap,
+                        DisplayName = "Tên nhà cung cấp cha",
+                        Rules = ValidateRule.Required
+                    });
+
+                if (!validTenCha.IsValid) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.AddRange(validTenCha.InvalidFields.Select(x => x.Message));
+                }
+
+                // ====== 5) Duplicate tên NCC ======
+                if (!string.IsNullOrEmpty(tenCon) && dupTenNcc.Contains(tenCon)) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.Add("Tên nhà cung cấp bị trùng.");
+                }
+
+                // ====== 6) Self-parent ======
+                if (!string.IsNullOrEmpty(tenCon) && !string.IsNullOrEmpty(tenCha) && tenCon == tenCha) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.Add("Tên nhà cung cấp không được trùng tên nhà cung cấp cha.");
+                }
+
+                // ====== 7) Cycle gần (A<->B) ======
+                if (!string.IsNullOrEmpty(tenCon) && !string.IsNullOrEmpty(tenCha) && HasCycleNear(tenCon, tenCha)) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.Add("Vòng lặp cha con gần.");
+                }
+
+                // ====== 8) Cycle xa (A->...->A) ======
+                if (!string.IsNullOrEmpty(tenCon) && HasCycleFar(tenCon)) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.Add("Vòng lặp cha con xa.");
+                }
+
+                // ====== 9) Existed (DB) theo field bạn chọn ======
+                // (nếu bạn muốn giữ check này)
+                var existed = await _isExistedNhaCungCapValidation.IsExisted(
+                    nhaCungCap: nhaCungCap.NhaCungCap,
+                    NhaCungCapFieldEnum.MaNhaCungCap);
+
+                // nếu existed.IsValid == false mới là có lỗi
+                if (!existed.IsValid) {
+                    nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu = (int)TrangThaiKiemTraDuLieuEnum.KhongHopLe;
+                    nhaCungCap.KiemTraDuLieu.Messages.AddRange(existed.InvalidFields.Select(x => x.Message));
+                }
+
+                // ====== Tổng kết ======
+                if ((int)nhaCungCap.KiemTraDuLieu.TrangThaiKiemTraDuLieu == (int)TrangThaiKiemTraDuLieuEnum.HopLe)
+                    output.NhaCungCap_HopLe.Add(nhaCungCap);
+                else
+                    output.NhaCungCap_KhongHopLe.Add(nhaCungCap);
+            }
+
+            return output;
+        }
+
         /// <summary>
         /// Generates an Excel workbook containing a table of data validation errors for the supplied list of supplier
         /// records.

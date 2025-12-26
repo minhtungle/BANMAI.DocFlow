@@ -12,9 +12,14 @@
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <a class="btn btn-primary" title="Import Excel"><i class="bi bi-upload"></i></a>
-                <a class="btn btn-light-secondary" onclick="quanLyNhaCungCap.handleModal_CRUD.excel.import()">
+                <label class="btn btn-light-secondary" for="select-excel">
                     Tải lên
-                </a>
+                </label>
+                <input class="btn" id="select-excel" 
+                       type="file" 
+                       accept=".xlsx, .xls"
+                       onchange="quanLyNhaCungCap.handleModal_CRUD.excel.import()" hidden>
+
                 <a class="btn btn-primary" title="Export Excel"><i class="bi bi-download"></i></a>
                 <a class="btn btn-light-secondary" onclick="quanLyNhaCungCap.handleModal_CRUD.excel.export()">
                     Tải mẫu

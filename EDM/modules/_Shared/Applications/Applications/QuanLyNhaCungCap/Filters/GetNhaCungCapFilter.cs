@@ -20,8 +20,8 @@ namespace Applications.QuanLyNhaCungCap.Filters
             if (locThongTin.IdNhaCungCaps != null && locThongTin.IdNhaCungCaps.Any())
                 q = q.Where(x => locThongTin.IdNhaCungCaps.Contains(x.IdNhaCungCap));
 
-            // Stt
-            if (!string.IsNullOrWhiteSpace(locThongTin.Stt.ToString()))
+            // Stt - sửa lại
+            if (!string.IsNullOrWhiteSpace(locThongTin.Stt.ToString()) && locThongTin.Stt != 0)
             {
                 q = q.Where(x => (x.Stt.ToString() ?? "").ToLower().Contains(locThongTin.Stt.ToString().Trim().ToLower()));
             }

@@ -4,7 +4,7 @@
 @{
     string tableName = "nhacungcap";
     var columns = new[] {
-       "Stt", "Tên NCC", "Tên mặt hàng", "Số điện thoại", "Tài liệu", "Trường học"
+       "Stt", "Tên NCC", "Tên NCC cha", "Tên mặt hàng", "Số điện thoại", "Tài liệu", "Trường học"
     };
 
     bool themMoi = Model.ThaoTacs.Exists(x => x.MaThaoTac == "quanlynhacungcap-themmoi");
@@ -90,6 +90,7 @@
                         @nhaCungCap.NhaCungCap.TenNhaCungCap
                     }
                 </td>
+                <td class="text-left">@(nhaCungCap.NhaCungCapCha == null ? "" : nhaCungCap.NhaCungCapCha.TenNhaCungCap)</td>
                 <td class="text-left">@nhaCungCap.NhaCungCap.TenMatHang</td>
                 <td class="text-left">@nhaCungCap.NhaCungCap.SoDienThoai</td>
                 <td class="text-left">@nhaCungCap.SoLuongTaiLieu</td>
@@ -107,7 +108,7 @@
                                 @{
                                     if (capNhat) {
                                         <a class="dropdown-item c-pointer"
-                                           onclick="quanLyNhaCungCap.nhaCungCap.displayModalCRUD('update', '@nhaCungCap.NhaCungCap.IdNhaCungCap')">
+                                           onclick="quanLyNhaCungCap.nhaCungCap.displayModal_CRUD('update', '@nhaCungCap.NhaCungCap.IdNhaCungCap')">
                                             <i class="bi bi-eye"></i> Cập nhật
                                         </a>
                                     }

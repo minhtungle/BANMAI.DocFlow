@@ -1,8 +1,12 @@
 ﻿using Applications.QuanLyNhaCungCap.Dtos;
+using Applications.QuanLyNhaCungCap.Excel.Dtos;
 using Applications.QuanLyNhaCungCap.Excel.Interfaces;
+using Applications.QuanLyNhaCungCap.Excel.Services;
 using Applications.QuanLyNhaCungCap.Interfaces;
 using Applications.QuanLyNhaCungCap.Models;
+using Applications.QuanLyNhaCungCap.Validations;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office2016.Excel;
 using Newtonsoft.Json;
 using Public.Helpers;
 using System;
@@ -22,14 +26,21 @@ namespace QuanLyNhaCungCap.Controllers {
         public readonly IQuanLyNhaCungCapService _quanLyNhaCungCapService;
         private readonly IExcelNhaCungCapExcelService _excelNhaCungCapExcelService;
 
+        private readonly IsExistedNhaCungCapValidation _isExistedNhaCungCapValidation;
+        private readonly IsValidNhaCungCapValidation _isValidNhaCungCapValidation;
         #endregion
 
         public QuanLyNhaCungCapController(
             IQuanLyNhaCungCapService quanLyNhaCungCapService,
-            IExcelNhaCungCapExcelService excelNhaCungCapExcelService
+            IExcelNhaCungCapExcelService excelNhaCungCapExcelService,
+
+            IsExistedNhaCungCapValidation isExistedNhaCungCapValidation,
+            IsValidNhaCungCapValidation isValidNhaCungCapValidation
             ) {
             _quanLyNhaCungCapService = quanLyNhaCungCapService;
             _excelNhaCungCapExcelService = excelNhaCungCapExcelService;
+            _isExistedNhaCungCapValidation = isExistedNhaCungCapValidation;
+            _isValidNhaCungCapValidation = isValidNhaCungCapValidation;
         }
 
         public async Task<ActionResult> Index() {
@@ -90,11 +101,10 @@ namespace QuanLyNhaCungCap.Controllers {
                 if (nhaCungCap_NEWs == null || nhaCungCap_NEWs.Count == 0)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
 
-                //var validationResult = await _quanLyNhaCungCapService.Validate_NhaCungCap(
+                //var validationResult = await _isExistedNhaCungCapValidation.IsExisted(
                 //    nhaCungCaps: nhaCungCap_NEWs);
                 //if (validationResult.NhaCungCap_KhongHopLe.Count != 0)
-                //    return Json(new
-                //    {
+                //    return Json(new {
                 //        status = "error",
                 //        mess = "Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại",
                 //        data = validationResult
@@ -111,8 +121,8 @@ namespace QuanLyNhaCungCap.Controllers {
         [HttpPost]
         public async Task<ActionResult> update_NhaCungCap() {
             try {
-                var nhaCungCap_NEW = JsonConvert.DeserializeObject<tbNhaCungCapExtend>(Request.Form["nhaCungCap"]);
-                if (nhaCungCap_NEW == null)
+                var nhaCungCap_NEWs = JsonConvert.DeserializeObject<List<tbNhaCungCapExtend>>(Request.Form["nhaCungCaps"]);
+                if (nhaCungCap_NEWs == null)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
 
                 //var isExisted = await _quanLyNhaCungCapService.IsExisted_NhaCungCap(
@@ -120,7 +130,7 @@ namespace QuanLyNhaCungCap.Controllers {
                 //if (isExisted)
                 //    return Json(new { status = "error", mess = "Mã đã tồn tại" }, JsonRequestBehavior.AllowGet);
 
-                await _quanLyNhaCungCapService.Update_NhaCungCap(nhaCungCap: nhaCungCap_NEW);
+                await _quanLyNhaCungCapService.Update_NhaCungCap(nhaCungCaps: nhaCungCap_NEWs);
                 return Json(new { status = "success", mess = "Cập nhật thành công" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex) {
@@ -146,52 +156,46 @@ namespace QuanLyNhaCungCap.Controllers {
         }
         #endregion
 
-        #region Excel
+        #region Nhà cung cấp - Excel
         [HttpPost]
         public async Task<ActionResult> importPreview_NhaCungCap_Excel() {
             try {
                 if (Request.Files == null || Request.Files.Count == 0)
                     return Json(new { status = "error", mess = "Chưa chọn file Excel." });
 
-                var files = new System.Collections.Generic.List<HttpPostedFileBase>();
+                var files = new List<HttpPostedFileBase>();
                 for (int i = 0; i < Request.Files.Count; i++) {
                     var f = Request.Files[i];
                     if (f != null && f.ContentLength > 0) files.Add(f);
                 }
+                if (files.Count == 0)
+                    return Json(new { status = "error", mess = "File Excel không hợp lệ." });
 
                 var data = _excelNhaCungCapExcelService.ReadImportData(files.ToArray());
                 var validate = await _excelNhaCungCapExcelService.ValidateImportData(data);
 
-                // Có lỗi -> tạo file lỗi -> lưu tạm vào MemoryCache -> trả token
-                if (validate.NhaCungCap_KhongHopLe != null && validate.NhaCungCap_KhongHopLe.Count > 0) {
-                    var wb = await _excelNhaCungCapExcelService.GenerateErrorFile(validate.NhaCungCap_KhongHopLe);
+                // ✅ luôn lưu validate vào memory
+                var downloadToken = Guid.NewGuid().ToString("N");
+                MemoryCache.Default.Set(
+                    key: "NCC_IMPORT_VALIDATE_" + downloadToken,
+                    value: validate,
+                    absoluteExpiration: DateTimeOffset.Now.AddMinutes(10)
+                );
 
-                    byte[] bytes;
-                    using (var ms = new MemoryStream()) {
-                        wb.SaveAs(ms);
-                        bytes = ms.ToArray();
-                    }
+                bool hasError = validate.NhaCungCap_KhongHopLe != null && validate.NhaCungCap_KhongHopLe.Count > 0;
 
-                    var token = Guid.NewGuid().ToString("N");
-
-                    // lưu 2 phút (không ghi file ra disk)
-                    MemoryCache.Default.Set(
-                        key: "NCC_IMPORT_ERR_" + token,
-                        value: bytes,
-                        absoluteExpiration: DateTimeOffset.Now.AddMinutes(2)
-                    );
-
+                if (hasError) {
                     return Json(new {
                         status = "error",
                         mess = "Dữ liệu chưa hợp lệ. Hệ thống sẽ tự tải file lỗi về để bạn chỉnh sửa.",
-                        downloadToken = token
+                        downloadToken = downloadToken
                     });
                 }
 
-                // Không lỗi -> trả data preview để user xem và chọn lưu
                 return Json(new {
                     status = "success",
                     mess = "Dữ liệu hợp lệ, vui lòng kiểm tra và bấm Lưu.",
+                    downloadToken = downloadToken,
                     data = validate.NhaCungCap_HopLe
                 });
             }
@@ -199,22 +203,29 @@ namespace QuanLyNhaCungCap.Controllers {
                 return Json(new { status = "error", mess = "Đã xảy ra lỗi: " + ex.Message });
             }
         }
+
         [HttpGet]
-        public ActionResult downloadImportError_NhaCungCap_Excel(string token) {
-            if (string.IsNullOrWhiteSpace(token))
+        public async Task<ActionResult> downloadImportError_NhaCungCap_Excel(string downloadToken) {
+            if (string.IsNullOrWhiteSpace(downloadToken))
                 return new HttpStatusCodeResult(400, "Token không hợp lệ.");
 
-            var key = "NCC_IMPORT_ERR_" + token;
-            var bytes = MemoryCache.Default.Get(key) as byte[];
+            var key = "NCC_IMPORT_VALIDATE_" + downloadToken;
+            var validate = MemoryCache.Default.Get(key) as ValidateImportData_Output_Dto;
 
-            if (bytes == null || bytes.Length == 0)
-                return new HttpStatusCodeResult(410, "File đã hết hạn hoặc không tồn tại.");
+            if (validate == null)
+                return new HttpStatusCodeResult(410, "Dữ liệu đã hết hạn hoặc không tồn tại.");
 
-            // có thể remove luôn sau khi tải để tránh tải lại
-            MemoryCache.Default.Remove(key);
+            // ✅ luôn export FULL dữ liệu (hợp lệ + không hợp lệ) để user sửa
+            var fullRows = validate.NhaCungCap_TongHop
+                           ?? validate.NhaCungCap_KhongHopLe
+                           ?? new List<tbNhaCungCapExtend>();
 
-            using (var ms = new MemoryStream(bytes)) {
+            var wb = await _excelNhaCungCapExcelService.GenerateErrorFile(fullRows);
+
+            using (var ms = new MemoryStream()) {
+                wb.SaveAs(ms);
                 ms.Position = 0;
+
                 downloadDialog(ms,
                     fileName: Server.UrlEncode("NhaCungCap_Import_Errors.xlsx"),
                     contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -222,6 +233,7 @@ namespace QuanLyNhaCungCap.Controllers {
 
             return new EmptyResult();
         }
+
         [HttpGet]
         public async Task<ActionResult> exportTemplate_NhaCungCap_Excel() {
             try {
@@ -249,6 +261,38 @@ namespace QuanLyNhaCungCap.Controllers {
                 return Content("Đã xảy ra lỗi: " + ex.Message);
             }
         }
+        [HttpPost]
+        public async Task<ActionResult> saveImport_NhaCungCap_Excel(string downloadToken) {
+            try {
+                if (string.IsNullOrWhiteSpace(downloadToken))
+                    return Json(new { status = "error", mess = "Token không hợp lệ." });
+
+                var key = "NCC_IMPORT_VALIDATE_" + downloadToken;
+                var validate = MemoryCache.Default.Get(key) as ValidateImportData_Output_Dto;
+
+                if (validate == null)
+                    return Json(new { status = "error", mess = "Dữ liệu import đã hết hạn. Vui lòng import lại." });
+
+                if (validate.NhaCungCap_KhongHopLe != null && validate.NhaCungCap_KhongHopLe.Count > 0)
+                    return Json(new { status = "error", mess = "Dữ liệu còn lỗi. Vui lòng sửa và import lại." });
+
+                if (validate.NhaCungCap_HopLe == null || validate.NhaCungCap_HopLe.Count == 0)
+                    return Json(new { status = "error", mess = "Không có dữ liệu hợp lệ để lưu." });
+
+                // nếu cần sắp xếp cha-con trước khi lưu
+                var ordered = _excelNhaCungCapExcelService.SapXepChaCon_Tree(validate.NhaCungCap_HopLe);
+                await _excelNhaCungCapExcelService.LuuTreeAsync(ordered);
+
+                // save xong thì xoá token
+                MemoryCache.Default.Remove(key);
+
+                return Json(new { status = "success", mess = "Lưu thành công." });
+            }
+            catch (Exception ex) {
+                return Json(new { status = "error", mess = "Đã xảy ra lỗi: " + ex.Message });
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -266,8 +310,8 @@ namespace QuanLyNhaCungCap.Controllers {
             Response.Clear();
             Response.ContentType = contentType;
             Response.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-            Response.BinaryWrite(data.ToArray()); 
-            Response.Flush(); 
+            Response.BinaryWrite(data.ToArray());
+            Response.Flush();
             Response.End();
         }
         private static byte[] WorkbookToBytes(XLWorkbook wb) {

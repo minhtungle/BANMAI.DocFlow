@@ -4,12 +4,8 @@ using EDM_DB;
 using Public.Dtos;
 using Public.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Applications.QuanLyNhaCungCap.Validations
 {
@@ -26,7 +22,7 @@ namespace Applications.QuanLyNhaCungCap.Validations
                     new FieldValidationOptionDto<NhaCungCapFieldEnum> {
                         Field = NhaCungCapFieldEnum.TenNhaCungCap,
                         Rules = ValidateRule.Required,
-                        DisplayName = "Mã nhà cung cấp"
+                        DisplayName = "Tên nhà cung cấp"
                     }
             };
 

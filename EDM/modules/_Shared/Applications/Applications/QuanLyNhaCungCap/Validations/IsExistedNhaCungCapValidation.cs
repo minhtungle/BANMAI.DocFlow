@@ -1,5 +1,4 @@
 ﻿using Applications.QuanLyNhaCungCap.Enums;
-using Applications.QuanLyNhaCungCap.Interfaces;
 using Applications.QuanLyNhaCungCap.Models;
 using EDM_DB;
 using Infrastructure.Interfaces;
@@ -7,11 +6,9 @@ using Public.AppServices;
 using Public.Dtos;
 using Public.Enums;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Applications.QuanLyNhaCungCap.Validations
 {

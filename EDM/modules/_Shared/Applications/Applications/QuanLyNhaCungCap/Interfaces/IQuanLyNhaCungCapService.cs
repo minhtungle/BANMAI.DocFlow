@@ -20,7 +20,7 @@ namespace Applications.QuanLyNhaCungCap.Interfaces
         Task Create_NhaCungCap(
             List<tbNhaCungCapExtend> nhaCungCaps);
         Task Update_NhaCungCap(
-            tbNhaCungCapExtend nhaCungCap);
+            List<tbNhaCungCapExtend> nhaCungCaps);
         Task Delete_NhaCungCaps(
             List<Guid> idNhaCungCaps);
     }

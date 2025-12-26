@@ -246,7 +246,7 @@ class QuanLyNhaCungCap {
                         mess: `<p>Bạn có thực sự muốn thêm bản ghi này hay không ?</p>`,
                         callback: function () {
                             var formData = new FormData();
-                            formData.append("nhaCungCap", JSON.stringify(nhaCungCap));
+                            formData.append("nhaCungCaps", JSON.stringify(nhaCungCap));
                             formData.append("loai", loai);
 
                             $.ajax({
@@ -675,7 +675,9 @@ class QuanLyNhaCungCap {
                 sys.confirmDialog({
                     mess: loai == 'create'
                         ? `<p>Bạn có thực sự muốn thêm bản ghi này hay không ?</p>`
-                        : `<p>Bản ghi sẽ được lưu nháp cho lần sử dụng tiếp theo ?</p>`,
+                        : loai == "update"
+                            ? `<p>Bạn có thực sự muốn cập nhật bản ghi này hay không ?</p>`
+                            : `<p>Bản ghi sẽ được lưu nháp cho lần sử dụng tiếp theo ?</p>`,
                     callback: function () {
                         var formData = new FormData();
                         formData.append("nhaCungCaps", JSON.stringify(nhaCungCaps));
@@ -746,7 +748,7 @@ class QuanLyNhaCungCap {
 
                     $.ajax({
                         ...ajaxDefaultProps({
-                            url: "/QuanLyNhaCungCap/importPreview_NhaCungCap_Excel_Ajax",
+                            url: "/QuanLyNhaCungCap/importPreview_NhaCungCap_Excel",
                             type: "POST",
                             data: formData
                         }),
@@ -756,22 +758,22 @@ class QuanLyNhaCungCap {
 
                             // ❌ Có lỗi -> tự tải file lỗi về ngay
                             if (res.status == "error" && res.downloadToken) {
-                                sys.alert({ status: "error", mess: res.mess });
+                                sys.alert({ status: "error", mess: res.mess, timeout: 4000 });
 
                                 // trigger download dialog (không cần base64)
-                                window.location = "/QuanLyNhaCungCap/downloadImportError_NhaCungCap_Excel?token=" + res.downloadToken;
+                                window.location = "/QuanLyNhaCungCap/downloadImportError_NhaCungCap_Excel?downloadToken=" + res.downloadToken;
                                 return;
                             }
+                            quanLyNhaCungCap.handleModal_CRUD.excel.save(res.downloadToken);
+                            //// ✅ OK -> trả data preview để user xem và bấm lưu
+                            //if (res.status == "success") {
+                            //    quanLyNhaCungCap.nhaCungCap.previewData = res.data;
+                            //    sys.alert({ status: "success", mess: res.mess });
 
-                            // ✅ OK -> trả data preview để user xem và bấm lưu
-                            if (res.status == "success") {
-                                quanLyNhaCungCap.nhaCungCap.previewData = res.data;
-                                sys.alert({ status: "success", mess: res.mess });
-
-                                // mở modal preview để user chọn lưu
-                                sys.displayModal({ name: "#ncc-import-preview", displayStatus: "show" });
-                                return;
-                            }
+                            //    // mở modal preview để user chọn lưu
+                            //    sys.displayModal({ name: "#ncc-import-preview", displayStatus: "show" });
+                            //    return;
+                            //}
 
                             sys.alert({ status: res.status, mess: res.mess });
                         }
@@ -780,8 +782,27 @@ class QuanLyNhaCungCap {
                 },
                 export: function () {
                     window.location = "/QuanLyNhaCungCap/exportTemplate_NhaCungCap_Excel";
-                }
+                },
+                save: function (downloadToken) {
+                    $.ajax({
+                        ...ajaxDefaultProps({
+                            url: "/QuanLyNhaCungCap/saveImport_NhaCungCap_Excel",
+                            type: "POST",
+                            data: { downloadToken }
+                        }),
+                        success: function (res) {
+                            if (res.status == "success") {
+                                quanLyNhaCungCap.nhaCungCap.getList();
 
+                                sys.displayModal({
+                                    name: '#nhacungcap-crud',
+                                    displayStatus: "hide"
+                                });
+                            };
+                            sys.alert({ status: res.status, mess: res.mess });
+                        }
+                    });
+                },
             }
         };
     }

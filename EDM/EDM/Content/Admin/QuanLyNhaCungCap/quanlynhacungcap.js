@@ -143,8 +143,8 @@ class QuanLyNhaCungCap {
                         //IdNhaCungCaps: [
                         //    $("#select-idnhacungcap", $timKiem).val(),
                         //],
-                        Stt: $("#input-stt", $timKiem).val(),
-                        TenNhaCungCap: $("#input-tennhacungcap", $timKiem).val().trim(),
+                        IdNhaCungCaps: $("#select-nhacungcap", $timKiem).val(),
+                        IdNhaCungCapChas: $("#select-nhacungcapcha", $timKiem).val(),
                         TenMatHang: $("#input-tenmathang", $timKiem).val().trim(),
                         SoDienThoai: $("#input-sodienthoai", $timKiem).val().trim(),
                         Email: $("#input-email", $timKiem).val().trim(),

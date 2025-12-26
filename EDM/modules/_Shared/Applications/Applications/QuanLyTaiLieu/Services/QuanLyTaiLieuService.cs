@@ -47,6 +47,7 @@ namespace Applications.QuanLyTaiLieu.Services
             return new Index_Output_Dto
             {
                 ThaoTacs = thaoTacs,
+                IdNhaCungCap = input.IdNhaCungCap,
                 NhaCungCaps = nhaCungCaps
             };
         }
@@ -54,8 +55,7 @@ namespace Applications.QuanLyTaiLieu.Services
         public async Task<List<tbTaiLieuExtend>> Get_TaiLieus(GetList_TaiLieu_Input_Dto input)
         {
             var query = _taiLieuRepo.Query()
-                .ApplyFilters(input.LocThongTin, CurrentDonViSuDung.MaDonViSuDung)
-                .AsNoTracking();
+                .ApplyFilters(input.LocThongTin, CurrentDonViSuDung.MaDonViSuDung);
 
             if (input.Loai == "single" && input.LocThongTin != null && input.LocThongTin.IdTaiLieus != null && input.LocThongTin.IdTaiLieus.Any())
             {
@@ -70,7 +70,7 @@ namespace Applications.QuanLyTaiLieu.Services
             return data;
         }
 
-        public async Task<DisplayModal_CRUD_TaiLieu_Output_Dto> DisplayModal_CRUD_TaiLieu(DisplayModal_CRUD_TaiLieu_Input_Dto input)
+        public async Task<DisplayModal_CRUD_TaiLieu_Output_Dto> DisplayModal_CRUD_TaiLieu(DisplayModal_CRUD_TaiLieu_Input_Dto input) 
         {
             var taiLieus = await Get_TaiLieus(new GetList_TaiLieu_Input_Dto
             {
@@ -96,7 +96,7 @@ namespace Applications.QuanLyTaiLieu.Services
             return existed != null;
         }
 
-        public async Task Create_TaiLieu(tbTaiLieuExtend taiLieu, HttpPostedFileBase files)
+        public async Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus, HttpPostedFileBase[] files)
         {
             //if (baiDangs == null || !baiDangs.Any())
             //    throw new ArgumentException("Danh sách bài đăng không được để trống.");

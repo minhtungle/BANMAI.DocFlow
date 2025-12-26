@@ -11,6 +11,8 @@ using Applications.QuanLyNhaCungCap.Excel.Services;
 using Applications.QuanLyNhaCungCap.Interfaces;
 using Applications.QuanLyNhaCungCap.Services;
 using Applications.QuanLyNhaCungCap.Validations;
+using Applications.QuanLyTaiLieu.Interfaces;
+using Applications.QuanLyTaiLieu.Services;
 using Applications.QuanLyTruongHoc.Interfaces;
 using Applications.QuanLyTruongHoc.Services;
 using Autofac;
@@ -27,6 +29,7 @@ using QuanLyDonVi.Controllers;
 using QuanLyKieuNguoiDung.Controllers;
 using QuanLyNguoiDung.Controllers;
 using QuanLyNhaCungCap.Controllers;
+using QuanLyTaiLieu.Controllers;
 using QuanLyTruongHoc.Controllers;
 using System;
 using System.Data.Entity;
@@ -49,6 +52,7 @@ namespace EDM.App_Start
 
             builder.RegisterControllers(typeof(QuanLyNhaCungCapController).Assembly);
             builder.RegisterControllers(typeof(QuanLyTruongHocController).Assembly);
+            builder.RegisterControllers(typeof(QuanLyTaiLieuController).Assembly);
             #endregion
 
             #region Đăng ký Infrastructure
@@ -123,6 +127,9 @@ namespace EDM.App_Start
                    .InstancePerRequest();
             builder.RegisterType<QuanLyTruongHocService>()
                    .As<IQuanLyTruongHocService>()
+                   .InstancePerRequest();
+            builder.RegisterType<QuanLyTaiLieuService>()
+                   .As<IQuanLyTaiLieuService>()
                    .InstancePerRequest();
             #endregion
 

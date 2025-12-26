@@ -1,32 +1,42 @@
 ﻿@using Public.Enums
 @using Public.Helpers
+@model Applications.QuanLyNhaCungCap.Dtos.Index_Output_Dto
 
 <div class="row">
-
-    <!--Stt-->
+    <!--Nhà cung cấp-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">
             <div class="form-group mb-3">
-                <label class="" for="input-stt">Stt</label>
-                <input type="number"
-                       class="form-control" id="input-stt"
-                       placeholder="Nhập thông tin ...">
+                <label class="" for="select-nhacungcap">Nhà cung cấp</label>
+                <select class="form-control" id="select-nhacungcap" name="select-nhacungcap">
+                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    @foreach (var nhaCungCap in Model.NhaCungCaps) {
+                        <option value="@nhaCungCap.IdNhaCungCap">
+                            @nhaCungCap.TenNhaCungCap
+                        </option>
+                    }
+                </select>
             </div>
         </div>
     </div>
 
-    <!--Tên nhà cung cấp-->
+    <!--Nhà cung cấp cha-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">
             <div class="form-group mb-3">
-                <label class="" for="input-tennhacungcap">Tên nhà cung cấp</label>
-                <input type="text"
-                       class="form-control" id="input-tennhacungcap"
-                       placeholder="Nhập thông tin ...">
+                <label class="" for="select-nhacungcap">Nhà cung cấp cha</label>
+                <select class="form-control" id="select-nhacungcapcha" name="select-nhacungcapcha">
+                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    @foreach (var nhaCungCap in Model.NhaCungCaps) {
+                        <option value="@nhaCungCap.IdNhaCungCap">
+                            @nhaCungCap.TenNhaCungCap
+                        </option>
+                    }
+                </select>
             </div>
         </div>
     </div>
-    
+
     <!--Tên mặt hàng-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">

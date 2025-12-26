@@ -20,16 +20,16 @@ namespace Applications.QuanLyNhaCungCap.Filters
             if (locThongTin.IdNhaCungCaps != null && locThongTin.IdNhaCungCaps.Any())
                 q = q.Where(x => locThongTin.IdNhaCungCaps.Contains(x.IdNhaCungCap));
 
-            // Stt - sửa lại
-            if (!string.IsNullOrWhiteSpace(locThongTin.Stt.ToString()) && locThongTin.Stt != 0)
+            // IdTenNhaCungCap
+            if (locThongTin.IdNhaCungCaps.Count > 0)
             {
-                q = q.Where(x => (x.Stt.ToString() ?? "").ToLower().Contains(locThongTin.Stt.ToString().Trim().ToLower()));
+                q = q.Where(x => locThongTin.IdNhaCungCaps.Contains(x.IdNhaCungCap));
             }
 
-            // TenNhaCungCap
-            if (!string.IsNullOrWhiteSpace(locThongTin.TenNhaCungCap))
+            // IdTenNhaCungCapCha
+            if (locThongTin.IdNhaCungCapChas.Count > 0)
             {
-                q = q.Where(x => (x.TenNhaCungCap ?? "").ToLower().Contains(locThongTin.TenNhaCungCap.Trim().ToLower()));
+                q = q.Where(x => locThongTin.IdNhaCungCapChas.Contains(x.IdNhaCungCap));
             }
 
             // Email

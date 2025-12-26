@@ -1,7 +1,35 @@
 ﻿@using Public.Enums
 @using Public.Helpers
+@model Applications.QuanLyTaiLieu.Dtos.Index_Output_Dto
+@{
+    var trangThaiBaoQuans = Enum.GetValues(typeof(TrangThaiBaoQuanEnum))
+                  .Cast<TrangThaiBaoQuanEnum>()
+                  .Select(e => new SelectListItem {
+                      Value = e.ToString(),
+                      Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+                  })
+                  .ToList();
+}
 
 <div class="row">
+    <!--Nhà cung cấp-->
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="" for="select-nhacungcap">Nhà cung cấp</label>
+                <select class="form-control" id="select-nhacungcap" name="select-nhacungcap">
+                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    @foreach (var nhaCungCap in Model.NhaCungCaps) {
+                        <option value="@nhaCungCap.IdNhaCungCap"
+                                @(Model.IdNhaCungCap == nhaCungCap.IdNhaCungCap ? "selected" : "")>
+                            @nhaCungCap.TenNhaCungCap
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
     <!--Tên tài liệu-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">
@@ -13,33 +41,26 @@
             </div>
         </div>
     </div>
-    
-    <!--Tên tệp-->
-    <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label class="" for="input-tentep">Tên tệp</label>
-                <input type="text"
-                       class="form-control" id="input-tentep"
-                       placeholder="Nhập thông tin ...">
-            </div>
-        </div>
-    </div>
 
-    <!--Loại tệp-->
+    <!--Trạng thái bảo quản-->
     <div class="col-12 col-sm-12 col-md-6 col-lg-4">
         <div class="position-relative">
             <div class="form-group mb-3">
-                <label class="" for="input-loiatep">Loại tệp</label>
-                <input type="text"
-                       class="form-control" id="input-loiatep"
-                       placeholder="Nhập thông tin ...">
+                <label class="" for="select-trangthaibaoquan">Trạng thái bảo quản</label>
+                <select class="form-control" id="select-trangthaibaoquan" name="select-trangthaibaoquan">
+                    <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    @foreach (var trangThaiBaoQuan in trangThaiBaoQuans) {
+                        <option value="@trangThaiBaoQuan.Value">
+                            @trangThaiBaoQuan.Text
+                        </option>
+                    }
+                </select>
             </div>
         </div>
     </div>
 
     <!--Ngày đăng ký-->
-    <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="col-sm-12 col-md-6 col-lg-6">
         <div class="position-relative">
             <div class="form-group mb-3">
                 <label class="" for="input-ngaydangky">Ngày đăng ký</label>
@@ -50,7 +71,7 @@
     </div>
 
     <!--Ngày hết hạn-->
-    <div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="col-sm-12 col-md-6 col-lg-6">
         <div class="position-relative">
             <div class="form-group mb-3">
                 <label class="" for="input-ngayhethan">Ngày hết hạn</label>
@@ -60,17 +81,6 @@
         </div>
     </div>
 
-    <!--Tên tệp gốc-->
-    <div class="col-sm-12 col-md-6 col-lg-4">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label class="" for="input-tentepgoc">Tên tệp gốc</label>
-                <input type="text"
-                       class="form-control" id="input-tentepgoc"
-                       placeholder="Nhập thông tin ...">
-            </div>
-        </div>
-    </div>
 
     <!--Ghi chú-->
     <div class="col-sm-12 col-md-12 col-lg-12">

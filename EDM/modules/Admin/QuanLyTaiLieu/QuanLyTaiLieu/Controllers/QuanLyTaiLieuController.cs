@@ -59,15 +59,15 @@ namespace QuanLyTaiLieu.Controllers
         {
             try
             {
-                var taiLieu_NEW = JsonConvert.DeserializeObject<tbTaiLieuExtend>(Request.Form["taiLieu"]);
-                if (taiLieu_NEW == null)
+                var taiLieu_NEWs = JsonConvert.DeserializeObject<List<tbTaiLieuExtend>>(Request.Form["taiLieus"]);
+                if (taiLieu_NEWs == null)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
 
-                var isExisted = await _quanLyTaiLieuService.IsExisted_TaiLieu(taiLieu: taiLieu_NEW.TaiLieu);
-                if (isExisted)
-                    return Json(new { status = "error", mess = "Tài liệu đã tồn tại" }, JsonRequestBehavior.AllowGet);
+                //var isExisted = await _quanLyTaiLieuService.IsExisted_TaiLieu(taiLieu: taiLieu_NEWs.TaiLieu);
+                //if (isExisted)
+                //    return Json(new { status = "error", mess = "Tài liệu đã tồn tại" }, JsonRequestBehavior.AllowGet);
 
-                await _quanLyTaiLieuService.Create_TaiLieu(taiLieu: taiLieu_NEW, files: files);
+                await _quanLyTaiLieuService.Create_TaiLieu(taiLieus: taiLieu_NEWs, files: files);
                 return Json(new { status = "success", mess = "Thêm mới thành công" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

@@ -10,11 +10,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-namespace QuanLyTaiLieu.Controllers
-{
+namespace QuanLyTaiLieu.Controllers {
     [CustomAuthorize]
-    public class QuanLyTaiLieuController : Controller
-    {
+    public class QuanLyTaiLieuController : Controller {
         #region Biến public để in hoa
         private readonly string VIEW_PATH = "~/Views/Admin/QuanLyTaiLieu";
         private readonly IQuanLyTaiLieuService _quanLyTaiLieuService;
@@ -22,24 +20,20 @@ namespace QuanLyTaiLieu.Controllers
 
         public QuanLyTaiLieuController(
             IQuanLyTaiLieuService quanLyTaiLieuService
-            )
-        {
+            ) {
             _quanLyTaiLieuService = quanLyTaiLieuService;
         }
 
-        public async Task<ActionResult> Index(Index_Input_Dto input)
-        {
+        public async Task<ActionResult> Index(Index_Input_Dto input) {
             var output = await _quanLyTaiLieuService.Index(input: input);
             return View($"{VIEW_PATH}/tailieu.cshtml", output);
         }
 
         [HttpPost]
-        public async Task<ActionResult> getList_TaiLieu(GetList_TaiLieu_Input_Dto input)
-        {
+        public async Task<ActionResult> getList_TaiLieu(GetList_TaiLieu_Input_Dto input) {
             var taiLieus = await _quanLyTaiLieuService.Get_TaiLieus(input: input);
             var thaoTacs = _quanLyTaiLieuService.GetThaoTacs(maChucNang: "QuanLyTaiLieu");
-            var output = new GetList_TaiLieu_Output_Dto
-            {
+            var output = new GetList_TaiLieu_Output_Dto {
                 TaiLieus = taiLieus,
                 ThaoTacs = thaoTacs,
             };
@@ -47,18 +41,52 @@ namespace QuanLyTaiLieu.Controllers
         }
 
         #region Tài liệu
-        [HttpPost]
-        public async Task<ActionResult> displayModal_CRUD_TaiLieu(DisplayModal_CRUD_TaiLieu_Input_Dto input)
-        {
-            var output = await _quanLyTaiLieuService.DisplayModal_CRUD_TaiLieu(input: input);
-            return PartialView($"{VIEW_PATH}/tailieu-crud.cshtml", output);
-        }
 
         [HttpPost]
-        public async Task<ActionResult> create_TaiLieu(HttpPostedFileBase[] files)
-        {
-            try
-            {
+        public async Task<ActionResult> displayModal_CRUD_TaiLieu(DisplayModal_CRUD_TaiLieu_Input_Dto input) {
+            var html = Public.Handles.Handle.RenderViewToString(
+              controller: this,
+              viewName: $"{VIEW_PATH}/tailieu/tailieu-crud/tailieu-crud.cshtml",
+              model: input);
+            return Json(new {
+                html,
+                output = input
+            }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public async Task<ActionResult> addBanGhi_Modal_CRUD(HttpPostedFileBase[] files) {
+            var loai = Request.Form["loai"];
+            var idTaiLieus = JsonConvert.DeserializeObject<List<Guid>>(Request.Form["idTaiLieus"]);
+            var idNhaCungCap = JsonConvert.DeserializeObject<Guid>(Request.Form["idNhaCungCap"]);
+            var output = await _quanLyTaiLieuService.AddBanGhi_Modal_CRUD(input: new AddBanGhi_Modal_CRUD_Input_Dto {
+                Files = files,
+                IdNhaCungCap = idNhaCungCap,
+                IdTaiLieus = idTaiLieus,
+                Loai = loai,
+            });
+
+            output.LoaiView = "row";
+            var html_tailieu_row = Public.Handles.Handle.RenderViewToString(
+                controller: this,
+                viewName: $"{VIEW_PATH}/tailieu/tailieu-crud/form-themtailieu.cshtml",
+                model: output);
+
+            output.LoaiView = "read";
+            var html_tailieu_read = Public.Handles.Handle.RenderViewToString(
+                controller: this,
+                viewName: $"{VIEW_PATH}/tailieu/tailieu-crud/form-themtailieu.cshtml",
+                model: output);
+
+            return Json(new {
+                status = (output.Data.TaiLieus != null && output.Data.TaiLieus.Count > 0),
+                Loai = output.Data.Loai,
+                html_tailieu_row,
+                html_tailieu_read
+            }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public async Task<ActionResult> create_TaiLieu(HttpPostedFileBase[] files) {
+            try {
                 var taiLieu_NEWs = JsonConvert.DeserializeObject<List<tbTaiLieuExtend>>(Request.Form["taiLieus"]);
                 if (taiLieu_NEWs == null)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
@@ -70,17 +98,14 @@ namespace QuanLyTaiLieu.Controllers
                 await _quanLyTaiLieuService.Create_TaiLieu(taiLieus: taiLieu_NEWs, files: files);
                 return Json(new { status = "success", mess = "Thêm mới thành công" }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return Json(new { status = "error", mess = "Đã xảy ra lỗi: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
-        public async Task<ActionResult> update_TaiLieu()
-        {
-            try
-            {
+        public async Task<ActionResult> update_TaiLieu() {
+            try {
                 var taiLieu_NEW = JsonConvert.DeserializeObject<tbTaiLieuExtend>(Request.Form["taiLieu"]);
                 if (taiLieu_NEW == null)
                     return Json(new { status = "error", mess = "Chưa có bản ghi nào" }, JsonRequestBehavior.AllowGet);
@@ -92,17 +117,14 @@ namespace QuanLyTaiLieu.Controllers
                 await _quanLyTaiLieuService.Update_TaiLieu(taiLieu: taiLieu_NEW);
                 return Json(new { status = "success", mess = "Cập nhật thành công" }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return Json(new { status = "error", mess = "Đã xảy ra lỗi: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
-        public async Task<JsonResult> delete_TaiLieus()
-        {
-            try
-            {
+        public async Task<JsonResult> delete_TaiLieus() {
+            try {
                 var idTaiLieus = JsonConvert.DeserializeObject<List<Guid>>(Request.Form["idTaiLieus"]);
                 if (idTaiLieus == null || idTaiLieus.Count == 0)
                     return Json(new { status = "error", mess = "Chưa chọn bản ghi nào." }, JsonRequestBehavior.AllowGet);
@@ -111,8 +133,7 @@ namespace QuanLyTaiLieu.Controllers
 
                 return Json(new { status = "success", mess = "Xóa bản ghi thành công" }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 return Json(new { status = "error", mess = "Lỗi: " + ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }

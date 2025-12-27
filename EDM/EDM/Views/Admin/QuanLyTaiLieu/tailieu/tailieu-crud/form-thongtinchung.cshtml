@@ -1,0 +1,87 @@
+﻿@using EDM_DB
+@using Public.Enums
+@using Public.Helpers
+@model Applications.QuanLyTaiLieu.Dtos.FormThongTinChung_Dto
+@{
+    var taiLieu = Model.TaiLieu.TaiLieu;
+    List<string> loaiThaoTac_Disabled = new List<string> { "read" };
+
+    var trangThaiBaoQuans = Enum.GetValues(typeof(TrangThaiBaoQuanEnum))
+    .Cast<TrangThaiBaoQuanEnum>()
+    .Select(e => new SelectListItem {
+        Value = ((int)e).ToString(),
+        Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+        Selected = taiLieu.TrangThaiBaoQuan != null
+    && (int)taiLieu.TrangThaiBaoQuan == (int)e
+    })
+    .ToList();
+}
+<div class="row">
+    <!--Id-->
+    <input id="input-idnhacungcap" value="@taiLieu.IdNhaCungCap" hidden />
+    <input id="input-idtailieu" value="@taiLieu.IdFile" hidden />
+    <input id="input-rownumber" value="@Model.TaiLieu.RowNumber" hidden />
+
+    <!--Tên tài liệu-->
+    <div class="col-12 col-sm-12 col-md-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-tentailieu">Tên tài liệu</label>
+                <input type="text"
+                       class="form-control" id="input-tentailieu"
+                       placeholder="Nhập thông tin ..."
+                       value="@(taiLieu.FileName ?? "")"
+                       onchange="quanLyTaiLieu.handleModal_CRUD.updateSingleCell(this)"
+                       disabled
+                       required>
+                <div class="invalid-feedback feedback" for="input-tentailieu">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Trạng thái bảo quản-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="select-trangthaibaoquan">Trạng thái bảo quản</label>
+                <select class="form-control" id="select-trangthaibaoquan" name="select-trangthaibaoquan"
+                        required>
+                    <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    @foreach (var data in trangThaiBaoQuans) {
+                        <option value="@data.Value" @(data.Selected ? "selected" : "")>
+                            @data.Text
+                        </option>
+                    }
+                </select>
+                <div class="invalid-feedback feedback" for="input-trangthaibaoquan">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Ngày hết hạn-->
+    <div class="col-12 col-sm-12 col-md-6">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label class="required" for="input-ngayhethan">Ngày hết hạn</label>
+                <input type="date"
+                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                       class="form-control input-ngayhethan"
+                       name="input-ngayhethan"
+                       value="" required>
+                <div class="invalid-feedback feedback" for="input-ngayhethan">Không được để trống</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Ghi chú-->
+    <div class="col-12 col-sm-12 col-md-12">
+        <div class="position-relative">
+            <div class="form-group mb-3">
+                <label for="input-ghichu">Ghi chú</label>
+                <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                          placeholder="Nhập thông tin ..."
+                          value="@(taiLieu.GhiChu ?? "")">@(taiLieu.GhiChu ?? "")</textarea>
+            </div>
+        </div>
+    </div>
+</div>

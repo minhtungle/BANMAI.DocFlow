@@ -37,22 +37,22 @@
                     </button>
                     <div class="dropdown-menu">
                         @{
-                            if (themMoi)
-                            {
-                                <a class="dropdown-item c-pointer"
-                                   onclick="quanLyTaiLieu.taiLieu.displayModal_CRUD('create')">
+                            if (themMoi) {
+                                <label class="dropdown-item c-pointer" for="select-file">
                                     <i class="bi bi-plus-circle-fill"></i> Thêm mới
-                                </a>
+                                </label>
+                                <input class="btn" id="select-file"
+                                       type="file"
+                                       accept=".pdf, .jpg. jpeg, .png"
+                                       onchange="quanLyTaiLieu.taiLieu.create()" hidden>
                             }
-                            if (capNhat)
-                            {
+                            if (capNhat) {
                                 <a class="dropdown-item c-pointer"
                                    onclick="quanLyTaiLieu.taiLieu.displayModal_CRUD('update')">
                                     <i class="bi bi-pencil-square"></i> Cập nhật
                                 </a>
                             }
-                            if (xoaBo)
-                            {
+                            if (xoaBo) {
                                 <a class="dropdown-item c-pointer"
                                    onclick="quanLyTaiLieu.taiLieu.delete('multiple')">
                                     <i class="bi bi-trash3-fill"></i> Xóa bỏ

@@ -16,10 +16,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 
-namespace Applications.QuanLyTaiLieu.Services
-{
-    public class QuanLyTaiLieuService : BaseService, IQuanLyTaiLieuService
-    {
+namespace Applications.QuanLyTaiLieu.Services {
+    public class QuanLyTaiLieuService : BaseService, IQuanLyTaiLieuService {
         private readonly IRepository<tbTaiLieu, Guid> _taiLieuRepo;
         private readonly IRepository<tbNhaCungCap, Guid> _nhaCungCapRepo;
 
@@ -28,37 +26,32 @@ namespace Applications.QuanLyTaiLieu.Services
             IUnitOfWork unitOfWork,
             IRepository<tbTaiLieu, Guid> taiLieuRepo,
             IRepository<tbNhaCungCap, Guid> nhaCungCapRepo
-            ) : base(userContext, unitOfWork)
-        {
+            ) : base(userContext, unitOfWork) {
             _taiLieuRepo = taiLieuRepo;
             _nhaCungCapRepo = nhaCungCapRepo;
         }
 
         public List<ThaoTac> GetThaoTacs(string maChucNang) => GetThaoTacByIdChucNang(maChucNang);
 
-        public async Task<Index_Output_Dto> Index(Index_Input_Dto input)
-        {
+        public async Task<Index_Output_Dto> Index(Index_Input_Dto input) {
             var thaoTacs = GetThaoTacs(maChucNang: "QuanLyTaiLieu");
             var nhaCungCaps = await _nhaCungCapRepo.Query()
                 .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
                 .OrderByDescending(x => x.Stt)
                 .ToListAsync();
 
-            return new Index_Output_Dto
-            {
+            return new Index_Output_Dto {
                 ThaoTacs = thaoTacs,
                 IdNhaCungCap = input.IdNhaCungCap,
                 NhaCungCaps = nhaCungCaps
             };
         }
 
-        public async Task<List<tbTaiLieuExtend>> Get_TaiLieus(GetList_TaiLieu_Input_Dto input)
-        {
+        public async Task<List<tbTaiLieuExtend>> Get_TaiLieus(GetList_TaiLieu_Input_Dto input) {
             var query = _taiLieuRepo.Query()
                 .ApplyFilters(input.LocThongTin, CurrentDonViSuDung.MaDonViSuDung);
 
-            if (input.Loai == "single" && input.LocThongTin != null && input.LocThongTin.IdTaiLieus != null && input.LocThongTin.IdTaiLieus.Any())
-            {
+            if (input.Loai == "single" && input.LocThongTin != null && input.LocThongTin.IdTaiLieus != null && input.LocThongTin.IdTaiLieus.Any()) {
                 query = query.Where(x => input.LocThongTin.IdTaiLieus.Contains(x.IdFile));
             }
 
@@ -70,23 +63,54 @@ namespace Applications.QuanLyTaiLieu.Services
             return data;
         }
 
-        public async Task<DisplayModal_CRUD_TaiLieu_Output_Dto> DisplayModal_CRUD_TaiLieu(DisplayModal_CRUD_TaiLieu_Input_Dto input) 
-        {
-            var taiLieus = await Get_TaiLieus(new GetList_TaiLieu_Input_Dto
-            {
-                Loai = "single",
-                LocThongTin = new LocThongTinDto { IdTaiLieus = new List<Guid> { input.IdTaiLieu } }
-            });
-
-            return new DisplayModal_CRUD_TaiLieu_Output_Dto
-            {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<FormAddTaiLieuDto> AddBanGhi_Modal_CRUD(AddBanGhi_Modal_CRUD_Input_Dto input) {
+            var output = new AddBanGhi_Modal_CRUD_Output_Dto {
                 Loai = input.Loai,
-                TaiLieu = taiLieus.FirstOrDefault() ?? new tbTaiLieuExtend { TaiLieu = new tbTaiLieu() }
+            };
+            if (input.Loai == "create") {
+                output.TaiLieus = await AddFromFile(input: new AddFromFile_Input_Dto {
+                    IdNhaCungCap = input.IdNhaCungCap,
+                    Files = input.Files,
+                });
+            }
+            else if (input.Loai == "update" || input.Loai == "detail") {
+                var taiLieu = await GetDetail_TaiLieus(idTaiLieus: input.IdTaiLieus);
+                // Chỉ lấy những bài đăng có trạng thái (chờ đăng)
+                output.TaiLieus = taiLieu.ToList();
+            }
+
+            return new FormAddTaiLieuDto {
+                Data = output,
             };
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="idTaiLieus"></param>
+        /// <returns></returns>
+        public async Task<List<tbTaiLieuExtend>> GetDetail_TaiLieus(List<Guid> idTaiLieus = null) {
+            var taiLieus = await _taiLieuRepo.Query()
+                .Where(x =>
+                    idTaiLieus.Contains(x.IdFile) &&
+                    x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung &&
+                    x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .Join(_nhaCungCapRepo.Query(),
+                tl => tl.IdNhaCungCap,
+                ncc => ncc.IdNhaCungCap,
+                (tl, ncc) => new tbTaiLieuExtend {
+                    TaiLieu = tl,
+                    NhaCungCap = ncc,
+                })
+                .ToListAsync();
 
-        public async Task<bool> IsExisted_TaiLieu(tbTaiLieu taiLieu)
-        {
+            return taiLieus;
+        }
+        public async Task<bool> IsExisted_TaiLieu(tbTaiLieu taiLieu) {
             var existed = await _taiLieuRepo.Query()
                 .FirstOrDefaultAsync(x =>
                     (x.FileNameUpdate == taiLieu.FileNameUpdate)
@@ -96,94 +120,12 @@ namespace Applications.QuanLyTaiLieu.Services
             return existed != null;
         }
 
-        public async Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus, HttpPostedFileBase[] files)
-        {
-            //if (baiDangs == null || !baiDangs.Any())
-            //    throw new ArgumentException("Danh sách bài đăng không được để trống.");
+        public async Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus, HttpPostedFileBase[] files) {
 
-            //var tepDinhKemMappings = new List<(tbBaiDang baiDang, List<tbTepDinhKem> teps)>();
-
-            //// 1. Upload ảnh trước khi transaction
-            //foreach (var baiDang_NEW in baiDangs)
-            //{
-            //    var tepList = new List<tbTepDinhKem>();
-
-            //    if (files != null && (baiDang_NEW.BaiDang.TuTaoAnhAI == false))
-            //    {
-            //        for (int i = 0; i < files.Length; i++)
-            //        {
-            //            if (baiDang_NEW.RowNumber == rowNumbers[i])
-            //            {
-            //                var file = files[i];
-            //                if (file == null || file.ContentLength <= 0) continue;
-
-            //                var result = await UploadToFreeImageHost(file);
-            //                if (result == null || result.StatusCode != 200)
-            //                    throw new Exception("Upload ảnh thất bại hoặc không có phản hồi từ server.");
-
-            //                var tep = new tbTepDinhKem
-            //                {
-            //                    IdTep = Guid.NewGuid(),
-            //                    FileName = Path.GetFileNameWithoutExtension(file.FileName),
-            //                    DuongDanTepOnline = result.Image.Url,
-            //                    TrangThai = 1,
-            //                    IdNguoiTao = CurrentUserId,
-            //                    NgayTao = DateTime.Now,
-            //                    MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung
-            //                };
-
-            //                tepList.Add(tep);
-            //            }
-            //        }
-            //    }
-            //    var trangThaiDangBai = chuyenTrangThai_BaiDang(
-            //            loai: loai,
-            //            trangThaiBanDau: (int)TrangThaiDangBai_BaiDang.WaitToPost);
-            //    var baiDang = new tbBaiDang
-            //    {
-            //        IdBaiDang = Guid.NewGuid(),
-            //        IdChienDich = baiDang_NEW.BaiDang.IdChienDich,
-            //        IdTaiKhoan = baiDang_NEW.BaiDang.IdTaiKhoan,
-            //        NoiDung = baiDang_NEW.BaiDang.NoiDung,
-            //        ThoiGian = baiDang_NEW.BaiDang.ThoiGian,
-            //        TuTaoAnhAI = baiDang_NEW.BaiDang.TuTaoAnhAI,
-            //        TrangThaiDangBai = trangThaiDangBai,
-            //        TrangThai = 1,
-            //        IdNguoiTao = CurrentUserId,
-            //        NgayTao = DateTime.Now,
-            //        MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung
-            //    };
-            //    tepDinhKemMappings.Add((baiDang, tepList));
-            //}
-
-            //// 2. Transaction: lưu bài đăng, file đính kèm và liên kết
-            //await _unitOfWork.ExecuteInTransaction(async () =>
-            //{
-            //    foreach (var (baiDang, tepList) in tepDinhKemMappings)
-            //    {
-            //        await _unitOfWork.InsertAsync<tbBaiDang, Guid>(baiDang);
-
-            //        foreach (var tep in tepList)
-            //        {
-            //            await _unitOfWork.InsertAsync<tbTepDinhKem, Guid>(tep);
-
-            //            var baiDangTep = new tbBaiDangTepDinhKem
-            //            {
-            //                IdBaiDangTepDinhKem = Guid.NewGuid(),
-            //                IdBaiDang = baiDang.IdBaiDang,
-            //                IdTepDinhKem = tep.IdTep
-            //            };
-
-            //            await _unitOfWork.InsertAsync<tbBaiDangTepDinhKem, Guid>(baiDangTep);
-            //        }
-            //    }
-            //});
         }
 
-        public async Task Update_TaiLieu(tbTaiLieuExtend taiLieu)
-        {
-            await _unitOfWork.ExecuteInTransaction(async () =>
-            {
+        public async Task Update_TaiLieu(tbTaiLieuExtend taiLieu) {
+            await _unitOfWork.ExecuteInTransaction(async () => {
                 var _taiLieu = await _taiLieuRepo.GetByIdAsync(taiLieu.TaiLieu.IdFile);
                 if (_taiLieu == null)
                     throw new Exception("Tài liệu không tồn tại.");
@@ -201,16 +143,13 @@ namespace Applications.QuanLyTaiLieu.Services
             });
         }
 
-        public async Task Delete_TaiLieus(List<Guid> idTaiLieus)
-        {
-            await _unitOfWork.ExecuteInTransaction(async () =>
-            {
+        public async Task Delete_TaiLieus(List<Guid> idTaiLieus) {
+            await _unitOfWork.ExecuteInTransaction(async () => {
                 var taiLieus_DELETE = await _taiLieuRepo.Query()
                     .Where(x => idTaiLieus.Contains(x.IdFile))
                     .ToListAsync();
 
-                foreach (var _taiLieu in taiLieus_DELETE)
-                {
+                foreach (var _taiLieu in taiLieus_DELETE) {
                     _taiLieu.TrangThai = (int?)TrangThaiDuLieuEnum.XoaBo;
                     _taiLieu.NgaySua = DateTime.Now;
                     _taiLieu.IdNguoiSua = CurrentNguoiDung.IdNguoiDung;
@@ -221,9 +160,95 @@ namespace Applications.QuanLyTaiLieu.Services
         }
 
         #region Private Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private async Task<List<tbTaiLieuExtend>> AddFromFile(AddFromFile_Input_Dto input) {
+            /**
+             * Xóa thư mục cache
+             * Lưu tất cả vào thư mục cache "Assets/upload/TAILIEUNHACUNGCAP/{currentDonVi.MaDonViSuDung}/{currentNguoiDung.IdNguoiDung}"
+             * Tạo new tbTaiLieuExtend với các thông tin cơ bản (FileName, FileExtension, Đường dẫn tệp vật lý, Đường dẫn tệp online)
+             * Hiển thị ra view
+             * Khi lưu thực hiện chuyển file về đúng thư mục "/upload/TAILIEU/{currentDonVi.MaDonViSuDung}/{taiLieu.IdFile}"
+             */
+
+            if (input.Files == null || input.Files.Length == 0)
+                throw new ArgumentException("Chưa tải lên file nào");
+
+            var nhaCungCap = await _nhaCungCapRepo.GetByIdAsync(id: input.IdNhaCungCap);
+            if (nhaCungCap == null)
+                throw new ArgumentException("Không tồn tại nhà cung cấp.");
+
+            // ✅ SỬA: bỏ dấu } dư
+            string baseOnlineUrl = string.Format("{0}/{1}/TAILIEUNHACUNGCAP_CACHE",
+                "/Assets/upload",
+                CurrentDonViSuDung.MaDonViSuDung);
+
+            string rootPhysical = HostingEnvironment.MapPath(baseOnlineUrl);
+
+            // ✅ đảm bảo thư mục tồn tại
+            if (!Directory.Exists(rootPhysical))
+                Directory.CreateDirectory(rootPhysical);
+
+            var taiLieus = new List<tbTaiLieuExtend>();
+
+            // 1️⃣ XỬ LÝ FILE + TẠO ENTITY (ngoài transaction)
+            for (int i = 0; i < input.Files.Length; i++) {
+                var file = input.Files[i];
+
+                if (file == null || file.ContentLength <= 0)
+                    continue;
+
+                // ✅ TẠO IdFile TRƯỚC để dùng làm tên file
+                var idFile = Guid.NewGuid();
+
+                // Lấy extension & mime (có thể lấy bằng helper như bạn đang dùng)
+                var fileInfo = Public.Helpers.FileSaveInfoHelper.BuildFileSaveInfo(
+                    file,
+                    rootPhysical,
+                    baseOnlineUrl,
+                    separator: '-',        // không quan trọng nữa
+                    addUniqueSuffix: false // ✅ không cần suffix vì đã dùng GUID
+                );
+
+                // ✅ ÉP tên file vật lý = IdFile + extension
+                string newFileName = idFile.ToString() + fileInfo.Extension;           // vd: {guid}.pdf
+                string physicalPath = Path.Combine(rootPhysical, newFileName);
+                string onlineUrl = $"{baseOnlineUrl}/{newFileName}";
+
+                // ✅ Lưu file vật lý
+                file.SaveAs(physicalPath);
+
+                var taiLieu = new tbTaiLieuExtend {
+                    TaiLieu = new tbTaiLieu {
+                        IdFile = Guid.Empty,
+                        IdNhaCungCap = nhaCungCap.IdNhaCungCap,
+                        NgayDangKy = DateTime.Now,
+
+                        // ✅ lưu theo GUID để đồng bộ
+                        FileName = idFile.ToString(),
+                        FileNameUpdate = newFileName,
+                        FileExtension = fileInfo.Extension,
+                        LoaiTep = fileInfo.MimeType,
+                        DuongDanTepVatLy = physicalPath,
+                        DuongDanTepOnline = onlineUrl,
+
+                        TrangThai = (int?)TrangThaiDuLieuEnum.ChoPheDuyet,
+                        NgayTao = DateTime.Now,
+                        IdNguoiTao = CurrentUserId,
+                        MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung
+                    }
+                };
+
+                taiLieus.Add(taiLieu);
+            }
+
+            return taiLieus;
+        }
         private async Task createByZip() { }
-        private async Task createByFile(CreateByFile_Input_Dto input)
-        {
+        private async Task createByFile(CreateByFile_Input_Dto input) {
             if (input.TaiLieus == null || !input.TaiLieus.Any())
                 throw new ArgumentException("Danh sách tài liệu không được để trống.");
 
@@ -234,47 +259,62 @@ namespace Applications.QuanLyTaiLieu.Services
             if (nhaCungCap == null)
                 throw new ArgumentException("Không tồn tại nhà cung cấp.");
 
-            string baseOnlineUrl = string.Format("{0}/{1}/TaiLieuNhaCungCap/{2}", "/Assets/upload", CurrentDonViSuDung.MaDonViSuDung, nhaCungCap.IdNhaCungCap);
+            // ✅ SỬA: bỏ dấu } dư
+            string baseOnlineUrl = string.Format("{0}/{1}/TAILIEUNHACUNGCAP",
+                "/Assets/upload",
+                CurrentDonViSuDung.MaDonViSuDung);
+
             string rootPhysical = HostingEnvironment.MapPath(baseOnlineUrl);
+
+            // ✅ đảm bảo thư mục tồn tại
+            if (!Directory.Exists(rootPhysical))
+                Directory.CreateDirectory(rootPhysical);
 
             var taiLieuEntities = new List<tbTaiLieu>();
 
             // 1️⃣ XỬ LÝ FILE + TẠO ENTITY (ngoài transaction)
-            for (int i = 0; i < input.TaiLieus.Count; i++)
-            {
+            for (int i = 0; i < input.TaiLieus.Count; i++) {
                 var taiLieu_NEW = input.TaiLieus[i];
                 var file = input.Files[i];
 
                 if (file == null || file.ContentLength <= 0)
                     continue;
 
-                // Chuẩn hoá tên file + đường dẫn
+                // ✅ TẠO IdFile TRƯỚC để dùng làm tên file
+                var idFile = Guid.NewGuid();
+
+                // Lấy extension & mime (có thể lấy bằng helper như bạn đang dùng)
                 var fileInfo = Public.Helpers.FileSaveInfoHelper.BuildFileSaveInfo(
                     file,
                     rootPhysical,
                     baseOnlineUrl,
-                    separator: '-',        // có thể đổi thành '_'
-                    addUniqueSuffix: true  // tránh trùng tên
+                    separator: '-',        // không quan trọng nữa
+                    addUniqueSuffix: false // ✅ không cần suffix vì đã dùng GUID
                 );
 
-                // Lưu file vật lý
-                file.SaveAs(fileInfo.PhysicalPath);
+                // ✅ ÉP tên file vật lý = IdFile + extension
+                string newFileName = idFile.ToString() + fileInfo.Extension;           // vd: {guid}.pdf
+                string physicalPath = Path.Combine(rootPhysical, newFileName);
+                string onlineUrl = $"{baseOnlineUrl}/{newFileName}";
 
-                var taiLieu = new tbTaiLieu
-                {
-                    IdFile = Guid.NewGuid(),
+                // ✅ Lưu file vật lý
+                file.SaveAs(physicalPath);
+
+                var taiLieu = new tbTaiLieu {
+                    IdFile = idFile,
                     IdNhaCungCap = nhaCungCap.IdNhaCungCap,
-                    NgayDangKy = taiLieu_NEW.TaiLieu.NgayDangKy,
+                    NgayDangKy = DateTime.Now,
                     NgayHetHan = taiLieu_NEW.TaiLieu.NgayHetHan,
 
-                    FileName = fileInfo.FileNameWithoutExtension,
-                    FileNameUpdate = fileInfo.SafeName,
+                    // ✅ lưu theo GUID để đồng bộ
+                    FileName = idFile.ToString(),
+                    FileNameUpdate = newFileName,
                     FileExtension = fileInfo.Extension,
                     LoaiTep = fileInfo.MimeType,
-                    DuongDanTepVatLy = fileInfo.PhysicalPath,
-                    DuongDanTepOnline = fileInfo.OnlineUrl,
+                    DuongDanTepVatLy = physicalPath,
+                    DuongDanTepOnline = onlineUrl,
 
-                    TrangThai = 1,
+                    TrangThai = (int?)TrangThaiDuLieuEnum.ChoPheDuyet,
                     NgayTao = DateTime.Now,
                     IdNguoiTao = CurrentUserId,
                     MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung
@@ -284,10 +324,8 @@ namespace Applications.QuanLyTaiLieu.Services
             }
 
             // 2️⃣ TRANSACTION – lưu DB
-            await _unitOfWork.ExecuteInTransaction(async () =>
-            {
-                foreach (var tl in taiLieuEntities)
-                {
+            await _unitOfWork.ExecuteInTransaction(async () => {
+                foreach (var tl in taiLieuEntities) {
                     await _unitOfWork.InsertAsync<tbTaiLieu, Guid>(tl);
                 }
             });

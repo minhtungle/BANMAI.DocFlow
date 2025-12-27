@@ -1,0 +1,57 @@
+﻿@using EDM_DB
+@using Public.Enums
+@model Applications.QuanLyTaiLieu.Dtos.Index_Output_Dto
+@{
+    string endName = "capnhattruong";
+    var trangThaiBaoQuans = Enum.GetValues(typeof(TrangThaiBaoQuanEnum))
+    .Cast<TrangThaiBaoQuanEnum>()
+    .Select(e => new SelectListItem {
+        Value = ((int)e).ToString(),
+        Text = Public.Helpers.EnumHelper.GetDisplayName(e),
+    })
+    .ToList();
+}
+
+<div class="modal fade text-left" id="nhacungcap-crud-@endName" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+        <div class="modal-content" style="border: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập nhật theo trường dữ liệu</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <p class="text-danger">Lưu ý: Tích chọn các trường dữ liệu muốn cập nhật</p>
+
+                    <!--Trạng thái bảo quản-->
+                    <div class="col-12 col-sm-12 col-md-12">
+                        <div class="position-relative">
+                            <div class="form-group mb-3">
+                                <label class="required" for="select-trangthaibaoquan-@endName">Trạng thái bảo quản</label>
+                                <select class="form-control"
+                                        id="select-trangthaibaoquan-@endName"
+                                        name="select-trangthaibaoquan-@endName"
+                                        required>
+                                    <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                                    @foreach (var data in trangThaiBaoQuans) {
+                                        <option value="@data.Value">
+                                            @data.Text
+                                        </option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback feedback" for="input-trangthaibaoquan-@endName">Không được để trống</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="quanLyTaiLieu.handleModal_CRUD.updateMultipleCell()">
+                    <span class="">Cập nhật</span>
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span class="">Đóng</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

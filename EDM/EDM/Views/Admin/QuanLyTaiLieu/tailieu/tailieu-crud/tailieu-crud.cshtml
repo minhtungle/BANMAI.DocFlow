@@ -1,0 +1,97 @@
+﻿@model Applications.QuanLyTaiLieu.Dtos.DisplayModal_CRUD_TaiLieu_Input_Dto
+
+<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-full" role="document" style="align-items: normal !important">
+    <div class="modal-content">
+        <div class="modal-header justify-content-start gap-1">
+            <!--#-->
+            <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-primary" title="Cập nhật trường thông tin"><i class="bi bi-pencil-square"></i></a>
+                <a class="btn btn-light-secondary" onclick="quanLyTaiLieu.handleModal_CRUD.displayModal_UpdateMultipleCell()">
+                    Cập nhật hàng loạt
+                </a>
+            </div>
+            <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-primary" title="Import Excel"><i class="bi bi-upload"></i></a>
+                <label class="btn btn-light-secondary" for="select-file">
+                    Tải lên
+                </label>
+                <input class="btn" id="select-file"
+                       type="file"
+                       accept=".pdf, .jpg, .jpeg, .png"
+                       onchange="quanLyTaiLieu.handleModal_CRUD.import()" hidden>
+            </div>
+        </div>
+        <div class="modal-body table-responsive">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                    <table class="table table-hover table-bordered w-100 nowrap" id="tailieu-getList"
+                           data-page-length="10" data-order="[[ 1, &quot;asc&quot; ]]">
+                        <thead>
+                            <tr>
+                                <th class="text-center w-5" data-orderable="false">
+                                    @if (Model.Loai == "create") {
+                                        <a href="#" class="btn btn-sm btn-success" title="Thêm"
+                                           onclick="quanLyTaiLieu.handleModal_CRUD.addBanGhi()">
+                                            <i class="bi bi-plus-square-fill"></i>
+                                        </a>
+                                    }
+                                    <a href="#" class="btn btn-sm btn-danger" title="Xóa"
+                                       onclick="quanLyTaiLieu.handleModal_CRUD.deleteBanGhi()">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+                                </th>
+                                <th class="text-center"
+                                    style="min-width: 10rem!important">
+                                    Kiểm tra
+                                </th>
+                                <th class="text-center"
+                                    style="min-width: 10rem!important">
+                                    Tên file
+                                </th>
+                            </tr>
+                        </thead>
+                        <tfoot class="show-footer-above">
+                            <tr>
+                                <th class="text-center"><input class="form-check-input checkAll-tailieu-getList" type="checkbox" title="Chọn tất cả" /></th>
+                                <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+                                <th><input type="text" class="form-control dt-search-col" placeholder="Tìm kiếm ..." /></th>
+                            </tr>
+                        </tfoot>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6" id="tailieu-read-container"
+                     style="overflow-y: scroll; border: 1px solid #d3d3d35c;"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            @if (Model.Loai == "create") {
+                <button type="button" class="btn btn-outline-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('draft')">
+                    <span class="">Lưu nháp</span>
+                </button>
+                <button type="button" class="btn btn-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('@Model.Loai')">
+                    <span class="">Lưu</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="quanLyTaiLieu.handleModal_CRUD.close()">
+                    <span class="">Đóng</span>
+                </button>
+            }
+            else if (Model.Loai == "update") {
+                <button type="button" class="btn btn-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('@Model.Loai')">
+                    <span class="">Cập nhật</span>
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span class="">Đóng</span>
+                </button>
+            }
+            else if (Model.Loai == "draftToSave") {
+                <button type="button" class="btn btn-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('@Model.Loai')">
+                    <span class="">Chuyển đăng bài</span>
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span class="">Đóng</span>
+                </button>
+            }
+        </div>
+    </div>
+</div>

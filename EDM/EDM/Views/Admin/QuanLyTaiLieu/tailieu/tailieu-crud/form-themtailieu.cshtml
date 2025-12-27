@@ -1,0 +1,44 @@
+﻿@using Public
+@using Applications.QuanLyTaiLieu.Dtos
+@model Applications.QuanLyTaiLieu.Dtos.FormAddTaiLieuDto
+
+@if (Model.LoaiView == "row")
+{
+    foreach (var taiLieu in Model.Data.TaiLieus)
+    {
+        <tr row="@taiLieu.RowNumber"
+            onclick="quanLyTaiLieu.handleModal_CRUD.readRow(this)">
+            <td class="text-center"><input class="form-check-input checkRow-tailieu-getList" type="checkbox" /></td>
+            <td class="text-left"
+                style="vertical-align: top;">
+                <span data-tentruong="trangthaikiemtra"></span>
+            </td>
+            <td class="text-left"
+                style="vertical-align: top;">
+                <span data-tentruong="tentailieu">
+                    @{ 
+                        var fileName = string.Format("{0}.{1}", taiLieu.TaiLieu.FileName, taiLieu.TaiLieu.FileExtension);
+                    }
+
+                    @Public.Handles.Handle.TruncateString(input: fileName, maxLength: 12)
+                </span>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    foreach (var taiLieu in Model.Data.TaiLieus)
+    {
+        <div class="row tailieu-read p-2" row="@taiLieu.RowNumber">
+            <div class="col-sm-12 col-lg-12">
+                @Html.Partial("~/Views/Admin/QuanLyTaiLieu/tailieu/tailieu-crud/form-thongtinchung.cshtml",
+               new FormThongTinChung_Dto
+               {
+                   TaiLieu = taiLieu,
+                   Data = Model,
+               })
+            </div>
+        </div>
+    }
+}

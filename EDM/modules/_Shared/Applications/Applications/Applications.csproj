@@ -176,9 +176,15 @@
     <Compile Include="QuanLyNhaCungCap\Services\QuanLyNhaCungCapService.cs" />
     <Compile Include="QuanLyNhaCungCap\Validations\IsExistedNhaCungCapValidation.cs" />
     <Compile Include="QuanLyNhaCungCap\Validations\IsValidNhaCungCapValidation.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\AddBanGhi_Modal_CRUD_Input_Dto.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\AddBanGhi_Modal_CRUD_Output_Dto.cs" />
     <Compile Include="QuanLyTaiLieu\Dtos\CreateByFile_Input_Dto.cs" />
     <Compile Include="QuanLyTaiLieu\Dtos\DisplayModal_CRUD_TaiLieu_Input_Dto.cs" />
-    <Compile Include="QuanLyTaiLieu\Dtos\DisplayModal_CRUD_TaiLieu_Output_Dto.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\DisplayModal_Create_TaiLieu_Output_Dto.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\AddFromFile_Input_Dto.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\AddFromFile_Output_Dto.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\FormAddTaiLieuDto.cs" />
+    <Compile Include="QuanLyTaiLieu\Dtos\FormThongTinChung_Dto.cs" />
     <Compile Include="QuanLyTaiLieu\Dtos\GetList_TaiLieu_Input_Dto.cs" />
     <Compile Include="QuanLyTaiLieu\Dtos\GetList_TaiLieu_Output_Dto.cs" />
     <Compile Include="QuanLyTaiLieu\Dtos\Index_Input_Dto.cs" />

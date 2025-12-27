@@ -8,7 +8,7 @@ class QuanLyNhaCungCap {
         this.pageGroup;
         this.nhaCungCap = {}
     }
-    init() {
+    init().{
         var quanLyNhaCungCap = this;
         quanLyNhaCungCap.page = $("#page-quanlynhacungcap");
         htmlEl = new HtmlElement();
@@ -493,8 +493,6 @@ class QuanLyNhaCungCap {
                 };
             },
             addBanGhi: function (input) {
-                // Tạo mã guid cho bản ghi
-                //var guid = sys.generateGUID();
                 //#region Thêm bản ghi
                 var $modal = $("#nhacungcap-crud");
                 $.ajax({

@@ -20,6 +20,7 @@ class QuanLyTaiLieu {
                 var $timKiem = $("#tailieu-timkiem-collapse");
                 var input = {
                     LocThongTin: {
+                        IdNhaCungCap: $("#select-nhacungcap", $timKiem).val(),
                         IdTaiLieu: $("#select-tailieu", $timKiem).val(),
                         TenTaiLieu: $("#input-tentailieu", $timKiem).val().trim(),
                     }
@@ -51,30 +52,75 @@ class QuanLyTaiLieu {
             },
             ...quanLyTaiLieu.taiLieu,
 
-            displayModal_Create: function (loai = "") {
+            displayModal_Create: function (loai = "create") {
                 var $modal = $("#tailieu-crud");
+                var $timKiem = $("#tailieu-timkiem-collapse");
                 var input = {
                     Loai: loai,
-                    IdNhaCungCap: idNhaCungCaps[0],
                 };
 
                 $.ajax({
                     ...ajaxDefaultProps({
-                        url: "/QuanLyNhaCungCap/displayModal_Create_NhaCungCap",
+                        url: "/QuanLyTaiLieu/displayModal_CRUD_TaiLieu",
                         type: "POST",
                         contentType: "application/json; charset=utf-8",
                         data: { input },
                     }),
                     success: function (res) {
-                        $("#nhacungcap-crud").html(res.html);
+                        $("#tailieu-crud").html(res.html);
                         // Tạo modal crud
-                        quanLyTaiLieu.createModalCRUD_NhaCungCap();
+                        quanLyTaiLieu.createModalCRUD_TaiLieu();
                         // Tự động kích hoạt nút import
-                        $("#select-file", $modal).trigger("click");
+                        setTimeout(function () {
+                            $("#select-file", $modal).trigger("click");
+                        }, 500)
                     }
                 })
             },
+            displayModal_Update: function (loai = "update") {
+                var $modal = $("#tailieu-crud");
+                //var idNhaCungCap = $(`#select-nhacungcap`, $modal).val();
+                var idTaiLieus = [];
 
+                quanLyTaiLieu.taiLieu.dataTable.rows().iterator('row', function (context, index) {
+                    var $row = $(this.row(index).node());
+                    if ($row.has("input.checkRow-nhacungcap-getList:checked").length > 0) {
+                        idTaiLieus.push($row.attr('id'));
+                    };
+                });
+                if (idTaiLieus.length != 1) {
+                    sys.alert({ mess: "Yêu cầu chọn 1 bản ghi", status: "warning", timeout: 1500 });
+                    return;
+                }
+
+                var input = {
+                    Loai: loai,
+                    IdTaiLieus: idTaiLieus,
+                };
+
+                $.ajax({
+                    ...ajaxDefaultProps({
+                        url: "/QuanLyTaiLieu/displayModal_CRUD_TaiLieu",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: {
+                            input
+                        },
+                    }),
+                    success: function (res) {
+                        $("#tailieu-crud").html(res.html);
+
+                        quanLyTaiLieu.createModalCRUD_TaiLieu();
+
+                        // Gọi addBanGhi để thêm bản ghi vào modal CRUD
+                        var formData = new FormData();
+                        //formData.append("idNhaCungCap", idNhaCungCap);
+                        formData.append("idTaiLieus", idTaiLieus);
+
+                        quanLyTaiLieu.handleModal_CRUD.addBanGhi(res.output);
+                    }
+                })
+            },
             save: function (loai) {
                 var modalValidtion = htmlEl.activeValidationStates("#tailieu-crud");
                 if (modalValidtion) {
@@ -228,13 +274,16 @@ class QuanLyTaiLieu {
                 };
             },
 
-            
+
         };
     }
     createModalCRUD_TaiLieu() {
         var quanLyTaiLieu = this;
 
         quanLyTaiLieu.handleModal_CRUD = {
+            maxDungLuongTaiLieu: 1024 * 1024 * 600, // 600MB,
+            maxSoLuongTaiLieu: 200,
+            maxDoDaiTaiLieu: 500,
             dataTable: new DataTableCustom({
                 name: "tailieu-getList",
                 table: $("#tailieu-getList", $("#tailieu-crud")),
@@ -327,9 +376,10 @@ class QuanLyTaiLieu {
                     });
                 };
             },
+            // Thêm tệp
             import: function () {
                 var $modal = $("#tailieu-crud");
-                var $fileInput = $(`#select-file`, $modal).get(0);
+                var $fileInput = $(`#select-file`, $modal).get(0).files;
 
                 var kiemTra = true,
                     mess = "Thêm tệp thành công";
@@ -338,20 +388,20 @@ class QuanLyTaiLieu {
 
                 $.each($fileInput, function (idx, f) {
                     // Kiểm tra tệp
-                    if (!(/\.(.pdf)$/i.test(f.name))) {
+                    if (!(/\.(pdf|png|jpg|jpeg)$/i.test(f.name))) {
                         mess = `Tồn tại tệp không thuộc định dạng cho phép [.pdf]`;
                         kiemTra = false;
                         return false;
                     };
                     // Kiểm tra dung lượng
-                    if (f.size > quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxDungLuongTaiLieu) {
+                    if (f.size > quanLyTaiLieu.handleModal_CRUD.maxDungLuongTaiLieu) {
                         mess = `Tồn tại tệp có kích thước tệp vượt quá giới hạn ${quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxDungLuongTaiLieu} Mb`;
                         kiemTra = false;
                         return false;
                     };
                     // Kiểm tra tên
-                    if (f.name.length > 80) {
-                        mess = `Tồn tại tệp có tên vượt quá giới hạn 80 ký tự`;
+                    if (f.name.length > quanLyTaiLieu.handleModal_CRUD.maxDoDaiTaiLieu) {
+                        mess = `Tồn tại tệp có tên vượt quá giới hạn ${quanLyNhaCungCap.nhaCungCap.handleTaiLieu.maxDoDaiTaiLieu} ký tự`;
                         kiemTra = false;
                         return false;
                     };
@@ -378,13 +428,21 @@ class QuanLyTaiLieu {
                 $fileInput.value = ''; // xóa giá trị của input file
                 quanLyTaiLieu.handleModal_CRUD.addBanGhi(formData);
             },
-            addBanGhi: function (input) {
+            addBanGhi: function (formData) {
+                var $timKiem = $("#tailieu-timkiem-collapse");
+                // Chọn nhà cung cấp theo tìm kiếm
+                var idNhaCungCap = $("#select-nhacungcap", $timKiem).val() ?? '00000000-0000-0000-0000-000000000000';
+                var idTaiLieus = [];
+                formData.append("loai", "create");
+                formData.append("idTaiLieus", JSON.stringify(idTaiLieus));
+                formData.append("idNhaCungCap", idNhaCungCap);
+
                 var $modal = $("#tailieu-crud");
                 $.ajax({
                     ...ajaxDefaultProps({
                         url: "/QuanLyTaiLieu/addBanGhi_Modal_CRUD",
                         type: "POST",
-                        data: f,
+                        data: formData, // formData
                     }),
                     contentType: false,
                     processData: false,
@@ -517,17 +575,6 @@ class QuanLyTaiLieu {
                     var $div = $(this),
                         rowNumber = $div.attr("row");
 
-                    //var tepDinhKems = [];
-                    //$.each($(`#tailieu-items .image-item`, $div), function () {
-                    //    let idTep = $(this).attr("data-id");
-                    //    // Chỉ lấy những tệp đã tồn tại trong CSDL
-                    //    if (idTep != "00000000-0000-0000-0000-000000000000") {
-                    //        tepDinhKems.push({
-                    //            IdTep: idTep,
-                    //        });
-                    //    };
-                    //});
-
                     var idTruongHocs =
                         $(`#select-truonghoc-${rowNumber}`, $div).val()?.map(x => ({
                             IdTruongHoc: x
@@ -541,16 +588,11 @@ class QuanLyTaiLieu {
                             IdTaiLieu: idTaiLieu,
                             IdTaiLieuCha: idTaiLieuCha,
 
-                            //MaTaiLieu: $("#input-matailieu", $div).val().trim(),
-                            TenTaiLieu: $("#input-tentailieu", $div).val().trim(),
-                            TenMatHang: $("#input-tenmathang", $div).val().trim(),
-                            SoDienThoai: $("#input-sodienthoai", $div).val().trim(),
-                            Email: $("#input-email", $div).val().trim(),
-                            DiaChi: $("#input-diachi", $div).val().trim(),
+                            IdNhaCungCap: $("#select-nhacungcap", $div).val(),
+                            TrangThaiBaoQuan: $("#input-trangthaibaoquan", $div).val(),
+                            NgayHetHan: $("#input-ngayhethan", $div).val().trim(),
                             GhiChu: $("#input-ghichu", $div).val().trim(),
                         },
-                        TruongHocs: idTruongHocs,
-                        //TaiLieus: taiLieus,
                     };
 
                     taiLieus.push(taiLieu);
@@ -566,11 +608,6 @@ class QuanLyTaiLieu {
                         var formData = new FormData();
                         formData.append("taiLieus", JSON.stringify(taiLieus));
                         formData.append("loai", loai);
-
-                        $.each(quanLyTaiLieu.taiLieu.handleTaiLieu.arrTaiLieu, function (idx, anh) {
-                            formData.append("files", anh.file);
-                            formData.append("rowNumbers", anh.rowNumber);
-                        });
 
                         var url = "/QuanLyTaiLieu/create_TaiLieu";
                         //if (loai == "create" || loai == "draft")

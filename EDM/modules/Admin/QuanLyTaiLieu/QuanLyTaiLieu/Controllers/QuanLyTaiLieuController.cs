@@ -41,9 +41,9 @@ namespace QuanLyTaiLieu.Controllers {
         }
 
         #region Tài liệu
-
         [HttpPost]
         public async Task<ActionResult> displayModal_CRUD_TaiLieu(DisplayModal_CRUD_TaiLieu_Input_Dto input) {
+            await _quanLyTaiLieuService.DeleteCacheFolder();
             var html = Public.Handles.Handle.RenderViewToString(
               controller: this,
               viewName: $"{VIEW_PATH}/tailieu/tailieu-crud/tailieu-crud.cshtml",
@@ -57,7 +57,8 @@ namespace QuanLyTaiLieu.Controllers {
         public async Task<ActionResult> addBanGhi_Modal_CRUD(HttpPostedFileBase[] files) {
             var loai = Request.Form["loai"];
             var idTaiLieus = JsonConvert.DeserializeObject<List<Guid>>(Request.Form["idTaiLieus"]);
-            var idNhaCungCap = JsonConvert.DeserializeObject<Guid>(Request.Form["idNhaCungCap"]);
+            var idNhaCungCap = Guid.Parse(Request.Form["idNhaCungCap"]);
+
             var output = await _quanLyTaiLieuService.AddBanGhi_Modal_CRUD(input: new AddBanGhi_Modal_CRUD_Input_Dto {
                 Files = files,
                 IdNhaCungCap = idNhaCungCap,
@@ -85,7 +86,7 @@ namespace QuanLyTaiLieu.Controllers {
             }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public async Task<ActionResult> create_TaiLieu(HttpPostedFileBase[] files) {
+        public async Task<ActionResult> create_TaiLieu() {
             try {
                 var taiLieu_NEWs = JsonConvert.DeserializeObject<List<tbTaiLieuExtend>>(Request.Form["taiLieus"]);
                 if (taiLieu_NEWs == null)
@@ -95,7 +96,7 @@ namespace QuanLyTaiLieu.Controllers {
                 //if (isExisted)
                 //    return Json(new { status = "error", mess = "Tài liệu đã tồn tại" }, JsonRequestBehavior.AllowGet);
 
-                await _quanLyTaiLieuService.Create_TaiLieu(taiLieus: taiLieu_NEWs, files: files);
+                await _quanLyTaiLieuService.Create_TaiLieu(taiLieus: taiLieu_NEWs);
                 return Json(new { status = "success", mess = "Thêm mới thành công" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex) {

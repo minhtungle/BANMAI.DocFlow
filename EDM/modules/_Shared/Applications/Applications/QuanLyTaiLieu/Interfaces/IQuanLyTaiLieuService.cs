@@ -12,9 +12,10 @@ namespace Applications.QuanLyTaiLieu.Interfaces {
         List<ThaoTac> GetThaoTacs(string maChucNang);
         Task<Index_Output_Dto> Index(Index_Input_Dto input);
         Task<List<tbTaiLieuExtend>> Get_TaiLieus(GetList_TaiLieu_Input_Dto input);
-        Task<FormAddTaiLieuDto> AddBanGhi_Modal_CRUD(AddBanGhi_Modal_CRUD_Input_Dto input)
+        Task<FormAddTaiLieuDto> AddBanGhi_Modal_CRUD(AddBanGhi_Modal_CRUD_Input_Dto input);
+        Task DeleteCacheFolder();
         Task<bool> IsExisted_TaiLieu(tbTaiLieu taiLieu);
-        Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus, HttpPostedFileBase[] files);
+        Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus);
         Task Update_TaiLieu(tbTaiLieuExtend taiLieu);
         Task Delete_TaiLieus(List<Guid> idTaiLieus);
     }

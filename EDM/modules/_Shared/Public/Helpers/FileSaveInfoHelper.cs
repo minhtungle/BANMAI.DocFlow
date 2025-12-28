@@ -99,9 +99,10 @@ namespace Public.Helpers
 
             // physical path
             var physicalFolder = Path.Combine(rootPhysical, relFolder.Replace("/", Path.DirectorySeparatorChar.ToString()));
-            Directory.CreateDirectory(physicalFolder);
+            //Directory.CreateDirectory(physicalFolder);
 
-            var physicalPath = Path.Combine(physicalFolder, storedFileName);
+            //var physicalPath = Path.Combine(physicalFolder, storedFileName);
+            var physicalPath = Path.Combine(rootPhysical, storedFileName);
 
             // online url
             var baseOnline = baseOnlineUrl.TrimEnd('/');

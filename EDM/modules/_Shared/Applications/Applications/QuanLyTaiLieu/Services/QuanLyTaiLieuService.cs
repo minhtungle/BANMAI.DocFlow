@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
+using System.Web.Mvc;
 
 namespace Applications.QuanLyTaiLieu.Services {
     public class QuanLyTaiLieuService : BaseService, IQuanLyTaiLieuService {
@@ -62,19 +63,34 @@ namespace Applications.QuanLyTaiLieu.Services {
 
             return data;
         }
-
+        public Task DeleteCacheFolder() {
+            string cacheFolderPath = HostingEnvironment.MapPath(string.Format("{0}/{1}/TAILIEUNHACUNGCAP_CACHE/{2}",
+                "/Assets/uploads",
+                CurrentDonViSuDung.MaDonViSuDung,
+                CurrentNguoiDung.IdNguoiDung));
+            if (Directory.Exists(cacheFolderPath)) {
+                Directory.Delete(cacheFolderPath, true);
+            }
+            return Task.CompletedTask;
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         public async Task<FormAddTaiLieuDto> AddBanGhi_Modal_CRUD(AddBanGhi_Modal_CRUD_Input_Dto input) {
+            var nhaCungCaps = await _nhaCungCapRepo.Query()
+                .Where(x => x.TrangThai == (int)TrangThaiDuLieuEnum.DangSuDung && x.MaDonViSuDung == CurrentDonViSuDung.MaDonViSuDung)
+                .OrderByDescending(x => x.Stt)
+                .ToListAsync();
             var output = new AddBanGhi_Modal_CRUD_Output_Dto {
                 Loai = input.Loai,
+                NhaCungCaps = nhaCungCaps,
+                IdNhaCungCap = input.IdNhaCungCap
             };
             if (input.Loai == "create") {
                 output.TaiLieus = await AddFromFile(input: new AddFromFile_Input_Dto {
-                    IdNhaCungCap = input.IdNhaCungCap,
+                    //IdNhaCungCap = input.IdNhaCungCap,
                     Files = input.Files,
                 });
             }
@@ -120,7 +136,7 @@ namespace Applications.QuanLyTaiLieu.Services {
             return existed != null;
         }
 
-        public async Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus, HttpPostedFileBase[] files) {
+        public async Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus) {
 
         }
 
@@ -177,14 +193,15 @@ namespace Applications.QuanLyTaiLieu.Services {
             if (input.Files == null || input.Files.Length == 0)
                 throw new ArgumentException("Chưa tải lên file nào");
 
-            var nhaCungCap = await _nhaCungCapRepo.GetByIdAsync(id: input.IdNhaCungCap);
-            if (nhaCungCap == null)
-                throw new ArgumentException("Không tồn tại nhà cung cấp.");
+            //var nhaCungCap = await _nhaCungCapRepo.GetByIdAsync(id: input.IdNhaCungCap);
+            //if (nhaCungCap == null)
+            //    throw new ArgumentException("Không tồn tại nhà cung cấp.");
 
             // ✅ SỬA: bỏ dấu } dư
-            string baseOnlineUrl = string.Format("{0}/{1}/TAILIEUNHACUNGCAP_CACHE",
-                "/Assets/upload",
-                CurrentDonViSuDung.MaDonViSuDung);
+            string baseOnlineUrl = string.Format("{0}/{1}/TAILIEUNHACUNGCAP_CACHE/{2}",
+                "/Assets/uploads",
+                CurrentDonViSuDung.MaDonViSuDung,
+                CurrentNguoiDung.IdNguoiDung);
 
             string rootPhysical = HostingEnvironment.MapPath(baseOnlineUrl);
 
@@ -224,12 +241,12 @@ namespace Applications.QuanLyTaiLieu.Services {
                 var taiLieu = new tbTaiLieuExtend {
                     TaiLieu = new tbTaiLieu {
                         IdFile = Guid.Empty,
-                        IdNhaCungCap = nhaCungCap.IdNhaCungCap,
+                        //IdNhaCungCap = nhaCungCap.IdNhaCungCap,
                         NgayDangKy = DateTime.Now,
 
                         // ✅ lưu theo GUID để đồng bộ
-                        FileName = idFile.ToString(),
-                        FileNameUpdate = newFileName,
+                        FileName = fileInfo.FileNameWithoutExtension.ToString(),
+                        FileNameUpdate = idFile.ToString(), // Tên file lưu trữ là IdFile
                         FileExtension = fileInfo.Extension,
                         LoaiTep = fileInfo.MimeType,
                         DuongDanTepVatLy = physicalPath,
@@ -241,6 +258,21 @@ namespace Applications.QuanLyTaiLieu.Services {
                         MaDonViSuDung = CurrentDonViSuDung.MaDonViSuDung
                     }
                 };
+
+                // xem file pdf
+
+                //Uri uri = new Uri(HttpContext.Request.Url.AbsoluteUri);
+                //string hostName = uri.GetLeftPart(UriPartial.Authority);
+                //ViewBag.hostName = hostName;
+                //ViewBag.vanBan = vanBan;
+                //ViewBag.loai = loai;
+                //if (vanBan.Loai.Contains("pdf") || vanBan.Loai.Contains("xls") || vanBan.Loai.Contains("doc"))
+                //    ViewBag.iframeHtml = $"<iframe src=\"{hostName}/Search/xemPDF?idHoSo={idHoSo}&idVanBan={idVanBan}\" title=\"Chi tiết\" style=\"width: 100%;height: 70vh\"></iframe>";
+                //else if (vanBan.Loai.Contains("mp4"))
+                //    ViewBag.iframeHtml = $"<video src=\"{vanBan.DuongDan}\" controls style=\"width: 100%; height: 70vh; border: 1px solid var(--bs-body-color)\"></video>";
+                //else
+                //    ViewBag.iframeHtml = $"<iframe src=\"{vanBan.DuongDan}\" title=\"Chi tiết\" style=\"width: 100%;height: 70vh; border: 1px solid var(--bs-body-color)\"></iframe>";
+
 
                 taiLieus.Add(taiLieu);
             }
@@ -302,7 +334,7 @@ namespace Applications.QuanLyTaiLieu.Services {
 
                 var taiLieu = new tbTaiLieu {
                     IdFile = idFile,
-                    IdNhaCungCap = nhaCungCap.IdNhaCungCap,
+                    //IdNhaCungCap = nhaCungCap.IdNhaCungCap,
                     NgayDangKy = DateTime.Now,
                     NgayHetHan = taiLieu_NEW.TaiLieu.NgayHetHan,
 

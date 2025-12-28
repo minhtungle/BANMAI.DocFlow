@@ -9,7 +9,7 @@
             <div class="form-group mb-3">
                 <label class="" for="select-nhacungcap">Nhà cung cấp</label>
                 <select class="form-control" id="select-nhacungcap" name="select-nhacungcap">
-                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    <option selected>Chọn thông tin</option>
                     @foreach (var nhaCungCap in Model.NhaCungCaps) {
                         <option value="@nhaCungCap.IdNhaCungCap">
                             @nhaCungCap.TenNhaCungCap
@@ -26,7 +26,7 @@
             <div class="form-group mb-3">
                 <label class="" for="select-nhacungcap">Nhà cung cấp cha</label>
                 <select class="form-control" id="select-nhacungcapcha" name="select-nhacungcapcha">
-                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    <option selected>Chọn thông tin</option>
                     @foreach (var nhaCungCap in Model.NhaCungCaps) {
                         <option value="@nhaCungCap.IdNhaCungCap">
                             @nhaCungCap.TenNhaCungCap

@@ -8,7 +8,7 @@ class QuanLyNhaCungCap {
         this.pageGroup;
         this.nhaCungCap = {}
     }
-    init().{
+    init(){
         var quanLyNhaCungCap = this;
         quanLyNhaCungCap.page = $("#page-quanlynhacungcap");
         htmlEl = new HtmlElement();

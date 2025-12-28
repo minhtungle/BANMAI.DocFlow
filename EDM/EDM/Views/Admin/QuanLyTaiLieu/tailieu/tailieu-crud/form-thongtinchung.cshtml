@@ -16,72 +16,116 @@
     })
     .ToList();
 }
-<div class="row">
-    <!--Id-->
-    <input id="input-idnhacungcap" value="@taiLieu.IdNhaCungCap" hidden />
-    <input id="input-idtailieu" value="@taiLieu.IdFile" hidden />
-    <input id="input-rownumber" value="@Model.TaiLieu.RowNumber" hidden />
 
-    <!--Tên tài liệu-->
-    <div class="col-12 col-sm-12 col-md-12">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label class="required" for="input-tentailieu">Tên tài liệu</label>
-                <input type="text"
-                       class="form-control" id="input-tentailieu"
-                       placeholder="Nhập thông tin ..."
-                       value="@(taiLieu.FileName ?? "")"
-                       onchange="quanLyTaiLieu.handleModal_CRUD.updateSingleCell(this)"
-                       disabled
-                       required>
-                <div class="invalid-feedback feedback" for="input-tentailieu">Không được để trống</div>
+<div class="list-group list-group-horizontal mb-1 col-12 justify-content-end" id="" role="tablist">
+    <a class="list-group-item list-group-item-action active" id="thongtin-list"
+       data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
+    <a class="list-group-item list-group-item-action" id="tailieu-list"
+       data-bs-toggle="list" href="#tailieu" role="tab">Tài liệu đính kèm</a>
+</div>
+
+<div class="tab-content text-justify">
+    <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
+         aria-labelledby="thongtin-list">
+        <div class="row">
+            <!--Id-->
+            <input id="input-idnhacungcap" value="@taiLieu.IdNhaCungCap" hidden />
+            <input id="input-idtailieu" value="@taiLieu.IdFile" hidden />
+            <input id="input-rownumber" value="@Model.TaiLieu.RowNumber" hidden />
+
+            <!--Nhà cung cấp-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="" for="select-nhacungcap-@Model.TaiLieu.RowNumber">Nhà cung cấp</label>
+                        <select class="form-control form-select2"
+                                id="select-nhacungcap-@Model.TaiLieu.RowNumber"
+                                name="select-nhacungcap-@Model.TaiLieu.RowNumber">
+                            <option disabled>Chọn thông tin</option>
+                            @foreach (var nhaCungCap in Model.Data.Data.NhaCungCaps) {
+                                var selected = nhaCungCap.IdNhaCungCap == Model.Data.Data.IdNhaCungCap;
+                                <option value="@nhaCungCap.IdNhaCungCap"
+                                        @(selected ? "selected" : "")>
+                                    @nhaCungCap.TenNhaCungCap
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="select-nhacungcap-@Model.TaiLieu.RowNumber">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Tên tài liệu-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-tentailieu">Tên tài liệu</label>
+                        <input type="text"
+                               class="form-control" id="input-tentailieu"
+                               placeholder="Nhập thông tin ..."
+                               value="@(taiLieu.FileName ?? "")"
+                               onchange="quanLyTaiLieu.handleModal_CRUD.updateSingleCell(this)"
+                               disabled
+                               required>
+                        <div class="invalid-feedback feedback" for="input-tentailieu">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Trạng thái bảo quản-->
+            <div class="col-12 col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="select-trangthaibaoquan">Trạng thái bảo quản</label>
+                        <select class="form-control" id="select-trangthaibaoquan" name="select-trangthaibaoquan"
+                                required>
+                            <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                            @foreach (var data in trangThaiBaoQuans) {
+                                <option value="@data.Value" @(data.Selected ? "selected" : "")>
+                                    @data.Text
+                                </option>
+                            }
+                        </select>
+                        <div class="invalid-feedback feedback" for="input-trangthaibaoquan">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Ngày hết hạn-->
+            <div class="col-12 col-sm-12 col-md-6">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label class="required" for="input-ngayhethan">Ngày hết hạn</label>
+                        <input type="date"
+                               min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                               class="form-control input-ngayhethan"
+                               name="input-ngayhethan"
+                               value="" required>
+                        <div class="invalid-feedback feedback" for="input-ngayhethan">Không được để trống</div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Ghi chú-->
+            <div class="col-12 col-sm-12 col-md-12">
+                <div class="position-relative">
+                    <div class="form-group mb-3">
+                        <label for="input-ghichu">Ghi chú</label>
+                        <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
+                                  placeholder="Nhập thông tin ..."
+                                  value="@(taiLieu.GhiChu ?? "")">@(taiLieu.GhiChu ?? "")</textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <!--Trạng thái bảo quản-->
-    <div class="col-12 col-sm-12 col-md-6">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label class="required" for="select-trangthaibaoquan">Trạng thái bảo quản</label>
-                <select class="form-control" id="select-trangthaibaoquan" name="select-trangthaibaoquan"
-                        required>
-                    <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
-                    @foreach (var data in trangThaiBaoQuans) {
-                        <option value="@data.Value" @(data.Selected ? "selected" : "")>
-                            @data.Text
-                        </option>
-                    }
-                </select>
-                <div class="invalid-feedback feedback" for="input-trangthaibaoquan">Không được để trống</div>
-            </div>
-        </div>
-    </div>
-
-    <!--Ngày hết hạn-->
-    <div class="col-12 col-sm-12 col-md-6">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label class="required" for="input-ngayhethan">Ngày hết hạn</label>
-                <input type="date"
-                       min="@DateTime.Now.ToString("yyyy-MM-dd")"
-                       class="form-control input-ngayhethan"
-                       name="input-ngayhethan"
-                       value="" required>
-                <div class="invalid-feedback feedback" for="input-ngayhethan">Không được để trống</div>
-            </div>
-        </div>
-    </div>
-
-    <!--Ghi chú-->
-    <div class="col-12 col-sm-12 col-md-12">
-        <div class="position-relative">
-            <div class="form-group mb-3">
-                <label for="input-ghichu">Ghi chú</label>
-                <textarea class="form-control min-h-50 max-h-100" id="input-ghichu" rows="2"
-                          placeholder="Nhập thông tin ..."
-                          value="@(taiLieu.GhiChu ?? "")">@(taiLieu.GhiChu ?? "")</textarea>
-            </div>
+</div>
+<div class="tab-pane fade" id="tailieu" role="tabpanel"
+     aria-labelledby="tailieu-list">
+    <div class="row">
+        <div class="col-sm-12">
+            @*@MvcHtmlString.Create(ViewBag.iframeHtml)*@
+            <iframe src="@taiLieu.DuongDanTepOnline" style="width: 100%; height: 70vh"></iframe>
         </div>
     </div>
 </div>

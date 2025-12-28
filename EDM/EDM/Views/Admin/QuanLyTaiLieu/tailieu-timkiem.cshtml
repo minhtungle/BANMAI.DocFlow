@@ -18,7 +18,7 @@
             <div class="form-group mb-3">
                 <label class="" for="select-nhacungcap">Nhà cung cấp</label>
                 <select class="form-control" id="select-nhacungcap" name="select-nhacungcap">
-                    <option disabled @(Model.NhaCungCaps.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    <option selected>Chọn thông tin</option>
                     @foreach (var nhaCungCap in Model.NhaCungCaps) {
                         <option value="@nhaCungCap.IdNhaCungCap"
                                 @(Model.IdNhaCungCap == nhaCungCap.IdNhaCungCap ? "selected" : "")>
@@ -48,7 +48,7 @@
             <div class="form-group mb-3">
                 <label class="" for="select-trangthaibaoquan">Trạng thái bảo quản</label>
                 <select class="form-control" id="select-trangthaibaoquan" name="select-trangthaibaoquan">
-                    <option disabled @(trangThaiBaoQuans.Count > 0 ? "" : "selected")>Chọn thông tin</option>
+                    <option selected>Chọn thông tin</option>
                     @foreach (var trangThaiBaoQuan in trangThaiBaoQuans) {
                         <option value="@trangThaiBaoQuan.Value">
                             @trangThaiBaoQuan.Text

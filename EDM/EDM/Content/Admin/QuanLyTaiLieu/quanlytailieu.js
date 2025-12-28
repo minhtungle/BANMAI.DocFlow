@@ -273,8 +273,6 @@ class QuanLyTaiLieu {
                     });
                 };
             },
-
-
         };
     }
     createModalCRUD_TaiLieu() {
@@ -574,23 +572,16 @@ class QuanLyTaiLieu {
                 $.each($(".tailieu-read", $("#tailieu-crud")), function () {
                     var $div = $(this),
                         rowNumber = $div.attr("row");
-
-                    var idTruongHocs =
-                        $(`#select-truonghoc-${rowNumber}`, $div).val()?.map(x => ({
-                            IdTruongHoc: x
-                        }));
-                    var idTaiLieuCha = $(`#select-tailieucha-${rowNumber}`, $div).val();
                     var idTaiLieu = $(`#input-idtailieu`, $div).val();
 
                     var taiLieu = {
                         RowNumber: rowNumber,
                         TaiLieu: {
                             IdTaiLieu: idTaiLieu,
-                            IdTaiLieuCha: idTaiLieuCha,
 
                             IdNhaCungCap: $("#select-nhacungcap", $div).val(),
-                            TrangThaiBaoQuan: $("#input-trangthaibaoquan", $div).val(),
-                            NgayHetHan: $("#input-ngayhethan", $div).val().trim(),
+                            TrangThaiBaoQuan: $("#select-trangthaibaoquan", $div).val(),
+                            NgayHetHan: $("#input-ngayhethan", $div).val(),
                             GhiChu: $("#input-ghichu", $div).val().trim(),
                         },
                     };
@@ -707,7 +698,7 @@ class QuanLyTaiLieu {
                 save: function (downloadToken) {
                     $.ajax({
                         ...ajaxDefaultProps({
-                            url: "/QuanLyTaiLieu/saveImport_TaiLieu_Excel",
+                            url: "/QuanLyTaiLieu/create_TaiLieu",
                             type: "POST",
                             data: { downloadToken }
                         }),

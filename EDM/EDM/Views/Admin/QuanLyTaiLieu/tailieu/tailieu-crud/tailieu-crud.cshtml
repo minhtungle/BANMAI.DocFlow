@@ -67,9 +67,9 @@
         </div>
         <div class="modal-footer">
             @if (Model.Loai == "create") {
-                <button type="button" class="btn btn-outline-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('draft')">
+                @*<button type="button" class="btn btn-outline-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('draft')">
                     <span class="">Lưu nháp</span>
-                </button>
+                </button>*@
                 <button type="button" class="btn btn-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('@Model.Loai')">
                     <span class="">Lưu</span>
                 </button>
@@ -85,14 +85,14 @@
                     <span class="">Đóng</span>
                 </button>
             }
-            else if (Model.Loai == "draftToSave") {
+            @*else if (Model.Loai == "draftToSave") {
                 <button type="button" class="btn btn-primary" onclick="quanLyTaiLieu.handleModal_CRUD.save('@Model.Loai')">
                     <span class="">Chuyển đăng bài</span>
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <span class="">Đóng</span>
                 </button>
-            }
+            }*@
         </div>
     </div>
 </div>

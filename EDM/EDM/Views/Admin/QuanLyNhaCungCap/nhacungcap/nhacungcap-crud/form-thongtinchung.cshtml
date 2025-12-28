@@ -7,15 +7,15 @@
     List<string> loaiThaoTac_Disabled = new List<string> { "read" };
 }
 <div class="list-group list-group-horizontal mb-1 col-12 justify-content-end" id="" role="tablist">
-    <a class="list-group-item list-group-item-action active" id="thongtin-list"
-       data-bs-toggle="list" href="#thongtin" role="tab">Thông tin chung</a>
-    <a class="list-group-item list-group-item-action" id="tailieu-list"
-       data-bs-toggle="list" href="#tailieu" role="tab">Tài liệu đính kèm</a>
+    <a class="list-group-item list-group-item-action active" id="thongtin-list-@Model.NhaCungCap.RowNumber"
+       data-bs-toggle="list" href="#thongtin-@Model.NhaCungCap.RowNumber" role="tab">Thông tin chung</a>
+    <a class="list-group-item list-group-item-action" id="tailieu-list-@Model.NhaCungCap.RowNumber"
+       data-bs-toggle="list" href="#tailieu-@Model.NhaCungCap.RowNumber" role="tab">Tài liệu đính kèm</a>
 </div>
 
 <div class="tab-content text-justify">
-    <div class="tab-pane fade show active" id="thongtin" role="tabpanel"
-         aria-labelledby="thongtin-list">
+    <div class="tab-pane fade show active" id="thongtin-@Model.NhaCungCap.RowNumber" role="tabpanel"
+         aria-labelledby="thongtin-list-@Model.NhaCungCap.RowNumber">
         <div class="row">
             <!--Id-->
             <input id="input-idnhacungcap" value="@nhaCungCap.IdNhaCungCap" hidden />
@@ -173,8 +173,8 @@
         </div>
     </div>
 </div>
-<div class="tab-pane fade" id="tailieu" role="tabpanel"
-     aria-labelledby="tailieu-list">
+<div class="tab-pane fade" id="tailieu-@Model.NhaCungCap.RowNumber" role="tabpanel"
+     aria-labelledby="tailieu-list-@Model.NhaCungCap.RowNumber">
     <div class="row">
         <div class="col-sm-12">
             <table class="table table-hover table-bordered w-100 nowrap" id="table-tailieu" data-page-length="2">

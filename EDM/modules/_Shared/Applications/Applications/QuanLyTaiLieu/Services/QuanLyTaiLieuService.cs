@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
@@ -137,6 +138,40 @@ namespace Applications.QuanLyTaiLieu.Services {
         }
 
         public async Task Create_TaiLieu(List<tbTaiLieuExtend> taiLieus) {
+            // Chuyển file từ thư mục cache về thư mục chính
+            string cacheFolderPath = HostingEnvironment.MapPath(string.Format("{0}/{1}/TAILIEUNHACUNGCAP_CACHE/{2}",
+                       "/Assets/uploads",
+                       CurrentDonViSuDung.MaDonViSuDung,
+                       CurrentNguoiDung.IdNguoiDung));
+            string mainFolderPath = HostingEnvironment.MapPath(string.Format("{0}/{1}/TAILIEUNHACUNGCAP",
+                "/Assets/uploads",
+                CurrentDonViSuDung.MaDonViSuDung));
+            if (!Directory.Exists(mainFolderPath))
+                Directory.CreateDirectory(mainFolderPath);
+
+            await _unitOfWork.ExecuteInTransaction(async () => {
+                foreach (var taiLieu_NEW in taiLieus) {
+                    // Chuyển file từ cache về thư mục chính
+                    string sourceFilePath = Path.Combine(cacheFolderPath, taiLieu_NEW.TaiLieu.FileNameUpdate + taiLieu_NEW.TaiLieu.FileExtension);
+                    string destFilePath = Path.Combine(mainFolderPath, taiLieu_NEW.TaiLieu.FileNameUpdate + taiLieu_NEW.TaiLieu.FileExtension);
+                    if (Directory.Exists(sourceFilePath)) {
+                        File.Move(sourceFilePath, destFilePath);
+                        // Cập nhật lại đường dẫn tệp vật lý và online
+                        taiLieu_NEW.TaiLieu.DuongDanTepVatLy = destFilePath;
+                        taiLieu_NEW.TaiLieu.DuongDanTepOnline = string.Format("{0}/{1}/TAILIEUNHACUNGCAP/{2}{3}",
+                            "/Assets/uploads",
+                            CurrentDonViSuDung.MaDonViSuDung,
+                            taiLieu_NEW.TaiLieu.FileNameUpdate,
+                            taiLieu_NEW.TaiLieu.FileExtension);
+                    }
+                    var taiLieu = taiLieu_NEW.TaiLieu;
+                    await _unitOfWork.InsertAsync<tbTaiLieu, Guid>(taiLieu);
+                }
+                ;
+
+
+                await DeleteCacheFolder(); // Xóa mục cache sau khi di chuyển
+            });
 
         }
 

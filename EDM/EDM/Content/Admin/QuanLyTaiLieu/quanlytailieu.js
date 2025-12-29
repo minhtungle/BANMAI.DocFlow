@@ -579,6 +579,9 @@ class QuanLyTaiLieu {
                         TaiLieu: {
                             IdTaiLieu: idTaiLieu,
 
+                            FileName: $(`#input-filename`, $div).val().trim(),
+                            FileNameUpdate: $(`#input-filenameupdate`, $div).val().trim(),
+                            FileExtension: $(`#input-fileextension`, $div).val().trim(),
                             IdNhaCungCap: $("#select-nhacungcap", $div).val(),
                             TrangThaiBaoQuan: $("#select-trangthaibaoquan", $div).val(),
                             NgayHetHan: $("#input-ngayhethan", $div).val(),
